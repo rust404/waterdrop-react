@@ -24,7 +24,7 @@ function App() {
           <Route path="/statistics">
             <Statistics />
           </Route>
-          <Redirect from="/" to="/record" />
+          <Redirect from="/" exact to="/record" />
           <Route path="*">
             <Notfound />
           </Route>

@@ -1,5 +1,11 @@
 import React from 'react'
+import Layout from 'components/layout'
+
 const Tags = () => {
-  return <div>tags</div>
+  return (
+    <Layout>
+      <div>tags</div>
+    </Layout>
+  )
 }
 export default Tags

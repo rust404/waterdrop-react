@@ -1,21 +1,35 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import styled from 'styled-components'
 
+const NavWrapper = styled.nav`
+  border: 1px solid red;
+  ul {
+    display: flex;
+    li {
+      flex:1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 56px;
+    }
+  }
+`
 const Nav = () => {
   return (
-    <nav>
+    <NavWrapper>
       <ul>
         <li>
-          <Link to="/home">Home</Link>
+          <Link to="/tags">标签</Link>
         </li>
         <li>
-          <Link to="/about">About</Link>
+          <Link to="/record">记一笔</Link>
         </li>
         <li>
-          <Link to="/users">User</Link>
+          <Link to="/statistics">数据</Link>
         </li>
       </ul>
-    </nav>
+    </NavWrapper>
   )
 }
 export default Nav

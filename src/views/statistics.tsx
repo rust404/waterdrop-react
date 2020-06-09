@@ -1,5 +1,10 @@
 import React from 'react'
+import Layout from 'components/layout'
 const Statistics = () => {
-  return <div>statistics</div>
+  return (
+    <Layout>
+      <div>statistics</div>
+    </Layout>
+  )
 }
 export default Statistics
