@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+import Icon from 'components/icon'
 
 const NavWrapper = styled.nav`
   ul {
@@ -13,6 +14,11 @@ const NavWrapper = styled.nav`
       align-items: center;
       height: 56px;
       font-size: 12px;
+      a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
     }
   }
 `
@@ -21,13 +27,13 @@ const Nav = () => {
     <NavWrapper>
       <ul>
         <li>
-          <Link to="/tags">标签</Link>
+          <Link to="/tags"><Icon id="tags" />标签</Link>
         </li>
         <li>
-          <Link to="/record">记一笔</Link>
+          <Link to="/record"><Icon id="money" />记一笔</Link>
         </li>
         <li>
-          <Link to="/statistics">数据</Link>
+          <Link to="/statistics"><Icon id="statistics" />数据</Link>
         </li>
       </ul>
     </NavWrapper>
