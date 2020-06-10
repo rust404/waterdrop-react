@@ -3,15 +3,16 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
 const NavWrapper = styled.nav`
-  border: 1px solid red;
   ul {
     display: flex;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.5);
     li {
       flex:1;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 56px;
+      font-size: 12px;
     }
   }
 `

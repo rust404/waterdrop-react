@@ -27,7 +27,11 @@
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -37,6 +41,8 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.0",
-    "node-sass": "npm:dart-sass@1.25.0"
+    "node-sass": "npm:dart-sass@1.25.0",
+    "svg-sprite-loader": "^5.0.0",
+    "svgo-loader": "^2.2.1"
   }
 }
