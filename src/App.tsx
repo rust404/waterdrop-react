@@ -13,23 +13,21 @@ import Notfound from 'views/notfound';
 function App() {
   return (
     <Router>
-      <div>
-        <Switch>
-          <Route path="/tags">
-            <Tags />
-          </Route>
-          <Route path="/record">
-            <Record />
-          </Route>
-          <Route path="/statistics">
-            <Statistics />
-          </Route>
-          <Redirect from="/" exact to="/record" />
-          <Route path="*">
-            <Notfound />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/tags">
+          <Tags />
+        </Route>
+        <Route path="/record">
+          <Record />
+        </Route>
+        <Route path="/statistics">
+          <Statistics />
+        </Route>
+        <Redirect from="/" exact to="/record" />
+        <Route path="*">
+          <Notfound />
+        </Route>
+      </Switch>
     </Router>
   );
 }

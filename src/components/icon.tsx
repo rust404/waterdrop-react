@@ -12,13 +12,14 @@ importAll(require.context('icons', true, /\.svg$/))
 
 type Props = {
   id: string,
-  size?: number,
-  fill?: string
+  size?: string,
+  fill?: string,
+  className?: string
 }
 const Icon = (props: Props) => {
-  const {id, size = 24, fill = '#000'} = props
+  const {id, size = '24px', fill = '#000', className = ''} = props
   return (
-    <svg width={size + 'px'} height={size + 'px'} fill={fill}>
+    <svg className={className} width={size} height={size} fill={fill}>
       <use xlinkHref={'#' + id} />
     </svg >
   )

@@ -3,7 +3,7 @@ import Nav from './nav'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   > div {
@@ -12,8 +12,11 @@ const Wrapper = styled.div`
     flex-direction: column;
     min-height: 0;
     > main {
+      display: flex;
+      flex-direction: column;
       flex-grow: 1;
       overflow: auto;
+      -webkit-overflow-scrolling:touch;
     }
   }
 `
