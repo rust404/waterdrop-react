@@ -2,14 +2,17 @@ import React from "react";
 import styled from "styled-components";
 
 const MoneyTypeWrapper = styled.section`
-  line-height: 40px;
-  font-size: 16px;
+  line-height: 48px;
+  font-size: 20px;
   background-color: #ffd947;
+  box-shadow: 0 2px rgba(0,0,0,0.25);
   > ul {
     display: flex;
     justify-content: center;
     li {
       position: relative;
+      width: 60px;
+      text-align: center;
     }
     li:last-child {
       margin-left: 10px;

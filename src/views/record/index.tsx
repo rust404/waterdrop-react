@@ -16,7 +16,6 @@ const RecordWrapper = styled.div`
     overflow: auto;
   }
   .pad {
-    height: 500px;
     margin-top: auto;
   }
 `

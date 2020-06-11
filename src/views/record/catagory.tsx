@@ -13,26 +13,23 @@ const CatagoryWrapper = styled.section`
     li {
       margin-top: 20px;
       position: relative;
-      width: 25%;
-      font-size: 14px;
+      width: 25vw;
+      font-size: 4vw;
       display: flex;
       flex-direction: column;
       align-items: center;
       .icon-wrapper {
         position: relative;
-        width: 70%;
-        height: 0;
-        padding-bottom: 70%;
+        width: 18vw;
+        height: 18vw;
+        margin-bottom: 4px;
         border-radius: 50%;
-        background-color: grey;
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         &.selected {
           background-color: #ffd947;
-      }
-        .icon {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%)
         }
       }
     }
@@ -58,14 +55,12 @@ const Catagory = (props: any) => {
   return (
     <CatagoryWrapper {...props}>
       <ul>
-        {list.map(item => (
-          <li>
-            <div className="icon-wrapper selected">
+        {list.map((item, index) => (
+          <li key={item.icon + index}>
+            <div className="icon-wrapper">
               <Icon className="icon" id={item.icon} size="60%" />
             </div>
-            <p>
-              {item.name}
-            </p>
+            <p>{item.name}</p>
           </li>
         ))}
       </ul>
