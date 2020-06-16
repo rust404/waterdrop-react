@@ -1,12 +1,12 @@
-import React from 'react'
-import Layout from 'components/layout'
-import styled from 'styled-components'
-import MoneyType from './moneytype'
-import Catagory from './catagory'
-import Remarks from './remarks'
-import NumberPad from './numberpad'
+import React, {useState} from "react";
+import Layout from "components/layout";
+import styled from "styled-components";
+import MoneyDirection, {directionType} from "./moneydirection";
+import Catagory from "./catagory";
+import Remarks from "./remarks";
+import NumberPad from "./numberpad";
 
-const RecordWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -18,18 +18,46 @@ const RecordWrapper = styled.div`
   .pad {
     margin-top: auto;
   }
-`
+`;
+type recordDataType = {
+  catagoryName: string;
+  direction: directionType;
+  amount: number;
+};
+export type recordDataFieldType = Partial<recordDataType>;
 
-const Record = () => {
+const Record: React.FC = () => {
+  const [recordData, setRecordData] = useState<recordDataType>({
+    catagoryName: "",
+    direction: "-",
+    amount: 0,
+  });
+  const {catagoryName, direction} = recordData;
+  const onChange = (field: recordDataFieldType) => {
+    setRecordData({
+      ...recordData,
+      ...field,
+    });
+  };
   return (
     <Layout>
-      <RecordWrapper>
-        <MoneyType></MoneyType>
-        <Catagory className='catagory'></Catagory>
+      <Wrapper>
+        <MoneyDirection
+          direction={direction}
+          onChange={onChange}
+        ></MoneyDirection>
+        <Catagory
+          catagoryName={catagoryName}
+          onChange={onChange}
+          className="catagory"
+        ></Catagory>
         <Remarks></Remarks>
-        <NumberPad className="pad"></NumberPad>
-      </RecordWrapper>
+        <NumberPad
+          className="pad"
+          onChange={onChange}
+        ></NumberPad>
+      </Wrapper>
     </Layout>
-  )
-}
-export default Record
+  );
+};
+export default Record;
