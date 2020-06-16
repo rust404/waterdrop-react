@@ -32,7 +32,7 @@ const Record: React.FC = () => {
     direction: "-",
     amount: 0,
   });
-  const {catagoryName, direction} = recordData;
+  const {catagoryName, direction, amount} = recordData;
   const onChange = (field: recordDataFieldType) => {
     setRecordData({
       ...recordData,
@@ -42,6 +42,7 @@ const Record: React.FC = () => {
   return (
     <Layout>
       <Wrapper>
+        <div>{amount}</div>
         <MoneyDirection
           direction={direction}
           onChange={onChange}

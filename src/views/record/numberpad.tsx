@@ -56,96 +56,121 @@ type Props = {
   className?: string;
 };
 
+const useCalc = () => {
+  const [left, setLeft] = useState("0");
+  const [right, setRight] = useState("");
+  const [op, setOp] = useState("");
+  function add(value: string) {
+    if ("0123456789".indexOf(value) !== -1) {
+      addNumber(value);
+    } else if ("+-".indexOf(value) !== -1) {
+      addOp(value);
+    } else if (value === ".") {
+      addDot();
+    }
+  }
+  function addDot() {
+    if (op) {
+      if (right.indexOf(".") !== -1) return;
+      if (right.length === 0) {
+        setRight('0.')
+      } else {
+        setRight(right + '.')
+      }
+    } else {
+      if (left.indexOf('.') !== -1) return;
+      setLeft(left + '.')
+    }
+  }
+  function addNumber(value: string) {
+    if (op) {
+      if (right === "0") {
+        setRight(value);
+      } else {
+        setRight(right + value);
+      }
+    } else {
+      if (left === "0") {
+        setLeft(value);
+      } else {
+        setLeft(left + value);
+      }
+    }
+  }
+  function addOp(value: string) {
+    if (right) {
+      let ret;
+      if (op === "+") {
+        ret = parseFloat(left) + parseFloat(right);
+      } else if (op === "-") {
+        ret = parseFloat(left) - parseFloat(right);
+      }
+      setLeft(ret + "");
+      setRight("");
+      setOp(value);
+    } else {
+      setOp(value);
+    }
+  }
+  function getValue() {
+    let ret
+    if (right.length === 0) {
+      ret = parseFloat(left)
+    } else {
+      if (op === "+") {
+        ret = parseFloat(left) + parseFloat(right);
+      } else if (op === "-") {
+        ret = parseFloat(left) - parseFloat(right);
+      }
+    }
+    return ret
+  }
+  function clear() {
+    setLeft("0");
+    setRight("");
+    setOp("");
+  }
+  const expStr = left + op + right
+  return {expStr, add, clear, getValue};
+};
 
 const NumberPad: React.FC<Props> = props => {
   const {className, onChange} = props;
-  const [localStr, setLocalStr] = useState("0");
-  const [left, setLeft] = useState('0')
-  const [right, setRight] = useState('')
-  const [op, setOp] = useState('')
-  const numberHandler = (e: React.MouseEvent<HTMLElement>) => {
+  const {expStr, add, clear, getValue} = useCalc();
+  const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     if (!(e.target instanceof HTMLElement)) return;
     const value = e.target.dataset["value"];
     if (value === undefined) return;
-    if (op) {
-      if (right === '0') {
-        setLocalStr(localStr.slice(0, -1) + value)
-        setRight(value)
-      } else {
-        setLocalStr(localStr + value)
-        setRight(right + value)
-      }
-    } else {
-      if (left === '0') {
-        setLocalStr(value)
-        setLeft(value)
-      } else {
-        setLocalStr(localStr + value)
-        setLeft(localStr + value)
-      }
-    }
-  };
-  const operationHandler = (e: React.MouseEvent<HTMLElement>) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const value = e.target.dataset["value"];
-    if (value === undefined) return;
-    if (right) {
-      let ret
-      if (op === '+') {
-        ret = parseFloat(left) + parseFloat(right)
-      } else if (op === '-') {
-        ret = parseFloat(left) - parseFloat(right)
-      }
-      setLocalStr(ret + value)
-      setLeft(ret + '')
-      setRight('')
-      setOp(value)
-    } else {
-      setOp(value)
-      if (op) {
-        setLocalStr(localStr.slice(0, -1) + value)
-      } else {
-        setLocalStr(localStr + value)
-      }
-    }
+    add(value);
   };
   const clearHandler = (e: React.MouseEvent<HTMLElement>) => {
-    setLocalStr("0");
-    setLeft('0')
-    setRight('')
-    setOp('')
-  };
-  const dotHandler = (e: React.MouseEvent<HTMLElement>) => {
-    setLocalStr(localStr + ".");
+    clear();
   };
   const okHandler = (e: React.MouseEvent<HTMLElement>) => {
-    onChange({amount: parseInt(localStr)});
+    onChange({amount: getValue()});
+    clear()
   };
 
-  const buttonHandlerMap: {
-    [index: string]: (e: React.MouseEvent<HTMLElement>) => void;
-  } = {
-    ".": dotHandler,
-    ok: okHandler,
-    clear: clearHandler
-  };
-  "0123456789".split("").forEach(key => {
-    buttonHandlerMap[key] = numberHandler;
-  });
-  "+-".split("").forEach(key => {
-    buttonHandlerMap[key] = operationHandler;
-  });
   const onPadClick = (e: React.MouseEvent<HTMLElement>) => {
     if (!(e.target instanceof HTMLElement)) return;
     if (e.target.dataset["value"] === undefined) return;
-    if (localStr.length >= 15) return;
     const value = e.target.dataset["value"];
-    buttonHandlerMap[value](e);
+    switch (value) {
+      case "ok":
+        okHandler(e);
+        break;
+      case "clear":
+        clearHandler(e);
+        break;
+      default:
+        calcHandler(e);
+        break;
+    }
   };
   return (
     <Wrapper className={className}>
       <div className="container">
-        <div className="output">{localStr}</div>
+        <div className="output">{expStr}</div>
         <div onClick={onPadClick} className="button-wrapper clearfix">
           <button data-value="1">1</button>
           <button data-value="2">2</button>
