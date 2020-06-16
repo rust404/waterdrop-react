@@ -1,6 +1,7 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import {recordDataFieldType} from ".";
+import useCalc from "./useCalc";
 
 const Wrapper = styled.section`
   background-color: #ffd947;
@@ -56,84 +57,6 @@ type Props = {
   className?: string;
 };
 
-const useCalc = () => {
-  const [left, setLeft] = useState("0");
-  const [right, setRight] = useState("");
-  const [op, setOp] = useState("");
-  function add(value: string) {
-    if ("0123456789".indexOf(value) !== -1) {
-      addNumber(value);
-    } else if ("+-".indexOf(value) !== -1) {
-      addOp(value);
-    } else if (value === ".") {
-      addDot();
-    }
-  }
-  function addDot() {
-    if (op) {
-      if (right.indexOf(".") !== -1) return;
-      if (right.length === 0) {
-        setRight('0.')
-      } else {
-        setRight(right + '.')
-      }
-    } else {
-      if (left.indexOf('.') !== -1) return;
-      setLeft(left + '.')
-    }
-  }
-  function addNumber(value: string) {
-    if (op) {
-      if (right === "0") {
-        setRight(value);
-      } else {
-        setRight(right + value);
-      }
-    } else {
-      if (left === "0") {
-        setLeft(value);
-      } else {
-        setLeft(left + value);
-      }
-    }
-  }
-  function addOp(value: string) {
-    if (right) {
-      let ret;
-      if (op === "+") {
-        ret = parseFloat(left) + parseFloat(right);
-      } else if (op === "-") {
-        ret = parseFloat(left) - parseFloat(right);
-      }
-      setLeft(ret + "");
-      setRight("");
-      setOp(value);
-    } else {
-      setOp(value);
-    }
-  }
-  function getValue() {
-    let ret
-    if (right.length === 0) {
-      ret = parseFloat(left)
-    } else {
-      if (op === "+") {
-        ret = parseFloat(left) + parseFloat(right);
-      } else if (op === "-") {
-        ret = parseFloat(left) - parseFloat(right);
-      }
-    }
-    return ret
-  }
-  function clear() {
-    setLeft("0");
-    setRight("");
-    setOp("");
-  }
-  const expStr = left + op + right
-  return {expStr, add, clear, getValue};
-};
-
 const NumberPad: React.FC<Props> = props => {
   const {className, onChange} = props;
   const {expStr, add, clear, getValue} = useCalc();
@@ -143,10 +66,10 @@ const NumberPad: React.FC<Props> = props => {
     if (value === undefined) return;
     add(value);
   };
-  const clearHandler = (e: React.MouseEvent<HTMLElement>) => {
+  const clearHandler = () => {
     clear();
   };
-  const okHandler = (e: React.MouseEvent<HTMLElement>) => {
+  const okHandler = () => {
     onChange({amount: getValue()});
     clear()
   };
@@ -157,10 +80,10 @@ const NumberPad: React.FC<Props> = props => {
     const value = e.target.dataset["value"];
     switch (value) {
       case "ok":
-        okHandler(e);
+        okHandler();
         break;
       case "clear":
-        clearHandler(e);
+        clearHandler();
         break;
       default:
         calcHandler(e);

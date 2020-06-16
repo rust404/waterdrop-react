@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Layout from "components/layout";
 import styled from "styled-components";
 import MoneyDirection, {directionType} from "./moneydirection";
@@ -23,6 +23,13 @@ type recordDataType = {
   catagoryName: string;
   direction: directionType;
   amount: number;
+  [index: string]: any
+};
+type alertDataType = {
+  catagoryName: string;
+  direction: string;
+  amount: string;
+  [index: string]: string;
 };
 export type recordDataFieldType = Partial<recordDataType>;
 
@@ -32,17 +39,49 @@ const Record: React.FC = () => {
     direction: "-",
     amount: 0,
   });
-  const {catagoryName, direction, amount} = recordData;
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const {catagoryName, direction} = recordData;
   const onChange = (field: recordDataFieldType) => {
     setRecordData({
       ...recordData,
       ...field,
     });
   };
+  const submit = (field: recordDataFieldType) => {
+    const data = {
+      ...recordData,
+      ...field
+    }
+    if (data.direction === '+') {
+      data.amount = Math.abs(data.amount)
+    } else {
+      data.amount = -Math.abs(data.amount)
+    }
+    setRecordData(data)
+    setIsSubmitting(true)
+  }
+  useEffect(() => {
+    if (!isSubmitting) return
+
+    const alertData: alertDataType = {
+      catagoryName: '请选择分类',
+      direction: '请选择钱的流动方向(收入或支出)',
+      amount: '钱不能为0'
+    }
+    // 不能为空
+    for (let i of Object.keys(recordData)) {
+      if (!recordData[i]) {
+        alert(alertData[i])
+        setIsSubmitting(false)
+        return
+      }
+    }
+    console.log(recordData)
+    setIsSubmitting(false)
+  }, [recordData, isSubmitting])
   return (
     <Layout>
       <Wrapper>
-        <div>{amount}</div>
         <MoneyDirection
           direction={direction}
           onChange={onChange}
@@ -55,7 +94,7 @@ const Record: React.FC = () => {
         <Remarks></Remarks>
         <NumberPad
           className="pad"
-          onChange={onChange}
+          onChange={submit}
         ></NumberPad>
       </Wrapper>
     </Layout>

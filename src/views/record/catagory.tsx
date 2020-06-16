@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import Icon from "components/icon";
-import { recordDataFieldType } from ".";
+import {recordDataFieldType} from ".";
 
 const Wrapper = styled.section`
   display: flex;
@@ -44,15 +44,15 @@ type Props = {
 };
 const Catagory: React.FC<Props> = (props) => {
   const [list, setList] = useState([
-    { name: "餐饮", icon: "canyin" },
-    { name: "服饰", icon: "fushi" },
-    { name: "读书", icon: "dushu" },
-    { name: "交通", icon: "jiaotong" },
-    { name: "理财", icon: "licai" },
-    { name: "旅行", icon: "lvxing" },
-    { name: "日用", icon: "riyongpin" },
-    { name: "社交", icon: "shejiao" },
-    { name: "添加", icon: "tianjia" },
+    {name: "餐饮", icon: "canyin"},
+    {name: "服饰", icon: "fushi"},
+    {name: "读书", icon: "dushu"},
+    {name: "交通", icon: "jiaotong"},
+    {name: "理财", icon: "licai"},
+    {name: "旅行", icon: "lvxing"},
+    {name: "日用", icon: "riyongpin"},
+    {name: "社交", icon: "shejiao"},
+    {name: "添加", icon: "tianjia"},
   ]);
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
@@ -65,12 +65,16 @@ const Catagory: React.FC<Props> = (props) => {
       }
       target = target.parentNode as Element;
     }
-    if (!li) return;
-    let index = parseInt(li.dataset["index"] as string);
+    if (!li || !li.dataset['index']) return;
+    let index = parseInt(li.dataset["index"]);
     // add catagory
     if (index === list.length - 1) {
       const newType = window.prompt("请输入分类");
       if (!newType) return;
+      // 去重
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].name === newType) return
+      }
       const newList = list.concat();
       newList.splice(-1, 0, {
         name: newType,
@@ -78,7 +82,7 @@ const Catagory: React.FC<Props> = (props) => {
       });
       setList(newList);
     } else {
-      props.onChange({ catagoryName: list[index].name });
+      props.onChange({catagoryName: list[index].name});
     }
   };
   return (
@@ -89,7 +93,7 @@ const Catagory: React.FC<Props> = (props) => {
             <div
               className={`icon-wrapper ${
                 item.name === props.catagoryName ? "selected" : ""
-              }`}
+                }`}
             >
               <Icon className="icon" id={item.icon} size="60%" />
             </div>
