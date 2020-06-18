@@ -68,7 +68,7 @@ const Catagory: React.FC<ICatagoryProps> = props => {
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
     const newType = window.prompt("请输入分类");
     if (!newType) return;
-    addCatagory(newType, '+');
+    addCatagory(newType, direction);
     e.stopPropagation()
   }
   return (

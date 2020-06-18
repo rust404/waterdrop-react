@@ -28,9 +28,9 @@ type recordDataType = {
 };
 type alertDataType = {
   catagoryId: string;
-  direction: string;
+  direction?: string;
   amount: string;
-  [index: string]: string;
+  [index: string]: any;
 };
 export type recordDataFieldType = Partial<recordDataType>;
 
@@ -66,7 +66,6 @@ const Record: React.FC = () => {
 
     const alertData: alertDataType = {
       catagoryId: "请选择分类",
-      direction: "请选择钱的流动方向(收入或支出)",
       amount: "钱不能为0"
     };
     // 不能为空
