@@ -57,7 +57,7 @@ interface INumberPadProps {
   className?: string;
 }
 
-const NumberPad: React.FC<INumberPadProps> = (props) => {
+const NumberPad: React.FC<INumberPadProps> = props => {
   const {className, onChange} = props;
   const {expStr, add, clear, getValue} = useCalc();
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
