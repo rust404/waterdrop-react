@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
+import useCatagory from "./useCatagory";
 import styled from "styled-components";
 import Icon from "components/icon";
 import {recordDataFieldType} from ".";
+import {moneyDirectionType} from './useCatagory'
 
 const Wrapper = styled.section`
   display: flex;
@@ -37,23 +39,15 @@ const Wrapper = styled.section`
   }
 `;
 
-type Props = {
-  catagoryName: string;
+interface ICatagoryProps {
+  catagoryId: number;
+  direction: moneyDirectionType;
   className?: string;
   onChange: (field: recordDataFieldType) => void;
-};
-const Catagory: React.FC<Props> = (props) => {
-  const [list, setList] = useState([
-    {name: "餐饮", icon: "canyin"},
-    {name: "服饰", icon: "fushi"},
-    {name: "读书", icon: "dushu"},
-    {name: "交通", icon: "jiaotong"},
-    {name: "理财", icon: "licai"},
-    {name: "旅行", icon: "lvxing"},
-    {name: "日用", icon: "riyongpin"},
-    {name: "社交", icon: "shejiao"},
-    {name: "添加", icon: "tianjia"},
-  ]);
+}
+const Catagory: React.FC<ICatagoryProps> = props => {
+  const {catagory, addCatagory} = useCatagory();
+  const {direction} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
@@ -61,47 +55,45 @@ const Catagory: React.FC<Props> = (props) => {
     // find li
     while (target !== e.currentTarget) {
       if (target.nodeName.toLowerCase() === "li") {
-        li = target as HTMLElement;
+        li = target as HTMLLIElement;
       }
       target = target.parentNode as Element;
     }
-    if (!li || !li.dataset['index']) return;
-    let index = parseInt(li.dataset["index"]);
+    if (!li || !li.dataset["id"]) return;
+    let id = parseInt(li.dataset["id"]);
     // add catagory
-    if (index === list.length - 1) {
-      const newType = window.prompt("请输入分类");
-      if (!newType) return;
-      // 去重
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].name === newType) return
-      }
-      const newList = list.concat();
-      newList.splice(-1, 0, {
-        name: newType,
-        icon: "custom",
-      });
-      setList(newList);
-    } else {
-      props.onChange({catagoryName: list[index].name});
-    }
+    props.onChange({catagoryId: id});
   };
+
+  const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
+    const newType = window.prompt("请输入分类");
+    if (!newType) return;
+    addCatagory(newType, '+');
+    e.stopPropagation()
+  }
   return (
     <Wrapper className={props.className}>
       <ul onClick={handleClick}>
-        {list.map((item, index) => (
-          <li key={item.icon + index} data-index={index}>
+        {catagory.filter(item => item.direction === direction).map((item, index) => (
+          <li key={item.name + index} data-id={item.id}>
             <div
               className={`icon-wrapper ${
-                item.name === props.catagoryName ? "selected" : ""
+                item.id === props.catagoryId ? "selected" : ""
                 }`}
             >
               <Icon className="icon" id={item.icon} size="60%" />
             </div>
-            <p className={props.catagoryName === item.name ? "selected" : ""}>
+            <p className={props.catagoryId === item.id ? "selected" : ""}>
               {item.name}
             </p>
           </li>
         ))}
+        <li onClick={onAddClick}>
+          <div className="icon-wrapper">
+            <Icon className="icon" id="tianjia" size="60%" />
+          </div>
+          <p>添加</p>
+        </li>
       </ul>
     </Wrapper>
   );

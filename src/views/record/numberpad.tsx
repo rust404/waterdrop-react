@@ -52,17 +52,16 @@ const Wrapper = styled.section`
   }
 `;
 
-type Props = {
+interface INumberPadProps {
   onChange: (field: recordDataFieldType) => void;
   className?: string;
-};
+}
 
-const NumberPad: React.FC<Props> = props => {
+const NumberPad: React.FC<INumberPadProps> = (props) => {
   const {className, onChange} = props;
   const {expStr, add, clear, getValue} = useCalc();
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const value = e.target.dataset["value"];
+    const value = (e.target as HTMLElement).dataset["value"];
     if (value === undefined) return;
     add(value);
   };
@@ -71,13 +70,14 @@ const NumberPad: React.FC<Props> = props => {
   };
   const okHandler = () => {
     onChange({amount: getValue()});
-    clear()
+    clear();
   };
 
   const onPadClick = (e: React.MouseEvent<HTMLElement>) => {
     if (!(e.target instanceof HTMLElement)) return;
-    if (e.target.dataset["value"] === undefined) return;
+
     const value = e.target.dataset["value"];
+    if (value === undefined) return;
     switch (value) {
       case "ok":
         okHandler();

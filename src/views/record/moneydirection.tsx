@@ -1,6 +1,7 @@
 import React from "react";
-import { recordDataFieldType } from "./index";
+import {recordDataFieldType} from "./index";
 import styled from "styled-components";
+import {moneyDirectionType} from "./useCatagory";
 
 const Wrapper = styled.section`
   line-height: 48px;
@@ -30,17 +31,17 @@ const Wrapper = styled.section`
     }
   }
 `;
-type Props = {
-  direction: directionType;
+interface IMoneyDirectionProps {
+  direction: moneyDirectionType;
   onChange: (field: recordDataFieldType) => void;
-};
-export type directionType = "+" | "-";
-const MoneyDirection: React.FC<Props> = (props) => {
-  const { direction, onChange } = props;
+}
+
+const MoneyDirection: React.FC<IMoneyDirectionProps> = (props) => {
+  const {direction, onChange} = props;
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (!(e.target instanceof HTMLElement)) return;
-    const direction = e.target.dataset["direction"] as directionType;
-    onChange({ direction });
+    const direction = e.target.dataset["direction"] as moneyDirectionType;
+    onChange({direction});
   };
   return (
     <Wrapper>
