@@ -1,21 +1,21 @@
-import React from 'react';
+import React from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
-  Redirect,
+  Redirect
 } from "react-router-dom";
-import Tags from 'views/tags';
-import Record from 'views/record';
-import Statistics from 'views/statistics';
-import Notfound from 'views/notfound';
+import CatagoryManage from "views/CatagoryManage";
+import Record from "views/record";
+import Statistics from "views/Statistics";
+import Notfound from "views/Notfound";
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/tags">
-          <Tags />
+        <Route path="/catagorymanage">
+          <CatagoryManage />
         </Route>
         <Route path="/record">
           <Record />

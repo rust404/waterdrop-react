@@ -1,9 +1,9 @@
 import React from "react";
-import useCatagory from "./useCatagory";
+import useCatagory from "hooks/useCatagory";
 import styled from "styled-components";
-import Icon from "components/icon";
-import {recordDataFieldType} from ".";
-import {moneyDirectionType} from './useCatagory'
+import Icon from "components/Icon";
+import {MoneyDirectionType} from 'hooks/useCatagory'
+import {useHistory} from "react-router-dom";
 
 const Wrapper = styled.section`
   display: flex;
@@ -41,12 +41,14 @@ const Wrapper = styled.section`
 
 interface ICatagoryProps {
   catagoryId: number;
-  direction: moneyDirectionType;
+  direction: MoneyDirectionType;
   className?: string;
-  onChange: (field: recordDataFieldType) => void;
+  onChange: (value: number) => void;
 }
 const Catagory: React.FC<ICatagoryProps> = props => {
-  const {catagory, addCatagory} = useCatagory();
+  console.log('catagory')
+  const {catagory} = useCatagory();
+  const history = useHistory();
   const {direction} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
@@ -62,20 +64,18 @@ const Catagory: React.FC<ICatagoryProps> = props => {
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
     // add catagory
-    props.onChange({catagoryId: id});
+    props.onChange(id);
   };
 
-  const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    const newType = window.prompt("请输入分类");
-    if (!newType) return;
-    addCatagory(newType, direction);
+  const onSettingClick = (e: React.MouseEvent<HTMLLIElement>) => {
+    history.push(`/catagorymanage?direction=${direction}`)
     e.stopPropagation()
   }
   return (
     <Wrapper className={props.className}>
       <ul onClick={handleClick}>
-        {catagory.filter(item => item.direction === direction).map((item, index) => (
-          <li key={item.name + index} data-id={item.id}>
+        {catagory.filter(item => item.direction === direction).map((item) => (
+          <li key={item.id} data-id={item.id}>
             <div
               className={`icon-wrapper ${
                 item.id === props.catagoryId ? "selected" : ""
@@ -88,15 +88,15 @@ const Catagory: React.FC<ICatagoryProps> = props => {
             </p>
           </li>
         ))}
-        <li onClick={onAddClick}>
+        <li onClick={onSettingClick}>
           <div className="icon-wrapper">
-            <Icon className="icon" id="tianjia" size="60%" />
+            <Icon className="icon" id="settings" size="60%" />
           </div>
-          <p>添加</p>
+          <p>设置</p>
         </li>
       </ul>
     </Wrapper>
   );
 };
 
-export default Catagory;
+export default React.memo(Catagory);

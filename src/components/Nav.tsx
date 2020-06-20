@@ -1,7 +1,7 @@
 import React from 'react'
 import {NavLink} from 'react-router-dom'
 import styled from 'styled-components'
-import Icon from 'components/icon'
+import Icon from 'components/Icon'
 
 const NavWrapper = styled.nav`
   ul {
@@ -28,12 +28,13 @@ const NavWrapper = styled.nav`
     }
   }
 `
-const Nav = () => {
+const Nav: React.FC = () => {
+  console.log('nav')
   return (
     <NavWrapper>
       <ul>
         <li>
-          <NavLink to="/tags" activeClassName="active"><Icon id="tags" />标签</NavLink>
+          <NavLink to="/catagorymanage" activeClassName="active"><Icon id="tags" />标签</NavLink>
         </li>
         <li>
           <NavLink to="/record" activeClassName="active"><Icon id="money" />记一笔</NavLink>
@@ -45,4 +46,5 @@ const Nav = () => {
     </NavWrapper>
   )
 }
-export default Nav
+export default React.memo(Nav)
+// export default Nav

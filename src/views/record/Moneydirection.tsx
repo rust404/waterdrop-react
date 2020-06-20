@@ -1,7 +1,7 @@
 import React from "react";
 import {recordDataFieldType} from "./index";
 import styled from "styled-components";
-import {moneyDirectionType} from "./useCatagory";
+import {MoneyDirectionType} from "hooks/useCatagory";
 
 const Wrapper = styled.section`
   line-height: 48px;
@@ -32,7 +32,7 @@ const Wrapper = styled.section`
   }
 `;
 interface IMoneyDirectionProps {
-  direction: moneyDirectionType;
+  direction: MoneyDirectionType;
   onChange: (field: recordDataFieldType) => void;
 }
 
@@ -40,23 +40,23 @@ const MoneyDirection: React.FC<IMoneyDirectionProps> = (props) => {
   const {direction, onChange} = props;
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (!(e.target instanceof HTMLElement)) return;
-    const direction = e.target.dataset["direction"] as moneyDirectionType;
+    const direction = e.target.dataset["direction"] as MoneyDirectionType;
     onChange({direction});
   };
   return (
     <Wrapper>
       <ul>
         <li
-          data-direction="-"
+          data-direction="EXPENDITURE"
           onClick={handleClick}
-          className={direction === "-" ? "selected" : ""}
+          className={direction === MoneyDirectionType.EXPENDITURE ? "selected" : ""}
         >
           支出
         </li>
         <li
-          data-direction="+"
+          data-direction="INCOME"
           onClick={handleClick}
-          className={direction === "+" ? "selected" : ""}
+          className={direction === MoneyDirectionType.INCOME ? "selected" : ""}
         >
           收入
         </li>

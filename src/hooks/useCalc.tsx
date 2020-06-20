@@ -1,14 +1,10 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 
 const useCalc = () => {
   const [left, setLeft] = useState("0");
   const [right, setRight] = useState("");
   const [op, setOp] = useState("");
-  const [expStr, setExpStr] = useState('0')
-  useEffect(() => {
-    setExpStr(left + op + right)
-  }, [left, right, op])
-  function add(value: string) {
+  const add = (value: string) => {
     if ("0123456789".indexOf(value) !== -1) {
       addNumber(value);
     } else if ("+-".indexOf(value) !== -1) {
@@ -55,7 +51,7 @@ const useCalc = () => {
     setRight('')
     setOp(op)
   }
-  function getValue() {
+  const getValue = () => {
     let ret
     if (right.length === 0) {
       ret = parseFloat(left)
@@ -72,11 +68,12 @@ const useCalc = () => {
     }
     return ret as number
   }
-  function clear() {
+  const clear = () => {
     setLeft("0");
     setRight("");
     setOp("");
   }
+  const expStr = left + op + right
   return {expStr, add, clear, getValue};
 };
 

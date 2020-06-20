@@ -1,7 +1,6 @@
-import React from "react";
+import React, {useCallback, useState, useRef} from "react";
 import styled from "styled-components";
-import {recordDataFieldType} from ".";
-import useCalc from "./useCalc";
+import useCalc from "hooks/useCalc";
 
 const Wrapper = styled.section`
   background-color: #ffd947;
@@ -53,23 +52,24 @@ const Wrapper = styled.section`
 `;
 
 interface INumberPadProps {
-  onChange: (field: recordDataFieldType) => void;
+  onChange: (amount: number) => void;
   className?: string;
 }
 
 const NumberPad: React.FC<INumberPadProps> = props => {
   const {className, onChange} = props;
   const {expStr, add, clear, getValue} = useCalc();
+
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     const value = (e.target as HTMLElement).dataset["value"];
     if (value === undefined) return;
     add(value);
-  };
+  }
   const clearHandler = () => {
     clear();
-  };
+  }
   const okHandler = () => {
-    onChange({amount: getValue()});
+    onChange(getValue());
     clear();
   };
 
@@ -89,10 +89,10 @@ const NumberPad: React.FC<INumberPadProps> = props => {
         calcHandler(e);
         break;
     }
-  };
+  }
   return (
     <Wrapper className={className}>
-      <div className="container">
+      <div className="container" >
         <div className="output">{expStr}</div>
         <div onClick={onPadClick} className="button-wrapper clearfix">
           <button data-value="1">1</button>
@@ -112,8 +112,8 @@ const NumberPad: React.FC<INumberPadProps> = props => {
           <button data-value="clear">清零</button>
         </div>
       </div>
-    </Wrapper>
+    </Wrapper >
   );
 };
 
-export default NumberPad;
+export default React.memo(NumberPad);

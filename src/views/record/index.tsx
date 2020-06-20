@@ -1,11 +1,13 @@
-import React, {useState, useEffect} from "react";
-import Layout from "components/layout";
+import React, {useState, useEffect, useRef, useCallback} from "react";
+import Layout from "components/Layout";
 import styled from "styled-components";
-import MoneyDirection from "./moneydirection";
-import Catagory from "./catagory";
-import Remarks from "./remarks";
-import NumberPad from "./numberpad";
-import {moneyDirectionType} from "./useCatagory";
+import Catagory from "./Catagory";
+import Remarks from "./Remarks";
+import NumberPad from "./Numberpad";
+import {MoneyDirectionType} from "hooks/useCatagory";
+import TopBar from "components/TopBar";
+import Tab from "components/Tab";
+import {ValueOf} from "util/index";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,49 +22,56 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-type recordDataType = {
+interface RecordDataType {
   catagoryId: number;
-  direction: moneyDirectionType;
+  direction: MoneyDirectionType;
   amount: number;
-  [index: string]: any;
 };
-type alertDataType = {
+
+interface IndexedRecordDataType extends RecordDataType {
+  [index: string]: number | MoneyDirectionType;
+}
+
+
+interface alertDataType {
   catagoryId: string;
   direction?: string;
   amount: string;
-  [index: string]: any;
+  [index: string]: string | undefined;
 };
-export type recordDataFieldType = Partial<recordDataType>;
+
+export type recordDataFieldType = Partial<RecordDataType>;
 
 const Record: React.FC = () => {
-  const [recordData, setRecordData] = useState<recordDataType>({
+  const [recordData, setRecordData] = useState<RecordDataType>({
     catagoryId: -1,
-    direction: "-",
+    direction: MoneyDirectionType.EXPENDITURE,
     amount: 0
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmitting = useRef(false);
   const {catagoryId, direction} = recordData;
-  const onChange = (field: recordDataFieldType) => {
+  console.log(recordData)
+  const onChange = useCallback((key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
     setRecordData({
       ...recordData,
-      ...field
-    });
-  };
-  const submit = (field: recordDataFieldType) => {
+      [key]: value
+    })
+  }, []);
+  const submit = useCallback((amount: number) => {
     const data = {
       ...recordData,
-      ...field
+      amount
     };
-    if (data.direction === "+") {
+    if (data.direction === MoneyDirectionType.INCOME) {
       data.amount = Math.abs(data.amount);
     } else {
       data.amount = -Math.abs(data.amount);
     }
     setRecordData(data);
-    setIsSubmitting(true);
-  };
+    isSubmitting.current = true
+  }, []);
   useEffect(() => {
-    if (!isSubmitting) return;
+    if (!isSubmitting.current) return;
 
     const alertData: alertDataType = {
       catagoryId: "请选择分类",
@@ -70,26 +79,31 @@ const Record: React.FC = () => {
     };
     // 不能为空
     for (let i of Object.keys(recordData)) {
-      if (!recordData[i] || (i === "catagoryId" && recordData[i] === -1)) {
+      if (!(recordData as IndexedRecordDataType)[i] || (i === "catagoryId" && recordData[i] === -1)) {
         alert(alertData[i]);
-        setIsSubmitting(false);
+        isSubmitting.current = false
         return;
       }
     }
-    console.log(recordData);
-    setIsSubmitting(false);
-  }, [recordData, isSubmitting]);
+    isSubmitting.current = false
+  }, [recordData]);
   return (
     <Layout>
       <Wrapper>
-        <MoneyDirection
-          direction={direction}
-          onChange={onChange}
-        ></MoneyDirection>
+        <TopBar>
+          <Tab
+            onChange={onChange('direction')}
+            value={direction}
+            map={{
+              支出: MoneyDirectionType.EXPENDITURE,
+              收入: MoneyDirectionType.INCOME
+            }}
+          />
+        </TopBar>
         <Catagory
           direction={direction}
           catagoryId={catagoryId}
-          onChange={onChange}
+          onChange={onChange('catagoryId')}
           className="catagory"
         ></Catagory>
         <Remarks></Remarks>
@@ -98,4 +112,4 @@ const Record: React.FC = () => {
     </Layout>
   );
 };
-export default Record;
+export default React.memo(Record);

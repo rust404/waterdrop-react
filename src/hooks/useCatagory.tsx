@@ -1,24 +1,29 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 
 let cid = 0;
 let isBindSaveEvent = false;
-export type moneyDirectionType = '+' | '-'
+
+export enum MoneyDirectionType {
+  INCOME = 'INCOME',
+  EXPENDITURE = 'EXPENDITURE'
+}
+
 interface ICatagoryItem {
   name: string;
   icon: string;
   id: number;
-  direction: moneyDirectionType
+  direction: MoneyDirectionType
 }
 const defaultCatagoryList = [
-  {name: "餐饮", icon: "canyin", direction: '-'},
-  {name: "服饰", icon: "fushi", direction: '-'},
-  {name: "读书", icon: "dushu", direction: '-'},
-  {name: "交通", icon: "jiaotong", direction: '-'},
-  {name: "旅行", icon: "lvxing", direction: '-'},
-  {name: "日用", icon: "riyongpin", direction: '-'},
-  {name: "工资", icon: "gongzi", direction: '+'},
-  {name: "兼职", icon: "jianzhi", direction: '+'},
-  {name: "理财", icon: "licai", direction: '+'},
+  {name: "餐饮", icon: "canyin", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "服饰", icon: "fushi", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "读书", icon: "dushu", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "交通", icon: "jiaotong", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "旅行", icon: "lvxing", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "日用", icon: "riyongpin", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "工资", icon: "gongzi", direction: MoneyDirectionType.INCOME},
+  {name: "兼职", icon: "jianzhi", direction: MoneyDirectionType.INCOME},
+  {name: "理财", icon: "licai", direction: MoneyDirectionType.INCOME},
 ];
 
 let latestCatagory: ICatagoryItem[]
@@ -32,7 +37,7 @@ const useCatagory = () => {
   //     isBindSaveEvent = true
   //   }
   // }, [])
-  function addCatagory(name: string, direction: moneyDirectionType) {
+  const addCatagory = useCallback((name: string, direction: MoneyDirectionType) => {
     for (let i = 0; i < catagory.length; i++) {
       if (catagory[i].name === name) return;
     }
@@ -45,12 +50,12 @@ const useCatagory = () => {
       direction
     });
     setCatagory(newList);
-  }
-  function deleteCatagory(id: number) {}
-  function modifyCatagory(id: number) {}
-  function saveCatagory() {
+  }, [])
+  const deleteCatagory = useCallback((id: number) => {}, [])
+  const modifyCatagory = useCallback((id: number) => {}, [])
+  const saveCatagory = useCallback(() => {
     window.localStorage.catagory = JSON.stringify(latestCatagory)
-  }
+  }, [])
   function _initCatagory() {
     const catagoryStr = window.localStorage.getItem('catagory')
     let catagory: ICatagoryItem[]
@@ -59,7 +64,7 @@ const useCatagory = () => {
       catagory = defaultCatagoryList.map(item => {
         return {
           ...item,
-          direction: item.direction as moneyDirectionType,
+          direction: item.direction as MoneyDirectionType,
           id: cid++
         }
       })

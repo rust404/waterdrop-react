@@ -1,5 +1,5 @@
 import React from 'react'
-import Nav from './nav'
+import Nav from './Nav'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -20,10 +20,9 @@ const Wrapper = styled.div`
     }
   }
 `
-type Props = {
-  children: any
+interface ILayoutProps extends React.Props<HTMLElement> {
 }
-const Layout = (props: Props) => {
+const Layout: React.FC<ILayoutProps> = (props) => {
   return (
     <Wrapper>
       <div>
@@ -36,4 +35,4 @@ const Layout = (props: Props) => {
   )
 }
 
-export default Layout
+export default React.memo(Layout)
