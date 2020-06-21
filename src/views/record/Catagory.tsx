@@ -1,9 +1,9 @@
-import React from "react";
-import useCatagory from "hooks/useCatagory";
+import React, {useContext} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {MoneyDirectionType} from 'hooks/useCatagory'
+import {MoneyDirectionType} from 'store/useCatagoryReducer'
 import {useHistory} from "react-router-dom";
+import Context from "store";
 
 const Wrapper = styled.section`
   display: flex;
@@ -47,7 +47,7 @@ interface ICatagoryProps {
 }
 const Catagory: React.FC<ICatagoryProps> = props => {
   console.log('catagory')
-  const {catagory} = useCatagory();
+  const {state} = useContext(Context);
   const history = useHistory();
   const {direction} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
@@ -74,7 +74,7 @@ const Catagory: React.FC<ICatagoryProps> = props => {
   return (
     <Wrapper className={props.className}>
       <ul onClick={handleClick}>
-        {catagory.filter(item => item.direction === direction).map((item) => (
+        {state.filter(item => item.direction === direction).map((item) => (
           <li key={item.id} data-id={item.id}>
             <div
               className={`icon-wrapper ${
