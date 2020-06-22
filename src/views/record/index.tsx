@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Catagory from "./Catagory";
 import Remarks from "./Remarks";
 import NumberPad from "./Numberpad";
-import {MoneyDirectionType} from "store/useCatagoryReducer";
+import {MoneyDirection} from "store/useCatagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import {ValueOf} from "util/index";
@@ -24,12 +24,12 @@ const Wrapper = styled.div`
 `;
 interface RecordDataType {
   catagoryId: number;
-  direction: MoneyDirectionType;
+  direction: MoneyDirection;
   amount: number;
 };
 
 interface IndexedRecordDataType extends RecordDataType {
-  [index: string]: number | MoneyDirectionType;
+  [index: string]: number | MoneyDirection;
 }
 
 
@@ -45,7 +45,7 @@ export type recordDataFieldType = Partial<RecordDataType>;
 const Record: React.FC = () => {
   const [recordData, setRecordData] = useState<RecordDataType>({
     catagoryId: -1,
-    direction: MoneyDirectionType.EXPENDITURE,
+    direction: MoneyDirection.EXPENDITURE,
     amount: 0
   });
   const isSubmitting = useRef(false);
@@ -56,20 +56,20 @@ const Record: React.FC = () => {
       ...recordData,
       [key]: value
     })
-  }, []);
+  }, [recordData]);
   const submit = useCallback((amount: number) => {
     const data = {
       ...recordData,
       amount
     };
-    if (data.direction === MoneyDirectionType.INCOME) {
+    if (data.direction === MoneyDirection.INCOME) {
       data.amount = Math.abs(data.amount);
     } else {
       data.amount = -Math.abs(data.amount);
     }
     setRecordData(data);
     isSubmitting.current = true
-  }, []);
+  }, [recordData]);
   useEffect(() => {
     if (!isSubmitting.current) return;
 
@@ -89,17 +89,17 @@ const Record: React.FC = () => {
   }, [recordData]);
   return (
     <Layout>
+      <TopBar>
+        <Tab
+          onChange={onChange('direction')}
+          value={direction}
+          map={{
+            支出: MoneyDirection.EXPENDITURE,
+            收入: MoneyDirection.INCOME
+          }}
+        />
+      </TopBar>
       <Wrapper>
-        <TopBar>
-          <Tab
-            onChange={onChange('direction')}
-            value={direction}
-            map={{
-              支出: MoneyDirectionType.EXPENDITURE,
-              收入: MoneyDirectionType.INCOME
-            }}
-          />
-        </TopBar>
         <Catagory
           direction={direction}
           catagoryId={catagoryId}

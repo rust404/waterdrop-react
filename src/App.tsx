@@ -12,6 +12,7 @@ import Notfound from "views/Notfound";
 import Test from "views/Test";
 import useCatagoryReducer from "store/useCatagoryReducer";
 import Context from "store";
+import CatagoryEdit from "views/CatagoryEdit";
 
 function App() {
   const [state, dispatch] = useCatagoryReducer();
@@ -28,6 +29,9 @@ function App() {
         <Switch>
           <Route path="/catagorymanage">
             <CatagoryManage />
+          </Route>
+          <Route path="/catagoryedit/:id">
+            <CatagoryEdit />
           </Route>
           <Route path="/test">
             <Test />

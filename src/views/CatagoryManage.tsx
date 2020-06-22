@@ -1,5 +1,5 @@
 import React, {useState, useContext} from "react";
-import {MoneyDirectionType} from "store/useCatagoryReducer";
+import {MoneyDirection} from "store/useCatagoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import Layout from "components/Layout";
@@ -7,6 +7,7 @@ import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import useQuery from "hooks/useQuery";
 import Context from "store";
+import {useHistory} from "react-router-dom";
 
 const Wrapper = styled.section`
   display: flex;
@@ -46,10 +47,11 @@ interface ICatagoryManageProps extends React.HTMLProps<HTMLElement> {}
 
 const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
   const query = useQuery();
+  const history = useHistory()
   const {state: catagory, dispatch} = useContext(Context);
   console.log(query.get("direction"));
   const [direction, setDirection] = useState(
-    query.get("direction") || MoneyDirectionType.EXPENDITURE
+    query.get("direction") || MoneyDirection.EXPENDITURE
   );
 
   const handleClick = (e: React.MouseEvent<Element>) => {
@@ -65,7 +67,7 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
     }
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
-    console.log(id);
+    history.push(`/catagoryedit/${id}`)
   };
 
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -90,8 +92,8 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
           onChange={onTabClick}
           value={direction}
           map={{
-            支出: MoneyDirectionType.EXPENDITURE,
-            收入: MoneyDirectionType.INCOME
+            支出: MoneyDirection.EXPENDITURE,
+            收入: MoneyDirection.INCOME
           }}
         />
       </TopBar>

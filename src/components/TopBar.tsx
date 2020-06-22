@@ -12,6 +12,8 @@ const Wrapper = styled.header`
   .left, .right {
     height: 100%;
     position: absolute;
+    display: flex;
+    align-items: center;
     top: 0;
   }
   .left {

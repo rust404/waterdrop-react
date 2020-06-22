@@ -10,19 +10,26 @@ function importAll(r: any) {
 
 importAll(require.context('icons', true, /\.svg$/))
 
-type Props = {
+interface IProps {
   id: string,
   size?: string,
   fill?: string,
-  className?: string
+  className?: string,
+  onClick?: (e: React.MouseEvent<SVGSVGElement>) => void
 }
-const Icon = (props: Props) => {
-  const {id, size = '24px', fill = '#000', className = ''} = props
+const Icon: React.FC<IProps> = (props) => {
+  const {id, size = '24px', ...rest} = props
   return (
-    <svg className={className} width={size} height={size} fill={fill}>
+    <svg {...rest} width={size} height={size}>
       <use xlinkHref={'#' + id} />
     </svg >
   )
+}
+Icon.defaultProps = {
+  size: '24px',
+  fill: '#000',
+  className: '',
+  onClick: () => {}
 }
 
 export default Icon

@@ -1,13 +1,14 @@
 import React, {useContext} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {MoneyDirectionType} from 'store/useCatagoryReducer'
+import {MoneyDirection} from 'store/useCatagoryReducer'
 import {useHistory} from "react-router-dom";
 import Context from "store";
 
 const Wrapper = styled.section`
   display: flex;
   justify-content: center;
+  overflow: auto;
   > ul {
     width: 100%;
     display: flex;
@@ -41,7 +42,7 @@ const Wrapper = styled.section`
 
 interface ICatagoryProps {
   catagoryId: number;
-  direction: MoneyDirectionType;
+  direction: MoneyDirection;
   className?: string;
   onChange: (value: number) => void;
 }
@@ -49,7 +50,7 @@ const Catagory: React.FC<ICatagoryProps> = props => {
   console.log('catagory')
   const {state} = useContext(Context);
   const history = useHistory();
-  const {direction} = props
+  const {direction, catagoryId} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
@@ -63,6 +64,7 @@ const Catagory: React.FC<ICatagoryProps> = props => {
     }
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
+    if (id === catagoryId) return
     // add catagory
     props.onChange(id);
   };

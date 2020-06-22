@@ -2,7 +2,7 @@ import {useReducer} from "react";
 
 let cid = 0;
 
-export enum MoneyDirectionType {
+export enum MoneyDirection {
   INCOME = "INCOME",
   EXPENDITURE = "EXPENDITURE"
 }
@@ -11,12 +11,12 @@ export interface ICatagoryItem {
   name: string;
   icon: string;
   id: number;
-  direction: MoneyDirectionType;
+  direction: MoneyDirection;
 }
 
-interface IAction<T extends keyof ICatagoryItem> {
+export interface IAction<T extends keyof ICatagoryItem> {
   type: string;
-  option: Pick<ICatagoryItem, T>
+  payload: Pick<ICatagoryItem, T>
 }
 
 interface IReducer<T extends keyof ICatagoryItem> {
@@ -24,48 +24,48 @@ interface IReducer<T extends keyof ICatagoryItem> {
 }
 
 const defaultCatagoryList = [
-  {name: "餐饮", icon: "canyin", direction: MoneyDirectionType.EXPENDITURE},
-  {name: "服饰", icon: "fushi", direction: MoneyDirectionType.EXPENDITURE},
-  {name: "读书", icon: "dushu", direction: MoneyDirectionType.EXPENDITURE},
-  {name: "交通", icon: "jiaotong", direction: MoneyDirectionType.EXPENDITURE},
-  {name: "旅行", icon: "lvxing", direction: MoneyDirectionType.EXPENDITURE},
+  {name: "餐饮", icon: "canyin", direction: MoneyDirection.EXPENDITURE},
+  {name: "服饰", icon: "fushi", direction: MoneyDirection.EXPENDITURE},
+  {name: "读书", icon: "dushu", direction: MoneyDirection.EXPENDITURE},
+  {name: "交通", icon: "jiaotong", direction: MoneyDirection.EXPENDITURE},
+  {name: "旅行", icon: "lvxing", direction: MoneyDirection.EXPENDITURE},
   {
     name: "日用",
     icon: "riyongpin",
-    direction: MoneyDirectionType.EXPENDITURE
+    direction: MoneyDirection.EXPENDITURE
   },
-  {name: "工资", icon: "gongzi", direction: MoneyDirectionType.INCOME},
-  {name: "兼职", icon: "jianzhi", direction: MoneyDirectionType.INCOME},
-  {name: "理财", icon: "licai", direction: MoneyDirectionType.INCOME}
+  {name: "工资", icon: "gongzi", direction: MoneyDirection.INCOME},
+  {name: "兼职", icon: "jianzhi", direction: MoneyDirection.INCOME},
+  {name: "理财", icon: "licai", direction: MoneyDirection.INCOME}
 ];
 
 const addCatagory: IReducer<'name' | 'direction'> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
-    if (state[i].name === action.option.name) return state;
+    if (state[i].name === action.payload.name) return state;
   }
   const newList = state.concat();
   newList.push({
-    name: action.option.name,
+    name: action.payload.name,
     icon: "custom",
     id: cid++,
-    direction: action.option.direction
+    direction: action.payload.direction
   });
   return newList;
 }
 const deleteCatagory: IReducer<'id'> = (state, action) => {
   return state.filter(item => {
-    return item.id !== action.option.id
+    return item.id !== action.payload.id
   })
 };
 const modifyCatagory: IReducer<'id' | Partial<keyof ICatagoryItem>> = (state, action) => {
   const newState = state.concat()
-  const index = state.findIndex(({id}) => action.option.id === id)
+  const index = state.findIndex(({id}) => action.payload.id === id)
   if (index === -1) {
     return state
   }
   newState.splice(index, 1, {
     ...state[index],
-    ...action.option
+    ...action.payload
 
   })
   return newState
@@ -77,7 +77,7 @@ const loadCatagory = () => {
     catagory = defaultCatagoryList.map(item => {
       return {
         ...item,
-        direction: item.direction as MoneyDirectionType,
+        direction: item.direction,
         id: cid++
       };
     });
