@@ -20,15 +20,15 @@ const Wrapper = styled.section`
     li {
       margin-top: 20px;
       position: relative;
-      width: 25vw;
+      width: 20vw;
       font-size: 4vw;
       display: flex;
       flex-direction: column;
       align-items: center;
       .icon-wrapper {
         position: relative;
-        width: 18vw;
-        height: 18vw;
+        width: 14vw;
+        height: 14vw;
         margin-bottom: 4px;
         border-radius: 50%;
         background-color: #f5f5f5;

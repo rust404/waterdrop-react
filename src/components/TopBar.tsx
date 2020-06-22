@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import styled from 'styled-components'
 import classnames from 'classnames'
 
@@ -10,6 +10,9 @@ const Wrapper = styled.header`
   align-items: center;
   font-size: 16px;
   background-color: #ffd947;
+  .center {
+    font-size: 20px;
+  }
   .left, .right {
     height: 100%;
     position: absolute;
@@ -31,7 +34,10 @@ interface ITopBarProps extends React.HTMLProps<HTMLElement> {
 }
 const TopBar: React.FC<ITopBarProps> = (props) => {
   const {left, children, right} = props
-  console.log(props.className)
+  const testRef = useRef<any>(null)
+  console.log(testRef.current, props)
+  testRef.current = props
+
   return (
     <Wrapper className={classnames(props.className)}>
       <div className="left">{left}</div>
@@ -41,4 +47,4 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
   )
 }
 
-export default TopBar
+export default React.memo(TopBar)

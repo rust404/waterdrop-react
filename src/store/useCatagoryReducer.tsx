@@ -59,10 +59,12 @@ const deleteCatagory: IReducer<'id'> = (state, action) => {
 };
 const modifyCatagory: IReducer<'id' | Partial<keyof ICatagoryItem>> = (state, action) => {
   const newState = state.concat()
+  console.log(action.payload.id, typeof action.payload.id)
   const index = state.findIndex(({id}) => action.payload.id === id)
   if (index === -1) {
     return state
   }
+  console.log(action.payload)
   newState.splice(index, 1, {
     ...state[index],
     ...action.payload

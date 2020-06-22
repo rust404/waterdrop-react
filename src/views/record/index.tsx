@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from "react";
+import React, {useState, useEffect, useRef, useCallback, useMemo} from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
 import Catagory from "./Catagory";
@@ -54,7 +54,6 @@ const Record: React.FC = () => {
   });
   const isSubmitting = useRef(false);
   const {catagoryId, direction} = recordData;
-  console.log(recordData)
   const onChange = useCallback((key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
     setRecordData({
       ...recordData,
@@ -96,12 +95,14 @@ const Record: React.FC = () => {
       <Wrapper>
         <TopBar className="top">
           <Tab
-            onChange={onChange('direction')}
+            onChange={useCallback(onChange('direction'), [])}
             value={direction}
-            map={{
-              支出: MoneyDirection.EXPENDITURE,
-              收入: MoneyDirection.INCOME
-            }}
+            map={useMemo(() => {
+              return {
+                支出: MoneyDirection.EXPENDITURE,
+                收入: MoneyDirection.INCOME
+              }
+            }, [])}
           />
         </TopBar>
         <Catagory
