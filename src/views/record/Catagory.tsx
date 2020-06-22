@@ -8,7 +8,6 @@ import Context from "store";
 const Wrapper = styled.section`
   display: flex;
   justify-content: center;
-  overflow: auto;
   > ul {
     width: 100%;
     display: flex;

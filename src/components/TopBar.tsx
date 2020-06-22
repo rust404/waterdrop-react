@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import classnames from 'classnames'
 
 const Wrapper = styled.header`
   display: flex;
@@ -30,8 +31,9 @@ interface ITopBarProps extends React.HTMLProps<HTMLElement> {
 }
 const TopBar: React.FC<ITopBarProps> = (props) => {
   const {left, children, right} = props
+  console.log(props.className)
   return (
-    <Wrapper>
+    <Wrapper className={classnames(props.className)}>
       <div className="left">{left}</div>
       <div className="center">{children}</div>
       <div className="right">{right}</div>

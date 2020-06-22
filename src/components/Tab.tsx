@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
-  height: 48px;
   line-height: 48px;
   font-size: 20px;
   display: flex;

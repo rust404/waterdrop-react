@@ -14,6 +14,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  flex: 1;
+  .top {
+    flex-shrink: 0;
+  }
   .catagory {
     flex: 1;
     overflow: auto;
@@ -89,17 +93,17 @@ const Record: React.FC = () => {
   }, [recordData]);
   return (
     <Layout>
-      <TopBar>
-        <Tab
-          onChange={onChange('direction')}
-          value={direction}
-          map={{
-            支出: MoneyDirection.EXPENDITURE,
-            收入: MoneyDirection.INCOME
-          }}
-        />
-      </TopBar>
       <Wrapper>
+        <TopBar className="top">
+          <Tab
+            onChange={onChange('direction')}
+            value={direction}
+            map={{
+              支出: MoneyDirection.EXPENDITURE,
+              收入: MoneyDirection.INCOME
+            }}
+          />
+        </TopBar>
         <Catagory
           direction={direction}
           catagoryId={catagoryId}
