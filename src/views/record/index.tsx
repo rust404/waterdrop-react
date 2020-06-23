@@ -1,4 +1,10 @@
-import React, {useState, useEffect, useRef, useCallback, useMemo} from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo
+} from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
 import Catagory from "./Catagory";
@@ -30,19 +36,18 @@ interface RecordDataType {
   catagoryId: number;
   direction: MoneyDirection;
   amount: number;
-};
+}
 
 interface IndexedRecordDataType extends RecordDataType {
   [index: string]: number | MoneyDirection;
 }
-
 
 interface alertDataType {
   catagoryId: string;
   direction?: string;
   amount: string;
   [index: string]: string | undefined;
-};
+}
 
 export type recordDataFieldType = Partial<RecordDataType>;
 
@@ -54,25 +59,34 @@ const Record: React.FC = () => {
   });
   const isSubmitting = useRef(false);
   const {catagoryId, direction} = recordData;
-  const onChange = useCallback((key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
-    setRecordData({
-      ...recordData,
-      [key]: value
-    })
-  }, [recordData]);
+
+  const onChange = useCallback(
+    (key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
+      setRecordData(state => {
+        return {
+          ...state,
+          [key]: value
+        };
+      });
+    },
+    []
+  );
   const submit = useCallback((amount: number) => {
-    const data = {
-      ...recordData,
-      amount
-    };
-    if (data.direction === MoneyDirection.INCOME) {
-      data.amount = Math.abs(data.amount);
-    } else {
-      data.amount = -Math.abs(data.amount);
-    }
-    setRecordData(data);
-    isSubmitting.current = true
-  }, [recordData]);
+    setRecordData(state => {
+      const data = {
+        ...state,
+        amount
+      };
+      if (data.direction === MoneyDirection.INCOME) {
+        data.amount = Math.abs(data.amount);
+      } else {
+        data.amount = -Math.abs(data.amount);
+      }
+      return data;
+    });
+    isSubmitting.current = true;
+  }, []);
+  // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
 
@@ -82,33 +96,37 @@ const Record: React.FC = () => {
     };
     // 不能为空
     for (let i of Object.keys(recordData)) {
-      if (!(recordData as IndexedRecordDataType)[i] || (i === "catagoryId" && recordData[i] === -1)) {
+      if (
+        !(recordData as IndexedRecordDataType)[i] ||
+        (i === "catagoryId" && recordData[i] === -1)
+      ) {
         alert(alertData[i]);
-        isSubmitting.current = false
+        isSubmitting.current = false;
         return;
       }
     }
-    isSubmitting.current = false
+    isSubmitting.current = false;
   }, [recordData]);
+  const MTab = useMemo(() => {
+    return (
+      <Tab
+        onChange={onChange("direction")}
+        value={direction}
+        map={{
+          支出: MoneyDirection.EXPENDITURE,
+          收入: MoneyDirection.INCOME
+        }}
+      />
+    );
+  }, [direction, onChange]);
   return (
     <Layout>
       <Wrapper>
-        <TopBar className="top">
-          <Tab
-            onChange={useCallback(onChange('direction'), [])}
-            value={direction}
-            map={useMemo(() => {
-              return {
-                支出: MoneyDirection.EXPENDITURE,
-                收入: MoneyDirection.INCOME
-              }
-            }, [])}
-          />
-        </TopBar>
+        <TopBar className="top">{MTab}</TopBar>
         <Catagory
           direction={direction}
           catagoryId={catagoryId}
-          onChange={onChange('catagoryId')}
+          onChange={onChange("catagoryId")}
           className="catagory"
         ></Catagory>
         <Remarks></Remarks>

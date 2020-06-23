@@ -19,7 +19,8 @@ function App() {
   const refState = useRef(state)
   refState.current = state
   useEffect(() => {
-    window.addEventListener('beforeunload', () => {
+    // 不要beforeunload，照顾safari
+    window.addEventListener('pagehide', () => {
       window.localStorage.setItem('catagory', JSON.stringify(refState.current))
     })
   }, [])

@@ -8,6 +8,7 @@ import Tab from "components/Tab";
 import useQuery from "hooks/useQuery";
 import Context from "store";
 import {useHistory} from "react-router-dom";
+import {findParent} from "util/index";
 
 const Wrapper = styled.section`
   display: flex;
@@ -57,14 +58,9 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
-    let li = null;
-    // find li
-    while (target !== e.currentTarget) {
-      if (target.nodeName.toLowerCase() === "li") {
-        li = target as HTMLLIElement;
-      }
-      target = target.parentNode as Element;
-    }
+    let li = findParent(target, (e: Element) => {
+      return e.nodeName.toLowerCase() === 'li'
+    }) as HTMLElement
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
     history.push(`/catagoryedit/${id}`)

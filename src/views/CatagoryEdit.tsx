@@ -1,8 +1,7 @@
-import React, {useContext, useState, useRef, useEffect, useMemo} from "react";
+import React, {useContext, useState, useRef, useEffect} from "react";
 import Context from "store";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
-import {MoneyDirection} from "store/useCatagoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import {findParent} from "util/index";
@@ -71,10 +70,6 @@ const CatagoryEdit = () => {
   const {id} = useParams();
   const history = useHistory();
   const iconNames = ["canyin", "custom", "dushu", "shejiao", "yundong"];
-  const map = {
-    [MoneyDirection.INCOME]: "收入",
-    [MoneyDirection.EXPENDITURE]: "支出"
-  };
   const item = catagory.filter(value => {
     return parseInt(id) === value.id;
   })[0];
@@ -83,20 +78,16 @@ const CatagoryEdit = () => {
   const [iconName, setIconName] = useState(item ? item.icon : "");
   const submit = () => {
     dispatch({
-      type: 'modifyCatagory',
+      type: "modifyCatagory",
       payload: {
         id: parseInt(id),
         name: catagoryName,
         icon: iconName
       }
-    })
-    console.log({
-      name: catagoryName,
-      icon: item.icon
     });
+    history.push("/catagorymanage");
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.value);
     setCatagoryName(e.currentTarget.value);
   };
   useEffect(() => {
@@ -114,20 +105,17 @@ const CatagoryEdit = () => {
     if (!name) return;
     setIconName(name);
   };
-  const leftItem = useMemo(() => {
-    return (
-      <Left onClick={() => history.goBack()}>
-        <Icon id="left" />
-        返回
-      </Left>
-    );
-  }, []);
-  const rightItem = useMemo(() => {
-    return <Right onClick={submit}>完成</Right>
-  }, [submit])
   return (
     <Wrapper>
-      <TopBar left={leftItem} right={rightItem}>
+      <TopBar
+        left={
+          <Left onClick={() => history.goBack()}>
+            <Icon id="left" />
+            返回
+          </Left>
+        }
+        right={<Right onClick={submit}>完成</Right>}
+      >
         编辑类别
       </TopBar>
       {!item ? (

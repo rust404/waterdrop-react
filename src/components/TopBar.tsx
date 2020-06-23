@@ -34,9 +34,6 @@ interface ITopBarProps extends React.HTMLProps<HTMLElement> {
 }
 const TopBar: React.FC<ITopBarProps> = (props) => {
   const {left, children, right} = props
-  const testRef = useRef<any>(null)
-  console.log(testRef.current, props)
-  testRef.current = props
 
   return (
     <Wrapper className={classnames(props.className)}>
