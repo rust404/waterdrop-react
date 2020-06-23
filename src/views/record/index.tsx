@@ -63,30 +63,28 @@ const Record: React.FC = () => {
   const onChange = useCallback(
     (key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
       setRecordData(state => {
-        return {
+        const data = {
           ...state,
           [key]: value
         };
+        if (data.direction === MoneyDirection.INCOME) {
+          data.amount = Math.abs(data.amount);
+        } else {
+          data.amount = -Math.abs(data.amount);
+        }
+        return data;
       });
     },
     []
   );
   const submit = useCallback((amount: number) => {
-    setRecordData(state => {
-      const data = {
-        ...state,
-        amount
-      };
-      if (data.direction === MoneyDirection.INCOME) {
-        data.amount = Math.abs(data.amount);
-      } else {
-        data.amount = -Math.abs(data.amount);
-      }
-      return data;
-    });
+    onChange('amount')(amount)
     isSubmitting.current = true;
   }, []);
   // validate
+  const validate = () => {
+
+  }
   useEffect(() => {
     if (!isSubmitting.current) return;
 
@@ -118,7 +116,7 @@ const Record: React.FC = () => {
         }}
       />
     );
-  }, [direction, onChange]);
+  }, [direction]);
   return (
     <Layout>
       <Wrapper>
