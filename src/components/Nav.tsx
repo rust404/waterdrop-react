@@ -29,7 +29,6 @@ const NavWrapper = styled.nav`
   }
 `
 const Nav: React.FC = () => {
-  console.log('nav')
   return (
     <NavWrapper>
       <ul>

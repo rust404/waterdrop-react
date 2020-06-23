@@ -6,6 +6,9 @@ export enum MoneyDirection {
   INCOME = "INCOME",
   EXPENDITURE = "EXPENDITURE"
 }
+export function isMoneyDirection(type: string) {
+  return type in MoneyDirection
+}
 
 export interface ICatagoryItem {
   name: string;
@@ -39,16 +42,17 @@ const defaultCatagoryList = [
   {name: "理财", icon: "licai", direction: MoneyDirection.INCOME}
 ];
 
-const addCatagory: IReducer<'name' | 'direction'> = (state, action) => {
+const addCatagory: IReducer<'name' | 'direction' | 'icon'> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
     if (state[i].name === action.payload.name) return state;
   }
   const newList = state.concat();
+  const {name, direction, icon} = action.payload
   newList.push({
-    name: action.payload.name,
-    icon: "custom",
+    name,
+    icon,
     id: cid++,
-    direction: action.payload.direction
+    direction
   });
   return newList;
 }

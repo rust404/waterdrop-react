@@ -36,7 +36,6 @@ interface ITabProps extends React.Props<HTMLElement> {
 }
 
 const Tab: React.FC<ITabProps> = props => {
-  console.log('tab render')
   const {map, onChange, value} = props;
   const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
     const key = e.currentTarget.innerText;

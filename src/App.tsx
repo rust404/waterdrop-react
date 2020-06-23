@@ -13,6 +13,7 @@ import Test from "views/Test";
 import useCatagoryReducer from "store/useCatagoryReducer";
 import Context from "store";
 import CatagoryEdit from "views/CatagoryEdit";
+import CatagoryAdd from "views/CatagoryAdd";
 
 function App() {
   const [state, dispatch] = useCatagoryReducer();
@@ -42,6 +43,9 @@ function App() {
           </Route>
           <Route path="/statistics">
             <Statistics />
+          </Route>
+          <Route path="/catagoryadd">
+            <CatagoryAdd />
           </Route>
           <Redirect from="/" exact to="/record" />
           <Route path="*">

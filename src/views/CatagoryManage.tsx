@@ -49,8 +49,7 @@ interface ICatagoryManageProps extends React.HTMLProps<HTMLElement> {}
 const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory()
-  const {state: catagory, dispatch} = useContext(Context);
-  console.log(query.get("direction"));
+  const {state: catagory} = useContext(Context);
   const [direction, setDirection] = useState(
     query.get("direction") || MoneyDirection.EXPENDITURE
   );
@@ -67,15 +66,7 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
   };
 
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    const newType = window.prompt("请输入分类");
-    if (!newType) return;
-    dispatch({
-      type: "addCatagory",
-      option: {
-        name: newType,
-        direction
-      }
-    });
+    history.push(`/catagoryadd?direction=${direction}`)
     e.stopPropagation();
   };
   const onTabClick = (direction: string) => {
