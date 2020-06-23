@@ -10,14 +10,14 @@ import Record from "views/record";
 import Statistics from "views/Statistics";
 import Notfound from "views/Notfound";
 import Test from "views/Test";
-import useCatagoryReducer from "store/useCatagoryReducer";
+import catagoryReducer, {loadCatagory} from "store/catagoryReducer";
 import Context, {RecordContext} from "store";
 import CatagoryEdit from "views/CatagoryEdit";
 import CatagoryAdd from "views/CatagoryAdd";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
 
 function App() {
-  const [state, dispatch] = useCatagoryReducer();
+  const [state, dispatch] = useReducer(catagoryReducer, null, loadCatagory);
   const [records, dispatchRecord] = useReducer(
     moneyRecordReducer,
     null,
@@ -32,7 +32,9 @@ function App() {
     });
   }, []);
   return (
-    <RecordContext.Provider value={{state: records, dispatch: dispatchRecord}}>
+    <RecordContext.Provider
+      value={{state: records, dispatch: dispatchRecord}}
+    >
       <Context.Provider value={{state, dispatch}}>
         <Router>
           <Switch>

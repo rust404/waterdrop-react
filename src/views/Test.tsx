@@ -1,31 +1,20 @@
 import React, {useContext} from "react";
-import Context, {RecordContext} from "store";
+import {RecordContext} from "store";
+import {MoneyDirection} from "store/catagoryReducer";
 const Test = () => {
-  const {state, dispatch} = useContext(Context);
   const {state: records, dispatch: dispatchRecord} = useContext(RecordContext)
   return (
     <div>
-      {/* {JSON.stringify(state)} */}
-      {/* <button */}
-      {/*   onClick={() => */}
-      {/*     dispatch({ */}
-      {/*       type: "addCatagory", */}
-      {/*       option: { */}
-      {/*         name: Math.random().toString(), */}
-      {/*         direction: "-" */}
-      {/*       } */}
-      {/*     }) */}
-      {/*   } */}
-      {/* > */}
-      {/*   dispatch */}
-      {/* </button> */}
       <div>{JSON.stringify(records)}</div>
       <button
         onClick={() =>
           dispatchRecord({
             type: 'addRecord',
             payload: {
-              catagoryId: 1
+              catagoryId: 1,
+              time: (new Date()).toISOString(),
+              direction: MoneyDirection.INCOME,
+              amount: 100
             }
           })
         }
@@ -44,7 +33,8 @@ const Test = () => {
           payload: {
             id: 2,
             catagoryId: 10,
-            amount: Math.random()
+            amount: Math.random(),
+            time: (new Date()).toISOString()
           }
         })
       }}>modify</button>

@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {MoneyDirection} from 'store/useCatagoryReducer'
+import {MoneyDirection} from 'store/catagoryReducer'
 import {useHistory} from "react-router-dom";
 import Context from "store";
 

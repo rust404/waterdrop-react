@@ -1,5 +1,3 @@
-import {useReducer} from "react";
-
 let cid = 0;
 
 export enum MoneyDirection {
@@ -7,7 +5,7 @@ export enum MoneyDirection {
   EXPENDITURE = "EXPENDITURE"
 }
 export function isMoneyDirection(type: string) {
-  return type in MoneyDirection
+  return type in MoneyDirection;
 }
 
 export interface ICatagoryItem {
@@ -17,14 +15,12 @@ export interface ICatagoryItem {
   direction: MoneyDirection;
 }
 
-export interface IAction<T extends keyof ICatagoryItem> {
-  type: string;
-  payload: Pick<ICatagoryItem, T>
-}
+export type ICatagoryAction =
+  | IAddCatagoryAction
+  | IDeleteCatagoryAction
+  | IModifyCatagoryAction;
 
-interface IReducer<T extends keyof ICatagoryItem> {
-  (state: ICatagoryItem[], action: IAction<T>): ICatagoryItem[];
-}
+type ICatagoryReducer<T extends ICatagoryAction> = React.Reducer<ICatagoryItem[], T>;
 
 const defaultCatagoryList = [
   {name: "餐饮", icon: "canyin", direction: MoneyDirection.EXPENDITURE},
@@ -42,12 +38,20 @@ const defaultCatagoryList = [
   {name: "理财", icon: "licai", direction: MoneyDirection.INCOME}
 ];
 
-const addCatagory: IReducer<'name' | 'direction' | 'icon'> = (state, action) => {
+interface IAddCatagoryAction {
+  type: "addCatagory";
+  payload: Pick<ICatagoryItem, "name" | "direction" | "icon">;
+}
+
+const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (
+  state,
+  action
+) => {
   for (let i = 0; i < state.length; i++) {
     if (state[i].name === action.payload.name) return state;
   }
   const newList = state.concat();
-  const {name, direction, icon} = action.payload
+  const {name, direction, icon} = action.payload;
   newList.push({
     name,
     icon,
@@ -55,28 +59,39 @@ const addCatagory: IReducer<'name' | 'direction' | 'icon'> = (state, action) => 
     direction
   });
   return newList;
-}
-const deleteCatagory: IReducer<'id'> = (state, action) => {
-  return state.filter(item => {
-    return item.id !== action.payload.id
-  })
 };
-const modifyCatagory: IReducer<'id' | Partial<keyof ICatagoryItem>> = (state, action) => {
-  const newState = state.concat()
-  console.log(action.payload.id, typeof action.payload.id)
-  const index = state.findIndex(({id}) => action.payload.id === id)
+
+interface IDeleteCatagoryAction {
+  type: "deleteCatagory";
+  payload: Pick<ICatagoryItem, 'id'>;
+}
+const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (state, action) => {
+  return state.filter(item => {
+    return item.id !== action.payload.id;
+  });
+};
+
+interface IModifyCatagoryAction {
+  type: "modifyCatagory";
+  payload: Pick<ICatagoryItem, 'id'> & Partial<ICatagoryItem>;
+}
+const modifyCatagory: ICatagoryReducer<IModifyCatagoryAction> = (
+  state,
+  action
+) => {
+  const newState = state.concat();
+  const index = state.findIndex(({id}) => action.payload.id === id);
   if (index === -1) {
-    return state
+    return state;
   }
-  console.log(action.payload)
   newState.splice(index, 1, {
     ...state[index],
     ...action.payload
-
-  })
-  return newState
+  });
+  return newState;
 };
-const loadCatagory = () => {
+
+export const loadCatagory = () => {
   const catagoryStr = window.localStorage.getItem("catagory");
   let catagory: ICatagoryItem[];
   if (!catagoryStr) {
@@ -94,7 +109,7 @@ const loadCatagory = () => {
   return catagory;
 };
 
-const reducer: IReducer<keyof ICatagoryItem> = (state, action) => {
+const catagoryReducer: ICatagoryReducer<ICatagoryAction> = (state, action) => {
   switch (action.type) {
     case "addCatagory":
       return addCatagory(state, action);
@@ -102,11 +117,9 @@ const reducer: IReducer<keyof ICatagoryItem> = (state, action) => {
       return deleteCatagory(state, action);
     case "modifyCatagory":
       return modifyCatagory(state, action);
-    case "loadCatagory":
-      return loadCatagory();
     default:
       return state;
   }
 };
 
-export default () => useReducer(reducer, null, loadCatagory);
+export default catagoryReducer

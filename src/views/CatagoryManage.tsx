@@ -1,5 +1,5 @@
 import React, {useState, useContext} from "react";
-import {MoneyDirection} from "store/useCatagoryReducer";
+import {MoneyDirection} from "store/catagoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import Layout from "components/Layout";

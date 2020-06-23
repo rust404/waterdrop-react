@@ -1,10 +1,10 @@
 import React from 'react'
-import {ICatagoryItem} from 'store/useCatagoryReducer'
+import {ICatagoryItem, ICatagoryAction} from 'store/catagoryReducer'
 import {IRecord, IRecordAction} from './moneyRecordReducer'
 
 const Context = React.createContext<{
   state: ICatagoryItem[],
-  dispatch: React.Dispatch<any>
+  dispatch: React.Dispatch<ICatagoryAction>
 }>({
   state: [],
   dispatch: () => {}

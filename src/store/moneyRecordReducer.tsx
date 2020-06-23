@@ -1,5 +1,5 @@
 import React from "react";
-import {MoneyDirection} from "./useCatagoryReducer";
+import {MoneyDirection} from "./catagoryReducer";
 
 let recordId = 0;
 export interface IRecord {
@@ -10,18 +10,13 @@ export interface IRecord {
   amount: number;
   [index: string]: number | string | MoneyDirection | undefined;
 }
-interface IRecordBaseAction {
-  type: "addRecord" | "deleteRecord" | "modifyRecord";
-  payload: Partial<IRecord> & {
-    [index: string]: number | string | MoneyDirection | undefined;
-  };
-}
 
-type IRecordReducer<T extends IRecordBaseAction> = React.Reducer<IRecord[], T>;
+type IRecordReducer<T extends IRecordAction> = React.Reducer<IRecord[], T>;
 
-type IAddRecordAction = IRecordBaseAction & {
+interface IAddRecordAction {
+  type: "addRecord";
   payload: Pick<IRecord, "time" | "direction" | "catagoryId" | "amount">;
-};
+}
 
 const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
   console.log("hello");
@@ -34,9 +29,12 @@ const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
   ];
 };
 
-type IModifyRecordAction = IRecordBaseAction & {
+
+interface IModifyRecordAction {
+  type: "modifyRecord";
   payload: Pick<IRecord, "id"> & Partial<IRecord>;
 };
+
 const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
   const record = findRecord(state, action.payload.id);
   if (!record) {
@@ -48,9 +46,12 @@ const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
   }
   return [...state];
 };
-type IDeleteRecordAction = IRecordBaseAction & {
+
+interface IDeleteRecordAction {
+  type: "deleteRecord";
   payload: Pick<IRecord, "id">;
 };
+
 const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
     if (action.payload.id === state[i].id) {
@@ -78,16 +79,16 @@ export const loadRecords = (): IRecord[] => {
   return records;
 };
 
-export type IRecordAction = IRecordBaseAction;
+export type IRecordAction = IAddRecordAction | IModifyRecordAction | IDeleteRecordAction;
 
 const moneyRecordReducer: IRecordReducer<IRecordAction> = (state, action) => {
   switch (action.type) {
     case "addRecord":
-      return addRecord(state, action as IAddRecordAction);
+      return addRecord(state, action);
     case "deleteRecord":
-      return deleteRecord(state, action as IDeleteRecordAction);
+      return deleteRecord(state, action);
     case "modifyRecord":
-      return modifyRecord(state, action as IModifyRecordAction);
+      return modifyRecord(state, action);
   }
 };
 

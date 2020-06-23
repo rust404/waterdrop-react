@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Icon from "components/Icon";
 import {findParent} from "util/index";
 import useQuery from "hooks/useQuery";
-import {isMoneyDirection, MoneyDirection} from "store/useCatagoryReducer";
+import {isMoneyDirection, MoneyDirection} from "store/catagoryReducer";
 
 const Wrapper = styled.div``;
 const Left = styled.span`
@@ -91,7 +91,7 @@ const CatagoryAdd = () => {
     dispatch({
       type: "addCatagory",
       payload: {
-        direction,
+        direction: direction as MoneyDirection,
         icon: iconName,
         name: catagoryName
       }

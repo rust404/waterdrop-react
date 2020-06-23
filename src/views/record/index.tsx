@@ -10,7 +10,7 @@ import styled from "styled-components";
 import Catagory from "./Catagory";
 import Remarks from "./Remarks";
 import NumberPad from "./Numberpad";
-import {MoneyDirection} from "store/useCatagoryReducer";
+import {MoneyDirection} from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import {ValueOf} from "util/index";
