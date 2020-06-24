@@ -1,5 +1,5 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
-import Context from "store";
+import {CatagoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -68,7 +68,7 @@ const IconList = styled.div`
   }
 `;
 const CatagoryAdd = () => {
-  const {dispatch} = useContext(Context);
+  const {dispatch} = useContext(CatagoryContext);
   const query = useQuery();
   const history = useHistory();
   const iconNames = ["canyin", "custom", "dushu", "shejiao", "yundong"];
@@ -96,7 +96,7 @@ const CatagoryAdd = () => {
         name: catagoryName
       }
     });
-    history.push(`/catagorymanage?direction=${direction}`);
+    history.push(`/catagory/manage?direction=${direction}`);
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCatagoryName(e.currentTarget.value);

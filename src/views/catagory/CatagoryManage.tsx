@@ -2,17 +2,21 @@ import React, {useState, useContext} from "react";
 import {MoneyDirection} from "store/catagoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import useQuery from "hooks/useQuery";
-import Context from "store";
+import {CatagoryContext} from "store";
 import {useHistory} from "react-router-dom";
 import {findParent} from "util/index";
 
+const Left = styled.span`
+  display: flex;
+  align-items: center;
+`;
 const Wrapper = styled.section`
   display: flex;
   justify-content: center;
+  flex-direction: column;
   > ul {
     width: 100%;
     display: flex;
@@ -48,33 +52,43 @@ interface ICatagoryManageProps extends React.HTMLProps<HTMLElement> {}
 
 const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
   const query = useQuery();
-  const history = useHistory()
-  const {state: catagory} = useContext(Context);
+  const history = useHistory();
+  const {state: catagory} = useContext(CatagoryContext);
   const [direction, setDirection] = useState(
     query.get("direction") || MoneyDirection.EXPENDITURE
   );
+  console.log("h");
 
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
     let li = findParent(target, (e: Element) => {
-      return e.nodeName.toLowerCase() === 'li'
-    }) as HTMLElement
+      return e.nodeName.toLowerCase() === "li";
+    }) as HTMLElement;
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
-    history.push(`/catagoryedit/${id}`)
+    history.push(`/catagory/edit/${id}`);
   };
 
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/catagoryadd?direction=${direction}`)
+    history.push(`/catagory/add?direction=${direction}`);
     e.stopPropagation();
   };
   const onTabClick = (direction: string) => {
     setDirection(direction);
   };
   return (
-    <Layout>
-      <TopBar>
+    <Wrapper className={props.className}>
+      <TopBar
+        left={
+          <Left
+            onClick={() => history.push(`/record/add`)}
+          >
+            <Icon id="left" />
+            返回
+          </Left>
+        }
+      >
         <Tab
           onChange={onTabClick}
           value={direction}
@@ -84,27 +98,25 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
           }}
         />
       </TopBar>
-      <Wrapper className={props.className}>
-        <ul onClick={handleClick}>
-          {catagory
-            .filter(item => item.direction === direction)
-            .map(item => (
-              <li key={item.id} data-id={item.id}>
-                <div className="icon-wrapper">
-                  <Icon className="icon" id={item.icon} size="60%" />
-                </div>
-                <p>{item.name}</p>
-              </li>
-            ))}
-          <li onClick={onAddClick}>
-            <div className="icon-wrapper">
-              <Icon className="icon" id="tianjia" size="60%" />
-            </div>
-            <p>添加</p>
-          </li>
-        </ul>
-      </Wrapper>
-    </Layout>
+      <ul onClick={handleClick}>
+        {catagory
+          .filter(item => item.direction === direction)
+          .map(item => (
+            <li key={item.id} data-id={item.id}>
+              <div className="icon-wrapper">
+                <Icon className="icon" id={item.icon} size="60%" />
+              </div>
+              <p>{item.name}</p>
+            </li>
+          ))}
+        <li onClick={onAddClick}>
+          <div className="icon-wrapper">
+            <Icon className="icon" id="tianjia" size="60%" />
+          </div>
+          <p>添加</p>
+        </li>
+      </ul>
+    </Wrapper>
   );
 };
 export default CatagoryManage;

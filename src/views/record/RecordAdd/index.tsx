@@ -3,7 +3,8 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
@@ -14,6 +15,9 @@ import {MoneyDirection} from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import {ValueOf} from "util/index";
+import {IRecord} from 'store/moneyRecordReducer'
+import {RecordContext} from "store";
+import {useHistory} from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,14 +36,10 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-interface RecordDataType {
-  catagoryId: number;
-  direction: MoneyDirection;
-  amount: number;
-}
+type RecordData = Pick<IRecord, "catagoryId" | "time" | "direction" | "amount">;
 
-interface IndexedRecordDataType extends RecordDataType {
-  [index: string]: number | MoneyDirection;
+interface IndexedRecordDataType extends RecordData {
+  [index: string]: number | MoneyDirection | string;
 }
 
 interface alertDataType {
@@ -49,19 +49,22 @@ interface alertDataType {
   [index: string]: string | undefined;
 }
 
-export type recordDataFieldType = Partial<RecordDataType>;
+export type recordDataFieldType = Partial<RecordData>;
 
-const Record: React.FC = () => {
-  const [recordData, setRecordData] = useState<RecordDataType>({
+const RecordAdd: React.FC = () => {
+  const [recordData, setRecordData] = useState<RecordData>({
     catagoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
-    amount: 0
+    amount: 0,
+    time: (new Date()).toISOString()
   });
+  const history = useHistory()
+  const {dispatch} = useContext(RecordContext)
   const isSubmitting = useRef(false);
-  const {catagoryId, direction} = recordData;
+  const {catagoryId, direction, time} = recordData;
 
   const onChange = useCallback(
-    (key: keyof RecordDataType) => (value: ValueOf<RecordDataType>) => {
+    (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
       setRecordData(state => {
         const data = {
           ...state,
@@ -77,14 +80,12 @@ const Record: React.FC = () => {
     },
     []
   );
-  const submit = useCallback((amount: number) => {
-    onChange('amount')(amount)
+  const submit = useCallback((amount: number, time: string) => {
+    onChange("amount")(amount);
+    onChange("time")(time);
     isSubmitting.current = true;
   }, []);
   // validate
-  const validate = () => {
-
-  }
   useEffect(() => {
     if (!isSubmitting.current) return;
 
@@ -103,6 +104,13 @@ const Record: React.FC = () => {
         return;
       }
     }
+    dispatch({
+      type: 'addRecord',
+      payload: {
+        ...recordData
+      }
+    })
+    history.push('/record/detail')
     isSubmitting.current = false;
   }, [recordData]);
   const MTab = useMemo(() => {
@@ -128,9 +136,9 @@ const Record: React.FC = () => {
           className="catagory"
         ></Catagory>
         <Remarks></Remarks>
-        <NumberPad className="pad" onChange={submit}></NumberPad>
+        <NumberPad time={time} className="pad" onChange={submit}></NumberPad>
       </Wrapper>
     </Layout>
   );
 };
-export default React.memo(Record);
+export default React.memo(RecordAdd);

@@ -5,68 +5,68 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import CatagoryManage from "views/CatagoryManage";
-import Record from "views/record";
+import CatagoryManage from "views/catagory/CatagoryManage";
+import RecordAdd from "views/record/RecordAdd";
 import Statistics from "views/Statistics";
 import Notfound from "views/Notfound";
 import Test from "views/Test";
 import catagoryReducer, {loadCatagory} from "store/catagoryReducer";
-import Context, {RecordContext} from "store";
-import CatagoryEdit from "views/CatagoryEdit";
-import CatagoryAdd from "views/CatagoryAdd";
+import {CatagoryContext, RecordContext} from "store";
+import CatagoryEdit from "views/catagory/CatagoryEdit";
+import CatagoryAdd from "views/catagory/CatagoryAdd";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
-import RecordDetail from "views/RecordDetail";
+import RecordDetail from "views/record/RecordDetail";
+import "datejs";
 
 function App() {
-  const [state, dispatch] = useReducer(catagoryReducer, null, loadCatagory);
+  const [catagory, dispatchCatagory] = useReducer(
+    catagoryReducer,
+    null,
+    loadCatagory
+  );
   const [records, dispatchRecord] = useReducer(
     moneyRecordReducer,
     null,
     loadRecords
   );
-  const refState = useRef(state);
-  refState.current = state;
+  const refCatagory = useRef(catagory);
+  const refRecords = useRef(records);
+  refCatagory.current = catagory;
+  refRecords.current = records;
   useEffect(() => {
     // 不要beforeunload，照顾safari
     window.addEventListener("pagehide", () => {
-      window.localStorage.setItem("catagory", JSON.stringify(refState.current));
+      window.localStorage.setItem(
+        "catagory",
+        JSON.stringify(refCatagory.current)
+      );
+      window.localStorage.setItem(
+        "records",
+        JSON.stringify(refRecords.current)
+      );
     });
   }, []);
   return (
     <RecordContext.Provider
       value={{state: records, dispatch: dispatchRecord}}
     >
-      <Context.Provider value={{state, dispatch}}>
+      <CatagoryContext.Provider
+        value={{state: catagory, dispatch: dispatchCatagory}}
+      >
         <Router>
           <Switch>
-            <Route path="/catagorymanage">
-              <CatagoryManage />
-            </Route>
-            <Route path="/catagoryedit/:id">
-              <CatagoryEdit />
-            </Route>
-            <Route path="/recorddetail">
-              <RecordDetail />
-            </Route>
-            <Route path="/test">
-              <Test />
-            </Route>
-            <Route path="/record">
-              <Record />
-            </Route>
-            <Route path="/statistics">
-              <Statistics />
-            </Route>
-            <Route path="/catagoryadd">
-              <CatagoryAdd />
-            </Route>
-            <Redirect from="/" exact to="/record" />
-            <Route path="*">
-              <Notfound />
-            </Route>
+            <Route path="/catagory/manage" component={CatagoryManage} />
+            <Route path="/catagory/edit/:id" component={CatagoryEdit} />
+            <Route path="/catagory/add" component={CatagoryAdd} />
+            <Route path="/record/detail" component={RecordDetail} />
+            <Route path="/record/add" component={RecordAdd} />
+            <Route path="/test" component={Test} />
+            <Route path="/statistics" component={Statistics} />
+            <Redirect from="/" exact to="/record/add" />
+            <Route path="*" component={Notfound} />
           </Switch>
         </Router>
-      </Context.Provider>
+      </CatagoryContext.Provider>
     </RecordContext.Provider>
   );
 }

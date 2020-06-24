@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import useCalc from "hooks/useCalc";
+import useDatePicker from "hooks/useDatePicker";
+import Datepicker from "react-mobile-datepicker";
+import {formatTime} from "util/index";
 
 const Wrapper = styled.section`
   background-color: #ffd947;
@@ -38,13 +41,11 @@ const Wrapper = styled.section`
           background-color: grey;
         }
         &[data-value="ok"] {
-          float: right;
-          height: calc(20vw + 12px);
           background-color: #f97b94;
           color: #fff;
-          &:active {
-            background-color: grey;
-          }
+        }
+        &[data-value="date"] {
+          font-size: 14px;
         }
       }
     }
@@ -52,24 +53,31 @@ const Wrapper = styled.section`
 `;
 
 interface INumberPadProps {
-  onChange: (amount: number) => void;
+  time: string;
+  onChange: (amount: number, time: string) => void;
   className?: string;
 }
 
 const NumberPad: React.FC<INumberPadProps> = props => {
-  const {className, onChange} = props;
+  const {className, onChange, time} = props;
   const {expStr, add, clear, getValue} = useCalc();
+  const {
+    pickerState,
+    handleClick,
+    handleCancel,
+    handleSelect
+  } = useDatePicker(time);
 
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     const value = (e.target as HTMLElement).dataset["value"];
     if (value === undefined) return;
     add(value);
-  }
+  };
   const clearHandler = () => {
     clear();
-  }
+  };
   const okHandler = () => {
-    onChange(getValue());
+    onChange(getValue(), pickerState.time.toISOString());
     clear();
   };
 
@@ -89,30 +97,59 @@ const NumberPad: React.FC<INumberPadProps> = props => {
         calcHandler(e);
         break;
     }
-  }
+  };
+  const dateConfig = {
+    year: {
+      format: "YYYY",
+      caption: "年",
+      step: 1
+    },
+    month: {
+      format: "MM",
+      caption: "月",
+      step: 1
+    },
+    date: {
+      format: "DD",
+      caption: "日",
+      step: 1
+    }
+  };
   return (
     <Wrapper className={className}>
-      <div className="container" >
+      <div className="container">
         <div className="output">{expStr}</div>
         <div onClick={onPadClick} className="button-wrapper clearfix">
           <button data-value="1">1</button>
           <button data-value="2">2</button>
           <button data-value="3">3</button>
-          <button data-value="+">+</button>
+          <button data-value="date" onClick={handleClick}>
+            {new Date(pickerState.time).toString("yyyy/MM/dd")}
+          </button>
           <button data-value="4">4</button>
           <button data-value="5">5</button>
           <button data-value="6">6</button>
-          <button data-value="-">-</button>
+          <button data-value="+">+</button>
           <button data-value="7">7</button>
           <button data-value="8">8</button>
           <button data-value="9">9</button>
-          <button data-value="ok">完成</button>
+          <button data-value="-">-</button>
           <button data-value=".">.</button>
           <button data-value="0">0</button>
           <button data-value="clear">清零</button>
+          <button data-value="ok">完成</button>
         </div>
       </div>
-    </Wrapper >
+      <Datepicker
+        theme="ios"
+        headerFormat="YYYY/MM"
+        dateConfig={dateConfig}
+        value={pickerState.time}
+        onCancel={handleCancel}
+        onSelect={handleSelect}
+        isOpen={pickerState.isOpen}
+      />
+    </Wrapper>
   );
 };
 

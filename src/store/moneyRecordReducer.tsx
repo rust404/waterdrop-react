@@ -29,11 +29,10 @@ const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
   ];
 };
 
-
 interface IModifyRecordAction {
   type: "modifyRecord";
   payload: Pick<IRecord, "id"> & Partial<IRecord>;
-};
+}
 
 const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
   const record = findRecord(state, action.payload.id);
@@ -50,12 +49,12 @@ const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
 interface IDeleteRecordAction {
   type: "deleteRecord";
   payload: Pick<IRecord, "id">;
-};
+}
 
 const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
     if (action.payload.id === state[i].id) {
-      const newState = [...state]
+      const newState = [...state];
       newState.splice(i, 1);
       return newState;
     }
@@ -79,7 +78,10 @@ export const loadRecords = (): IRecord[] => {
   return records;
 };
 
-export type IRecordAction = IAddRecordAction | IModifyRecordAction | IDeleteRecordAction;
+export type IRecordAction =
+  | IAddRecordAction
+  | IModifyRecordAction
+  | IDeleteRecordAction;
 
 const moneyRecordReducer: IRecordReducer<IRecordAction> = (state, action) => {
   switch (action.type) {

@@ -1528,6 +1528,18 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/datejs@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.npm.taobao.org/@types/datejs/download/@types/datejs-0.0.31.tgz#921ff76e338a39c5fc2f8a7abdbd3abe9ddd86a0"
+  integrity sha1-kh/3bjOKOcX8L4p6vb06vp3dhqA=
+
+"@types/echarts@^4.6.2":
+  version "4.6.2"
+  resolved "https://registry.npm.taobao.org/@types/echarts/download/@types/echarts-4.6.2.tgz?cache=0&sync_timestamp=1592302067964&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fecharts%2Fdownload%2F%40types%2Fecharts-4.6.2.tgz#f66b8736e2a554f432d58ec0361bf9c9d908ccfc"
+  integrity sha1-9muHNuKlVPQy1Y7ANhv5ydkIzPw=
+  dependencies:
+    "@types/zrender" "*"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -1722,6 +1734,11 @@
   integrity sha1-lH6aZWFIO97prf/Jg+kaaQKvi3k=
   dependencies:
     "@types/yargs-parser" "*"
+
+"@types/zrender@*":
+  version "4.0.0"
+  resolved "https://registry.npm.taobao.org/@types/zrender/download/@types/zrender-4.0.0.tgz#a6806f12ec4eccaaebd9b0d816f049aca6188fbd"
+  integrity sha1-poBvEuxOzKrr2bDYFvBJrKYYj70=
 
 "@typescript-eslint/eslint-plugin@^2.10.0":
   version "2.24.0"
@@ -3692,6 +3709,11 @@ data-urls@^1.0.0, data-urls@^1.1.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+datejs@^1.0.0-rc3:
+  version "1.0.0-rc3"
+  resolved "https://registry.npm.taobao.org/datejs/download/datejs-1.0.0-rc3.tgz#bffa1efedefeb41fdd8a242af55afa01fb58de57"
+  integrity sha1-v/oe/t7+tB/diiQq9Vr6AftY3lc=
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -4017,6 +4039,13 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+echarts@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.npm.taobao.org/echarts/download/echarts-4.8.0.tgz#b2c1cfb9229b13d368ee104fc8eea600b574d4c4"
+  integrity sha1-ssHPuSKbE9No7hBPyO6mALV01MQ=
+  dependencies:
+    zrender "4.3.1"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -11380,3 +11409,8 @@ yargs@^13.3.0:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
+
+zrender@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.npm.taobao.org/zrender/download/zrender-4.3.1.tgz#baf8aa6dc8187a2f819692d7d5f9bedfa2b90fa3"
+  integrity sha1-uviqbcgYei+BlpLX1fm+36K5D6M=

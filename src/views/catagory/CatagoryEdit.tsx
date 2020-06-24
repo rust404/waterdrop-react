@@ -1,5 +1,5 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
-import Context from "store";
+import {CatagoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -17,6 +17,9 @@ const Right = styled.span`
 interface IconWrapperProps {
   backgroundColor?: string;
 }
+const ContentWrapper = styled.div`
+  margin: 25px;
+`;
 const IconWrapper = styled.div<IconWrapperProps>`
   width: 52px;
   height: 52px;
@@ -33,7 +36,7 @@ const CatagoryBox = styled.div`
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  padding: 10px 25px 10px 25px;
+  padding: 10px 0 10px 0;
   *:first-child {
     flex-shrink: 0;
   }
@@ -50,7 +53,7 @@ const CatagoryBox = styled.div`
   }
 `;
 const IconList = styled.div`
-  margin: 10px 25px 0 25px;
+  margin-top: 10px;
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -66,7 +69,7 @@ const IconList = styled.div`
   }
 `;
 const CatagoryEdit = () => {
-  const {state: catagory, dispatch} = useContext(Context);
+  const {state: catagory, dispatch} = useContext(CatagoryContext);
   const {id} = useParams();
   const history = useHistory();
   const iconNames = ["canyin", "custom", "dushu", "shejiao", "yundong"];
@@ -85,7 +88,7 @@ const CatagoryEdit = () => {
         icon: iconName
       }
     });
-    history.push("/catagorymanage");
+    history.push("/catagory/manage");
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCatagoryName(e.currentTarget.value);
@@ -121,7 +124,7 @@ const CatagoryEdit = () => {
       {!item ? (
         "没有这个分类"
       ) : (
-          <>
+          <ContentWrapper>
             <CatagoryBox>
               <IconWrapper>
                 <Icon id={iconName} />
@@ -151,7 +154,7 @@ const CatagoryEdit = () => {
                 })}
               </ul>
             </IconList>
-          </>
+          </ContentWrapper>
         )}
     </Wrapper>
   );

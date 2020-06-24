@@ -20,7 +20,10 @@ export type ICatagoryAction =
   | IDeleteCatagoryAction
   | IModifyCatagoryAction;
 
-type ICatagoryReducer<T extends ICatagoryAction> = React.Reducer<ICatagoryItem[], T>;
+type ICatagoryReducer<T extends ICatagoryAction> = React.Reducer<
+  ICatagoryItem[],
+  T
+>;
 
 const defaultCatagoryList = [
   {name: "餐饮", icon: "canyin", direction: MoneyDirection.EXPENDITURE},
@@ -43,10 +46,7 @@ interface IAddCatagoryAction {
   payload: Pick<ICatagoryItem, "name" | "direction" | "icon">;
 }
 
-const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (
-  state,
-  action
-) => {
+const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
     if (state[i].name === action.payload.name) return state;
   }
@@ -63,9 +63,12 @@ const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (
 
 interface IDeleteCatagoryAction {
   type: "deleteCatagory";
-  payload: Pick<ICatagoryItem, 'id'>;
+  payload: Pick<ICatagoryItem, "id">;
 }
-const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (state, action) => {
+const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (
+  state,
+  action
+) => {
   return state.filter(item => {
     return item.id !== action.payload.id;
   });
@@ -73,7 +76,7 @@ const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (state, action) 
 
 interface IModifyCatagoryAction {
   type: "modifyCatagory";
-  payload: Pick<ICatagoryItem, 'id'> & Partial<ICatagoryItem>;
+  payload: Pick<ICatagoryItem, "id"> & Partial<ICatagoryItem>;
 }
 const modifyCatagory: ICatagoryReducer<IModifyCatagoryAction> = (
   state,
@@ -109,6 +112,13 @@ export const loadCatagory = () => {
   return catagory;
 };
 
+export const findCatagory = (
+  state: ICatagoryItem[],
+  id: number
+) => {
+  return state.filter(item => item.id === id)[0];
+};
+
 const catagoryReducer: ICatagoryReducer<ICatagoryAction> = (state, action) => {
   switch (action.type) {
     case "addCatagory":
@@ -122,4 +132,4 @@ const catagoryReducer: ICatagoryReducer<ICatagoryAction> = (state, action) => {
   }
 };
 
-export default catagoryReducer
+export default catagoryReducer;

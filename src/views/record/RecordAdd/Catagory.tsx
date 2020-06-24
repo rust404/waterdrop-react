@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Icon from "components/Icon";
 import {MoneyDirection} from 'store/catagoryReducer'
 import {useHistory} from "react-router-dom";
-import Context from "store";
+import {CatagoryContext} from "store";
 
 const Wrapper = styled.section`
   display: flex;
@@ -46,8 +46,7 @@ interface ICatagoryProps {
   onChange: (value: number) => void;
 }
 const Catagory: React.FC<ICatagoryProps> = props => {
-  console.log('catagory')
-  const {state} = useContext(Context);
+  const {state} = useContext(CatagoryContext);
   const history = useHistory();
   const {direction, catagoryId} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
@@ -69,7 +68,7 @@ const Catagory: React.FC<ICatagoryProps> = props => {
   };
 
   const onSettingClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/catagorymanage?direction=${direction}`)
+    history.push(`/catagory/manage?direction=${direction}`)
     e.stopPropagation()
   }
   return (
