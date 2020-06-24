@@ -15,6 +15,7 @@ import Context, {RecordContext} from "store";
 import CatagoryEdit from "views/CatagoryEdit";
 import CatagoryAdd from "views/CatagoryAdd";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
+import RecordDetail from "views/RecordDetail";
 
 function App() {
   const [state, dispatch] = useReducer(catagoryReducer, null, loadCatagory);
@@ -43,6 +44,9 @@ function App() {
             </Route>
             <Route path="/catagoryedit/:id">
               <CatagoryEdit />
+            </Route>
+            <Route path="/recorddetail">
+              <RecordDetail />
             </Route>
             <Route path="/test">
               <Test />
