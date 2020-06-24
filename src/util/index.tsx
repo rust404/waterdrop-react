@@ -12,3 +12,12 @@ export function findParent(element: Element, compareFn: ICompareFn): Element | n
   }
   return null
 }
+
+export function formatTime(time: Date) {
+  return {
+    year: time.getFullYear(),
+    month: time.getMonth() + 1,
+    date: time.getDate(),
+    day: time.getDay()
+  }
+}

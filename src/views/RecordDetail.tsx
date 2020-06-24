@@ -1,7 +1,9 @@
-import React, {FC} from "react";
+import React, {FC, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
+import Datepicker from "react-mobile-datepicker";
+import {formatTime} from 'util/index'
 
 const GeneralInfo = styled.div`
   padding: 18px;
@@ -74,23 +76,74 @@ const RecordItem = styled.div`
   }
 `;
 const RecordDetail: FC = () => {
+  const [pickerState, setPickerState] = useState({
+    time: new Date(),
+    isOpen: false
+  });
+  const handleClick = () => {
+    setPickerState(state => {
+      return {
+        ...state,
+        isOpen: true
+      };
+    });
+  };
+  const handleCancel = () => {
+    setPickerState(state => {
+      return {
+        ...state,
+        isOpen: false
+      };
+    });
+  };
+  const handleSelect = (time: Date) => {
+    setPickerState(state => {
+      return {
+        ...state,
+        isOpen: false,
+        time
+      };
+    });
+  };
+  const dateConfig = {
+    year: {
+      format: "YYYY",
+      caption: "年",
+      step: 1
+    },
+    month: {
+      format: "MM",
+      caption: "月",
+      step: 1
+    }
+  };
+  const {year, month} = formatTime(pickerState.time)
   return (
     <Layout>
       <TopBar>收入支出明细</TopBar>
       <GeneralInfo>
         <div className="general-record">
           <div className="money">99</div>
-          <div className="date">6月收入</div>
+          <div className="date">{month}月收入</div>
         </div>
-        <div className="pick-date">
-          <div className="month">6月&#9660;</div>
-          <div className="year">2020年</div>
+        <div className="pick-date" onClick={handleClick}>
+          <div className="month">{month}月&#9660;</div>
+          <div className="year">{year}年</div>
         </div>
         <div className="general-record">
           <div className="money">188</div>
-          <div className="date">6月支出</div>
+          <div className="date">{month}月支出</div>
         </div>
       </GeneralInfo>
+      <Datepicker
+        theme="ios"
+        headerFormat="YYYY/MM"
+        dateConfig={dateConfig}
+        value={pickerState.time}
+        onCancel={handleCancel}
+        onSelect={handleSelect}
+        isOpen={pickerState.isOpen}
+      />
       <RecordsWrapper>
         <RecordItem>
           <div className="date-info">
@@ -99,53 +152,58 @@ const RecordDetail: FC = () => {
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
           <div className="record-info">
             <div className="icon-wrapper"></div>
-            <div className="record-catagory">支出</div>
-            <div className="money">10</div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
+          </div>
+          <div className="record-info">
+            <div className="icon-wrapper"></div>
+            <div className="record-catagory">123</div>
+            <div className="money">456</div>
           </div>
         </RecordItem>
       </RecordsWrapper>
