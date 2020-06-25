@@ -30,6 +30,6 @@ const useDatePicker = (time?: string) => {
       };
     });
   };
-  return {pickerState, handleClick, handleCancel, handleSelect}
+  return {pickerState, setPickerState, handleClick, handleCancel, handleSelect}
 }
 export default useDatePicker

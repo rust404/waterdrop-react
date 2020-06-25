@@ -65,12 +65,22 @@ const NumberPad: React.FC<INumberPadProps> = props => {
     pickerState,
     handleClick,
     handleCancel,
-    handleSelect
+    handleSelect,
+    setPickerState
   } = useDatePicker(time);
 
   useEffect(() => {
-    setInitNum(amount || 0)
-  }, [amount])
+    setInitNum(amount || 0);
+  }, [amount]);
+
+  useEffect(() => {
+    setPickerState(state => {
+      return {
+        ...state,
+        time: new Date(time)
+      };
+    });
+  }, [time]);
 
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     const value = (e.target as HTMLElement).dataset["value"];
