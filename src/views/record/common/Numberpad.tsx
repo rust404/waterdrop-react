@@ -1,9 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
-import useCalc from "hooks/useCalc";
+import useCalcStr from "hooks/useCalcStr";
 import useDatePicker from "hooks/useDatePicker";
 import Datepicker from "react-mobile-datepicker";
-import {formatTime} from "util/index";
 
 const Wrapper = styled.section`
   background-color: #ffd947;
@@ -53,20 +52,25 @@ const Wrapper = styled.section`
 `;
 
 interface INumberPadProps {
+  amount?: number;
   time: string;
   onChange: (amount: number, time: string) => void;
   className?: string;
 }
 
 const NumberPad: React.FC<INumberPadProps> = props => {
-  const {className, onChange, time} = props;
-  const {expStr, add, clear, getValue} = useCalc();
+  const {className, onChange, time, amount} = props;
+  const {expStr, add, clear, setInitNum, getValue} = useCalcStr(amount);
   const {
     pickerState,
     handleClick,
     handleCancel,
     handleSelect
   } = useDatePicker(time);
+
+  useEffect(() => {
+    setInitNum(amount || 0)
+  }, [amount])
 
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     const value = (e.target as HTMLElement).dataset["value"];

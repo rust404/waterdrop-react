@@ -82,7 +82,7 @@ const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
       <TopBar
         left={
           <Left
-            onClick={() => history.push(`/record/add`)}
+            onClick={() => history.goBack()}
           >
             <Icon id="left" />
             返回

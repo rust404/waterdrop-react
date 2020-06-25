@@ -17,6 +17,7 @@ import CatagoryAdd from "views/catagory/CatagoryAdd";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
 import RecordDetail from "views/record/RecordDetail";
 import "datejs";
+import RecordEdit from "views/record/RecordEdit";
 
 function App() {
   const [catagory, dispatchCatagory] = useReducer(
@@ -60,6 +61,7 @@ function App() {
             <Route path="/catagory/add" component={CatagoryAdd} />
             <Route path="/record/detail" component={RecordDetail} />
             <Route path="/record/add" component={RecordAdd} />
+            <Route path="/record/edit/:id" component={RecordEdit} />
             <Route path="/test" component={Test} />
             <Route path="/statistics" component={Statistics} />
             <Redirect from="/" exact to="/record/add" />

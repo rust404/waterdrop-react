@@ -33,10 +33,10 @@ interface ITopBarProps extends React.HTMLProps<HTMLElement> {
   right?: React.ReactNode;
 }
 const TopBar: React.FC<ITopBarProps> = (props) => {
-  const {left, children, right} = props
+  const {left, children, right, style} = props
 
   return (
-    <Wrapper className={classnames(props.className)}>
+    <Wrapper style={style || {}} className={classnames(props.className)}>
       <div className="left">{left}</div>
       <div className="center">{children}</div>
       <div className="right">{right}</div>

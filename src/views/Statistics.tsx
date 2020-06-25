@@ -3,47 +3,103 @@ import Layout from "components/Layout";
 import Echarts from "components/Echarts";
 import {RecordContext, CatagoryContext} from "store";
 import {EChartOption} from "echarts";
+import {MoneyDirection, findCatagory} from "store/catagoryReducer";
+import TopBar from "components/TopBar";
+import Datepicker from "react-mobile-datepicker";
+import useDatePicker from "hooks/useDatePicker";
 import {IRecord} from "store/moneyRecordReducer";
-import {MoneyDirection} from "store/catagoryReducer";
+import styled from "styled-components";
 
+const ContentWrapper = styled.div`
+  flex: 1;
+  overflow: auto;
+`;
 const Statistics: FC = () => {
   const {state: records} = useContext(RecordContext);
   const {state: catagory} = useContext(CatagoryContext);
-  const [time, setTime] = useState(new Date());
-  console.log(records, catagory);
-  const filteredRecords = records.filter(record => {
+  const {
+    pickerState,
+    handleCancel,
+    handleSelect,
+    handleClick
+  } = useDatePicker();
+  const timeFilteredRecords = records.filter(record => {
     const d1 = new Date(record.time);
-    const d2 = new Date(time);
+    const d2 = new Date(pickerState.time);
     return (
       d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()
     );
   });
-  const dateCount = Date.getDaysInMonth(time.getFullYear(), time.getMonth());
-  const dates = Array(dateCount)
-    .fill(0)
-    .map((_, i) => i + 1);
-  console.log('filtered', filteredRecords);
-  const incomeAmounts = filteredRecords.reduce<number[]>(
-    (acc, record) => {
-      const index = (new Date(record.time)).getDate() - 1
-      if (record.direction === MoneyDirection.INCOME) {
-        acc[index] += Math.abs(record.amount)
-      }
-      return acc
-    },
-    Array(dateCount).fill(0)
+  const getDatesByTime = (time: Date) => {
+    const dateCount = Date.getDaysInMonth(time.getFullYear(), time.getMonth());
+    return Array(dateCount)
+      .fill(0)
+      .map((_, i) => i + 1);
+  };
+  const dates = getDatesByTime(pickerState.time);
+
+  const directionFilter = (direction: MoneyDirection) => (record: IRecord) => {
+    return record.direction === direction;
+  };
+  const incomeFilter = directionFilter(MoneyDirection.INCOME);
+  const expenditureFilter = directionFilter(MoneyDirection.EXPENDITURE);
+
+  const incomeRecords = timeFilteredRecords.filter(incomeFilter);
+  const expenditureRecords = timeFilteredRecords.filter(expenditureFilter);
+
+  const amountsReducer = (acc: number[], record: IRecord) => {
+    const index = new Date(record.time).getDate() - 1;
+    acc[index] += record.amount;
+    return acc;
+  };
+  const incomeAmounts = incomeRecords.reduce<number[]>(
+    amountsReducer,
+    dates.map(() => 0)
   );
-  const expenditureAmounts = filteredRecords.reduce<number[]>(
-    (acc, record) => {
-      const index = (new Date(record.time)).getDate() - 1
-      if (record.direction === MoneyDirection.EXPENDITURE) {
-        acc[index] += Math.abs(record.amount)
-      }
-      return acc
-    },
-    Array(dateCount).fill(0)
+  const expenditureAmounts = expenditureRecords.reduce<number[]>(
+    amountsReducer,
+    dates.map(() => 0)
   );
-  const option1: EChartOption = {
+  const catagoryAmounts = (records: IRecord[]) => {
+    return records.reduce<{[index: string]: number}>((acc, record) => {
+      const catagoryName = findCatagory(catagory, record.catagoryId).name;
+      if (acc[catagoryName]) {
+        acc[catagoryName] += record.amount;
+      } else {
+        acc[catagoryName] = record.amount;
+      }
+      return acc;
+    }, {});
+  };
+  console.log(catagoryAmounts(incomeRecords));
+  console.log(catagoryAmounts(expenditureRecords));
+  const incomePieData = Object.entries(catagoryAmounts(incomeRecords)).map(
+    item => {
+      return {
+        name: item[0],
+        value: item[1]
+      };
+    }
+  );
+  const expeniturePieData = Object.entries(
+    catagoryAmounts(expenditureRecords)
+  ).map(item => {
+    return {
+      name: item[0],
+      value: item[1]
+    };
+  });
+  const option: EChartOption = {
+    title: {
+      text: `收入支出明细`,
+      textStyle: {
+        fontSize: 16
+      }
+    },
+    color: ["#1de9b6", "#ff5252"],
+    legend: {
+      data: ["收入", "支出"]
+    },
     xAxis: {
       data: dates
     },
@@ -51,37 +107,101 @@ const Statistics: FC = () => {
     series: [
       {
         name: "收入",
-        type: "line",
+        type: "bar",
+        stack: "one",
         data: incomeAmounts
       },
       {
         name: "支出",
-        type: "line",
+        type: "bar",
+        stack: "one",
         data: expenditureAmounts
       }
     ]
   };
-  const option = {
-    xAxis: {
-      data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+  const pieOption: EChartOption = {
+    title: {
+      text: "分类占比",
+      left: "center"
     },
-    yAxis: {},
+    tooltip: {
+      trigger: "item",
+      formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+      orient: "vertical",
+      left: "left",
+      // data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
+      data: ["收入", "支出"],
+      selected: {
+        "收入": false,
+        "支出": true
+      }
+    },
     series: [
       {
-        name: "销量",
-        type: "line",
-        data: [5, 20, 36, 10, 10, 20]
+        name: "收入",
+        type: "pie",
+        radius: "60%",
+        center: ["50%", "50%"],
+        data: incomePieData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)"
+          }
+        }
       },
       {
-        name: "大小",
-        type: "line",
-        data: [15, 2, 3, 11, 20, 40]
+        name: "支出",
+        type: "pie",
+        radius: "60%",
+        center: ["50%", "50%"],
+        data: expeniturePieData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)"
+          }
+        }
       }
     ]
   };
+
+  const dateConfig = {
+    year: {
+      format: "YYYY",
+      caption: "年",
+      step: 1
+    },
+    month: {
+      format: "MM",
+      caption: "月",
+      step: 1
+    }
+  };
   return (
     <Layout>
-      <Echarts option={option1} />
+      <TopBar style={{flexShrink: 0}}>
+        <span onClick={handleClick}>
+          {new Date(pickerState.time).toString("yyyy年MM月")}&#9660;
+        </span>
+      </TopBar>
+      <ContentWrapper>
+        <Echarts option={option} />
+        <Echarts option={pieOption} />
+      </ContentWrapper>
+      <Datepicker
+        theme="ios"
+        headerFormat="YYYY/MM"
+        dateConfig={dateConfig}
+        value={pickerState.time}
+        onCancel={handleCancel}
+        onSelect={handleSelect}
+        isOpen={pickerState.isOpen}
+      />
     </Layout>
   );
 };

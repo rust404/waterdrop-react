@@ -9,6 +9,7 @@ import {RecordContext, CatagoryContext} from "store";
 import {IRecord} from "store/moneyRecordReducer";
 import {findCatagory, MoneyDirection} from "store/catagoryReducer";
 import Icon from "components/Icon";
+import {useHistory} from "react-router-dom";
 
 const GeneralInfo = styled.div`
   padding: 18px;
@@ -91,6 +92,7 @@ const RecordDetail: FC = () => {
   const {state: records, dispatch: dispatchRecords} = useContext(
     RecordContext
   );
+  const history = useHistory();
   const {year, month} = formatTime(pickerState.time);
   const filterdRecords = records.filter(record => {
     const {year: recordYear, month: recordMonth} = formatTime(
@@ -193,13 +195,8 @@ const RecordDetail: FC = () => {
                     className="record-info"
                     data-id={record.id}
                     key={record.id}
-                    onClick={(e) => {
-                      dispatchRecords({
-                        type: 'deleteRecord',
-                        payload: {
-                          id: parseInt(e.currentTarget.dataset['id'] as string)
-                        }
-                      })
+                    onClick={e => {
+                      history.push(`/record/edit/${record.id}`);
                     }}
                   >
                     <div className="icon-wrapper">

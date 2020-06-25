@@ -61,7 +61,7 @@ const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
   }
   return state;
 };
-const findRecord = (records: IRecord[], id: number): IRecord | null => {
+export const findRecord = (records: IRecord[], id: number): IRecord | null => {
   return records.filter(record => record.id === id)[0];
 };
 

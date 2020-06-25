@@ -6,19 +6,23 @@ import React, {
   useMemo,
   useContext
 } from "react";
-import Layout from "components/Layout";
 import styled from "styled-components";
-import Catagory from "./Catagory";
-import Remarks from "./Remarks";
-import NumberPad from "./Numberpad";
+import Catagory from "./common/Catagory";
+import Remarks from "./common/Remarks";
+import NumberPad from "./common/Numberpad";
 import {MoneyDirection} from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import {ValueOf} from "util/index";
-import {IRecord} from 'store/moneyRecordReducer'
+import {IRecord, findRecord} from "store/moneyRecordReducer";
 import {RecordContext} from "store";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
+import Icon from "components/Icon";
 
+const Left = styled.span`
+  display: flex;
+  align-items: center;
+`;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,17 +55,38 @@ interface alertDataType {
 
 export type recordDataFieldType = Partial<RecordData>;
 
-const RecordAdd: React.FC = () => {
+const RecordEdit: React.FC = () => {
+  const history = useHistory();
+  const {state: records, dispatch: dispatchRecords} = useContext(
+    RecordContext
+  );
+  const {id} = useParams();
+
   const [recordData, setRecordData] = useState<RecordData>({
     catagoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
     amount: 0,
-    time: (new Date()).toISOString()
+    time: new Date().toISOString()
   });
-  const history = useHistory()
-  const {dispatch} = useContext(RecordContext)
   const isSubmitting = useRef(false);
-  const {catagoryId, direction, time} = recordData;
+  const {catagoryId, direction, time, amount} = recordData;
+
+  useEffect(() => {
+    const record = findRecord(records, parseInt(id));
+    if (!record) {
+      alert("记录不存在");
+      history.push("/record/detail");
+    } else {
+      const {catagoryId, direction, amount, time} = record;
+      console.log(amount);
+      setRecordData({
+        catagoryId,
+        direction,
+        amount,
+        time
+      });
+    }
+  }, ["id"]);
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
@@ -104,13 +129,14 @@ const RecordAdd: React.FC = () => {
         return;
       }
     }
-    dispatch({
-      type: 'addRecord',
+    dispatchRecords({
+      type: "modifyRecord",
       payload: {
+        id: parseInt(id),
         ...recordData
       }
-    })
-    history.push('/record/detail')
+    });
+    history.push("/record/detail");
     isSubmitting.current = false;
   }, [recordData]);
   const MTab = useMemo(() => {
@@ -126,19 +152,32 @@ const RecordAdd: React.FC = () => {
     );
   }, [direction]);
   return (
-    <Layout>
-      <Wrapper>
-        <TopBar className="top">{MTab}</TopBar>
-        <Catagory
-          direction={direction}
-          catagoryId={catagoryId}
-          onChange={onChange("catagoryId")}
-          className="catagory"
-        ></Catagory>
-        <Remarks></Remarks>
-        <NumberPad time={time} className="pad" onChange={submit}></NumberPad>
-      </Wrapper>
-    </Layout>
+    <Wrapper>
+      <TopBar
+        className="top"
+        left={
+          <Left onClick={() => history.goBack()}>
+            <Icon id="left" />
+            返回
+          </Left>
+        }
+      >
+        {MTab}
+      </TopBar>
+      <Catagory
+        direction={direction}
+        catagoryId={catagoryId}
+        onChange={onChange("catagoryId")}
+        className="catagory"
+      ></Catagory>
+      <Remarks></Remarks>
+      <NumberPad
+        amount={amount}
+        time={time}
+        className="pad"
+        onChange={submit}
+      ></NumberPad>
+    </Wrapper>
   );
 };
-export default React.memo(RecordAdd);
+export default React.memo(RecordEdit);
