@@ -23,7 +23,7 @@ const ContentWrapper = styled.div`
 const IconWrapper = styled.div<IconWrapperProps>`
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;

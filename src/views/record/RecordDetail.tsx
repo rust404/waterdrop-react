@@ -12,7 +12,8 @@ import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 
 const GeneralInfo = styled.div`
-  padding: 18px;
+  padding: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,12 +46,13 @@ const GeneralInfo = styled.div`
 `;
 
 const RecordsWrapper = styled.div`
+  background-color: #f5f5f5;
   flex: 1;
   overflow: auto;
 `;
 const RecordItem = styled.div`
   .date-info {
-    padding: 0px 16px;
+    padding: 0px 20px;
     font-size: 10px;
     line-height: 30px;
     color: #9b9b9b;
@@ -60,12 +62,15 @@ const RecordItem = styled.div`
   }
   .record-info {
     display: flex;
-    padding: 12px 16px;
+    margin: 10px 20px;
+    border-radius: 10px;
+    padding: 22px 26px;
     align-items: center;
+    background-color: #fff;
     .icon-wrapper {
       width: 36px;
       height: 36px;
-      border-radius: 50%;
+      border-radius: 12px;
       display: flex;
       justify-content: center;
       align-items: center;

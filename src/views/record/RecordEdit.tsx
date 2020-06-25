@@ -29,9 +29,6 @@ const Wrapper = styled.div`
   height: 100%;
   min-height: 0;
   flex: 1;
-  .top {
-    flex-shrink: 0;
-  }
   .catagory {
     flex: 1;
     overflow: auto;
@@ -154,7 +151,6 @@ const RecordEdit: React.FC = () => {
   return (
     <Wrapper>
       <TopBar
-        className="top"
         left={
           <Left onClick={() => history.goBack()}>
             <Icon id="left" />

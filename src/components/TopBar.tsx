@@ -10,6 +10,7 @@ const Wrapper = styled.header`
   align-items: center;
   font-size: 16px;
   background-color: #ffd947;
+  flex-shrink: 0;
   .center {
     font-size: 20px;
   }

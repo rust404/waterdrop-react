@@ -25,9 +25,6 @@ const Wrapper = styled.div`
   height: 100%;
   min-height: 0;
   flex: 1;
-  .top {
-    flex-shrink: 0;
-  }
   .catagory {
     flex: 1;
     overflow: auto;
@@ -128,7 +125,7 @@ const RecordAdd: React.FC = () => {
   return (
     <Layout>
       <Wrapper>
-        <TopBar className="top">{MTab}</TopBar>
+        <TopBar>{MTab}</TopBar>
         <Catagory
           direction={direction}
           catagoryId={catagoryId}

@@ -35,7 +35,7 @@ const Wrapper = styled.section`
         width: 14vw;
         height: 14vw;
         margin-bottom: 4px;
-        border-radius: 50%;
+        border-radius: 12px;
         background-color: #f5f5f5;
         display: flex;
         justify-content: center;

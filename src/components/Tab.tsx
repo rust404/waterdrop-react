@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
-  line-height: 48px;
-  font-size: 20px;
+  line-height: 30px;
+  font-size: 18px;
   display: flex;
   justify-content: center;
   li {
@@ -11,21 +11,22 @@ const Wrapper = styled.ul`
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
+    border-radius: 6px;
+    border: 2px solid black;
+    margin-left: -2px
+  }
+  li:first-child {
+    border-radius: 6px 0 0 6px;
+    margin-left: 0px;
   }
   li:last-child {
-    margin-left: 10px;
+    border-radius: 0 6px 6px 0;
   }
-  li.selected:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: 0;
-    left: 0;
+  li.selected {
     background-color: #000;
+    color: #ffd947;
   }
-`;
+  `;
 
 interface ITabProps extends React.Props<HTMLElement> {
   map: {
@@ -45,7 +46,11 @@ const Tab: React.FC<ITabProps> = props => {
     <Wrapper>
       {Object.keys(map).map(text => {
         return (
-          <li key={text} onClick={handleClick} className={map[text] === value ? 'selected' : ''}>
+          <li
+            key={text}
+            onClick={handleClick}
+            className={map[text] === value ? "selected" : ""}
+          >
             {text}
           </li>
         );

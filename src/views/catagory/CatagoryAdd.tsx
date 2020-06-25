@@ -22,7 +22,7 @@ interface IconWrapperProps {
 const IconWrapper = styled.div<IconWrapperProps>`
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -134,6 +134,7 @@ const CatagoryAdd = () => {
           <Icon id={iconName} />
         </IconWrapper>
         <input
+          placeholder="分类名称"
           ref={refInput}
           className="catagory-name"
           type="text"
