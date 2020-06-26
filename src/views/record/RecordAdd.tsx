@@ -108,7 +108,7 @@ const RecordAdd: FC = () => {
         ...recordData
       }
     })
-    history.push('/record/detail')
+    history.goBack()
     isSubmitting.current = false;
   }, [recordData, history, dispatch]);
   const MTab = useMemo(() => {

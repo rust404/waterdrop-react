@@ -73,7 +73,6 @@ const RecordEdit: FC = () => {
   useEffect(() => {
     const record = findRecord(records, parseInt(id));
     if (!record) {
-      alert("记录不存在");
       history.push("/record/detail");
     } else {
       const {catagoryId, direction, amount, time} = record;
@@ -138,7 +137,7 @@ const RecordEdit: FC = () => {
         ...recordData
       }
     });
-    history.push("/record/detail");
+    history.goBack();
     isSubmitting.current = false;
   }, [recordData, dispatchRecords, history, id]);
   const MTab = useMemo(() => {
@@ -171,7 +170,6 @@ const RecordEdit: FC = () => {
                   id: parseInt(id)
                 }
               })
-              history.push('/record/detail')
             }
           }}>删除</div>
         }

@@ -1,4 +1,5 @@
 @import "theme.scss";
+$duration: 500ms;
 * {
   box-sizing: border-box;
 }
@@ -23,7 +24,7 @@ a {
   color: inherit;
 }
 html {
-  height: 100%;
+  height: 100vh;
 }
 body {
   font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica,
@@ -31,7 +32,7 @@ body {
     "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN",
     "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti",
     SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
 }
 #root {
@@ -42,23 +43,91 @@ body {
   display: block;
   clear: both;
 }
-.right-enter {
+.l-to-r-enter {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.l-to-r-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all $duration;
+}
+.l-to-r-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+.l-to-r-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all $duration;
+}
+.r-to-l-enter {
   opacity: 0;
   transform: translateX(100%);
 }
-.right-enter-active {
+.r-to-l-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition: all 500ms;
+  transition: all $duration;
 }
-.right-exit {
+.r-to-l-exit {
   opacity: 1;
   transform: translateX(0);
 }
-.right-exit-active {
+.r-to-l-exit-active {
   opacity: 0;
   transform: translateX(-100%);
-  transition: all 500ms;
+  transition: all $duration;
+}
+.t-to-b-enter {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+.t-to-b-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all $duration;
+}
+.t-to-b-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.t-to-b-exit-active {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all $duration;
+}
+.b-to-t-enter {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.b-to-t-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all $duration;
+}
+.b-to-t-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.b-to-t-exit-active {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: all $duration;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: all $duration;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: all $duration;
 }
 .transition-wrapper {
   width: 100vw;

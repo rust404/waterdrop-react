@@ -70,6 +70,8 @@ const NumberPad: FC<INumberPadProps> = props => {
   } = useDatePicker(time);
 
   useEffect(() => {
+    console.log(amount)
+    if (amount === undefined) return
     setInitNum(amount || 0);
   }, [amount, setInitNum]);
 
@@ -92,7 +94,6 @@ const NumberPad: FC<INumberPadProps> = props => {
   };
   const okHandler = () => {
     onChange(getValue(), pickerState.time.toISOString());
-    clear();
   };
 
   const onPadClick = (e: React.MouseEvent<HTMLElement>) => {

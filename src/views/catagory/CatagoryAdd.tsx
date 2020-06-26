@@ -9,7 +9,15 @@ import useQuery from "hooks/useQuery";
 import {isMoneyDirection, MoneyDirection} from "store/catagoryReducer";
 import {CATAGORY_ICON_NAMES} from "icons";
 
-const Wrapper = styled.div``;
+interface IconWrapperProps {
+  backgroundColor?: string;
+}
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  overflow: hidden;
+`;
 const Left = styled.span`
   display: flex;
   align-items: center;
@@ -17,9 +25,6 @@ const Left = styled.span`
 const Right = styled.span`
   font-size: 14px;
 `;
-interface IconWrapperProps {
-  backgroundColor?: string;
-}
 const IconWrapper = styled.div<IconWrapperProps>`
   width: 52px;
   height: 52px;
@@ -77,16 +82,16 @@ const CatagoryAdd = () => {
   const [iconName, setIconName] = useState("canyin");
   const direction = query.get("direction");
   if (!isMoneyDirection(direction || "")) {
-    history.push("/catagorymanage");
+    history.push("/catagory/manage");
   }
   const MoneyDirectionMap = {
-    [MoneyDirection.INCOME]: '收入',
-    [MoneyDirection.EXPENDITURE]: '支出'
-  }
+    [MoneyDirection.INCOME]: "收入",
+    [MoneyDirection.EXPENDITURE]: "支出"
+  };
   const submit = () => {
     if (!catagoryName || !iconName) {
-      alert('未填写完整')
-      return
+      alert("未填写完整");
+      return;
     }
     dispatch({
       type: "addCatagory",
@@ -96,7 +101,7 @@ const CatagoryAdd = () => {
         name: catagoryName
       }
     });
-    history.push(`/catagory/manage?direction=${direction}`);
+    history.goBack();
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCatagoryName(e.currentTarget.value);

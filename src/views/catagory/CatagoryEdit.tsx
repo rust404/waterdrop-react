@@ -7,7 +7,15 @@ import Icon from "components/Icon";
 import {findParent} from "util/index";
 import {CATAGORY_ICON_NAMES} from "icons";
 
-const Wrapper = styled.div``;
+interface IconWrapperProps {
+  backgroundColor?: string;
+}
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+`;
 const Left = styled.span`
   display: flex;
   align-items: center;
@@ -15,11 +23,10 @@ const Left = styled.span`
 const Right = styled.span`
   font-size: 14px;
 `;
-interface IconWrapperProps {
-  backgroundColor?: string;
-}
 const ContentWrapper = styled.div`
   margin: 25px;
+  flex: 1;
+  overflow: auto;
 `;
 const IconWrapper = styled.div<IconWrapperProps>`
   width: 52px;
@@ -88,7 +95,7 @@ const CatagoryEdit: FC = () => {
         icon: iconName
       }
     });
-    history.push("/catagory/manage");
+    history.goBack();
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCatagoryName(e.currentTarget.value);

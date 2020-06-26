@@ -15,13 +15,15 @@ const Left = styled.span`
 `;
 const Wrapper = styled.section`
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   > ul {
-    width: 100%;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+    flex: 1;
+    overflow: auto;
     li {
       margin-top: 20px;
       position: relative;

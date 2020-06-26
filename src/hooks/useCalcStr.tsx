@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useCallback} from "react";
 
 const useCalcStr = (initNum?: number) => {
   const [left, setLeft] = useState(
@@ -6,9 +6,9 @@ const useCalcStr = (initNum?: number) => {
   );
   const [right, setRight] = useState("");
   const [op, setOp] = useState("");
-  const setInitNum = (num: number) => {
+  const setInitNum = useCallback((num: number) => {
     setLeft(num + '')
-  }
+  }, [])
   const add = (value: string) => {
     if ("0123456789".indexOf(value) !== -1) {
       addNumber(value);
