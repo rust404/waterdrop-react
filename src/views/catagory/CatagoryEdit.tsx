@@ -1,10 +1,11 @@
-import React, {useContext, useState, useRef, useEffect} from "react";
+import React, {useContext, useState, useRef, useEffect, FC} from "react";
 import {CatagoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import {findParent} from "util/index";
+import {CATAGORY_ICON_NAMES} from "icons";
 
 const Wrapper = styled.div``;
 const Left = styled.span`
@@ -68,11 +69,10 @@ const IconList = styled.div`
     }
   }
 `;
-const CatagoryEdit = () => {
+const CatagoryEdit: FC = () => {
   const {state: catagory, dispatch} = useContext(CatagoryContext);
   const {id} = useParams();
   const history = useHistory();
-  const iconNames = ["canyin", "custom", "dushu", "shejiao", "yundong"];
   const item = catagory.filter(value => {
     return parseInt(id) === value.id;
   })[0];
@@ -139,7 +139,7 @@ const CatagoryEdit = () => {
             </CatagoryBox>
             <IconList>
               <ul onClick={handleIconListClick}>
-                {iconNames.map((name, index) => {
+                {CATAGORY_ICON_NAMES.map((name, index) => {
                   return (
                     <li key={index} data-name={name}>
                       <IconWrapper

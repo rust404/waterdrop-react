@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, FC} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import {MoneyDirection} from 'store/catagoryReducer'
@@ -45,7 +45,7 @@ interface ICatagoryProps {
   className?: string;
   onChange: (value: number) => void;
 }
-const Catagory: React.FC<ICatagoryProps> = props => {
+const Catagory: FC<ICatagoryProps> = props => {
   const {state} = useContext(CatagoryContext);
   const history = useHistory();
   const {direction, catagoryId} = props

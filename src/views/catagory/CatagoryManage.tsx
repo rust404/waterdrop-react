@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, FC} from "react";
 import {MoneyDirection} from "store/catagoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
@@ -50,7 +50,7 @@ const Wrapper = styled.section`
 
 interface ICatagoryManageProps extends React.HTMLProps<HTMLElement> {}
 
-const CatagoryManage: React.FC<ICatagoryManageProps> = props => {
+const CatagoryManage: FC<ICatagoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory();
   const {state: catagory} = useContext(CatagoryContext);

@@ -94,7 +94,7 @@ const RecordDetail: FC = () => {
     handleSelect
   } = useDatePicker();
   const {state: catagory} = useContext(CatagoryContext);
-  const {state: records, dispatch: dispatchRecords} = useContext(
+  const {state: records} = useContext(
     RecordContext
   );
   const history = useHistory();
@@ -115,7 +115,6 @@ const RecordDetail: FC = () => {
     }
   });
   const orderedRecords = Object.entries(hashMap).sort().reverse();
-  console.log(orderedRecords);
   const dateConfig = {
     year: {
       format: "YYYY",

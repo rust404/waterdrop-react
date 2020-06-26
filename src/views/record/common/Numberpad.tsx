@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, FC} from "react";
 import styled from "styled-components";
 import useCalcStr from "hooks/useCalcStr";
 import useDatePicker from "hooks/useDatePicker";
@@ -58,7 +58,7 @@ interface INumberPadProps {
   className?: string;
 }
 
-const NumberPad: React.FC<INumberPadProps> = props => {
+const NumberPad: FC<INumberPadProps> = props => {
   const {className, onChange, time, amount} = props;
   const {expStr, add, clear, setInitNum, getValue} = useCalcStr(amount);
   const {
@@ -71,7 +71,7 @@ const NumberPad: React.FC<INumberPadProps> = props => {
 
   useEffect(() => {
     setInitNum(amount || 0);
-  }, [amount]);
+  }, [amount, setInitNum]);
 
   useEffect(() => {
     setPickerState(state => {
@@ -80,7 +80,7 @@ const NumberPad: React.FC<INumberPadProps> = props => {
         time: new Date(time)
       };
     });
-  }, [time]);
+  }, [time, setPickerState]);
 
   const calcHandler = (e: React.MouseEvent<HTMLElement>) => {
     const value = (e.target as HTMLElement).dataset["value"];

@@ -7,6 +7,7 @@ import Icon from "components/Icon";
 import {findParent} from "util/index";
 import useQuery from "hooks/useQuery";
 import {isMoneyDirection, MoneyDirection} from "store/catagoryReducer";
+import {CATAGORY_ICON_NAMES} from "icons";
 
 const Wrapper = styled.div``;
 const Left = styled.span`
@@ -71,7 +72,6 @@ const CatagoryAdd = () => {
   const {dispatch} = useContext(CatagoryContext);
   const query = useQuery();
   const history = useHistory();
-  const iconNames = ["canyin", "custom", "dushu", "shejiao", "yundong"];
   const refInput = useRef<HTMLInputElement>(null);
   const [catagoryName, setCatagoryName] = useState("");
   const [iconName, setIconName] = useState("canyin");
@@ -144,7 +144,7 @@ const CatagoryAdd = () => {
       </CatagoryBox>
       <IconList>
         <ul onClick={handleIconListClick}>
-          {iconNames.map((name, index) => {
+          {CATAGORY_ICON_NAMES.map((name, index) => {
             return (
               <li key={index} data-name={name}>
                 <IconWrapper

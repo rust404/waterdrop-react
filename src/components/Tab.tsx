@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC} from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
@@ -36,7 +36,7 @@ interface ITabProps extends React.Props<HTMLElement> {
   value: any;
 }
 
-const Tab: React.FC<ITabProps> = props => {
+const Tab: FC<ITabProps> = props => {
   const {map, onChange, value} = props;
   const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
     const key = e.currentTarget.innerText;

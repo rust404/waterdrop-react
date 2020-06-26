@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState} from "react";
+import React, {FC, useContext} from "react";
 import Layout from "components/Layout";
 import Echarts from "components/Echarts";
 import {RecordContext, CatagoryContext} from "store";
@@ -71,8 +71,6 @@ const Statistics: FC = () => {
       return acc;
     }, {});
   };
-  console.log(catagoryAmounts(incomeRecords));
-  console.log(catagoryAmounts(expenditureRecords));
   const incomePieData = Object.entries(catagoryAmounts(incomeRecords)).map(
     item => {
       return {
@@ -134,8 +132,8 @@ const Statistics: FC = () => {
       // data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"]
       data: ["收入", "支出"],
       selected: {
-        "收入": false,
-        "支出": true
+        收入: false,
+        支出: true
       }
     },
     series: [

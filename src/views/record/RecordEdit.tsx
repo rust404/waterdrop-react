@@ -4,18 +4,19 @@ import React, {
   useRef,
   useCallback,
   useMemo,
-  useContext
+  useContext,
+  FC
 } from "react";
 import styled from "styled-components";
 import Catagory from "./common/Catagory";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/Numberpad";
-import {MoneyDirection} from "store/catagoryReducer";
+import {MoneyDirection, findCatagory} from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
 import {ValueOf} from "util/index";
 import {IRecord, findRecord} from "store/moneyRecordReducer";
-import {RecordContext} from "store";
+import {RecordContext, CatagoryContext} from "store";
 import {useHistory, useParams} from "react-router-dom";
 import Icon from "components/Icon";
 
@@ -52,11 +53,12 @@ interface alertDataType {
 
 export type recordDataFieldType = Partial<RecordData>;
 
-const RecordEdit: React.FC = () => {
+const RecordEdit: FC = () => {
   const history = useHistory();
   const {state: records, dispatch: dispatchRecords} = useContext(
     RecordContext
   );
+  const {state: catagory} = useContext(CatagoryContext)
   const {id} = useParams();
 
   const [recordData, setRecordData] = useState<RecordData>({
@@ -75,7 +77,6 @@ const RecordEdit: React.FC = () => {
       history.push("/record/detail");
     } else {
       const {catagoryId, direction, amount, time} = record;
-      console.log(amount);
       setRecordData({
         catagoryId,
         direction,
@@ -83,7 +84,7 @@ const RecordEdit: React.FC = () => {
         time
       });
     }
-  }, ["id"]);
+  }, [id, history, records]);
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
@@ -97,16 +98,20 @@ const RecordEdit: React.FC = () => {
         } else {
           data.amount = -Math.abs(data.amount);
         }
+        const catagoryItem = findCatagory(catagory, data.catagoryId)
+        if (catagoryItem && catagoryItem.direction !== data.direction) {
+          data.catagoryId = -1
+        }
         return data;
       });
     },
-    []
+    [catagory]
   );
   const submit = useCallback((amount: number, time: string) => {
     onChange("amount")(amount);
     onChange("time")(time);
     isSubmitting.current = true;
-  }, []);
+  }, [onChange]);
   // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
@@ -118,7 +123,7 @@ const RecordEdit: React.FC = () => {
     // 不能为空
     for (let i of Object.keys(recordData)) {
       if (
-        !(recordData as IndexedRecordDataType)[i] ||
+        (recordData as IndexedRecordDataType)[i] === undefined ||
         (i === "catagoryId" && recordData[i] === -1)
       ) {
         alert(alertData[i]);
@@ -135,7 +140,7 @@ const RecordEdit: React.FC = () => {
     });
     history.push("/record/detail");
     isSubmitting.current = false;
-  }, [recordData]);
+  }, [recordData, dispatchRecords, history, id]);
   const MTab = useMemo(() => {
     return (
       <Tab
@@ -147,7 +152,7 @@ const RecordEdit: React.FC = () => {
         }}
       />
     );
-  }, [direction]);
+  }, [direction, onChange]);
   return (
     <Wrapper>
       <TopBar
@@ -156,6 +161,19 @@ const RecordEdit: React.FC = () => {
             <Icon id="left" />
             返回
           </Left>
+        }
+        right={
+          <div onClick={() => {
+            if (window.confirm('确定删除此记录？')) {
+              dispatchRecords({
+                type: 'deleteRecord',
+                payload: {
+                  id: parseInt(id)
+                }
+              })
+              history.push('/record/detail')
+            }
+          }}>删除</div>
         }
       >
         {MTab}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC} from "react";
 import {NavLink} from "react-router-dom";
 import styled from "styled-components";
 import Icon from "components/Icon";
@@ -28,7 +28,7 @@ const NavWrapper = styled.nav`
     }
   }
 `;
-const Nav: React.FC = () => {
+const Nav: FC = () => {
   return (
     <NavWrapper>
       <ul>

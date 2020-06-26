@@ -4,7 +4,8 @@ import React, {
   useRef,
   useCallback,
   useMemo,
-  useContext
+  useContext,
+  FC
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
@@ -48,7 +49,7 @@ interface alertDataType {
 
 export type recordDataFieldType = Partial<RecordData>;
 
-const RecordAdd: React.FC = () => {
+const RecordAdd: FC = () => {
   const [recordData, setRecordData] = useState<RecordData>({
     catagoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
@@ -81,7 +82,7 @@ const RecordAdd: React.FC = () => {
     onChange("amount")(amount);
     onChange("time")(time);
     isSubmitting.current = true;
-  }, []);
+  }, [onChange]);
   // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
@@ -109,7 +110,7 @@ const RecordAdd: React.FC = () => {
     })
     history.push('/record/detail')
     isSubmitting.current = false;
-  }, [recordData]);
+  }, [recordData, history, dispatch]);
   const MTab = useMemo(() => {
     return (
       <Tab
@@ -121,7 +122,7 @@ const RecordAdd: React.FC = () => {
         }}
       />
     );
-  }, [direction]);
+  }, [direction, onChange]);
   return (
     <Layout>
       <Wrapper>

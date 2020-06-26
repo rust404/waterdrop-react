@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FC} from 'react'
 import Nav from './Nav'
 import styled from 'styled-components'
 
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `
 interface ILayoutProps extends React.Props<HTMLElement> {
 }
-const Layout: React.FC<ILayoutProps> = (props) => {
+const Layout: FC<ILayoutProps> = (props) => {
   return (
     <Wrapper>
       <div>

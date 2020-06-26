@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FC} from 'react'
 import styled from 'styled-components'
 import classnames from 'classnames'
 
@@ -33,7 +33,7 @@ interface ITopBarProps extends React.HTMLProps<HTMLElement> {
   left?: React.ReactNode;
   right?: React.ReactNode;
 }
-const TopBar: React.FC<ITopBarProps> = (props) => {
+const TopBar: FC<ITopBarProps> = (props) => {
   const {left, children, right, style} = props
 
   return (
