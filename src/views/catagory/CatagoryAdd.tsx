@@ -14,7 +14,6 @@ interface IconWrapperProps {
 }
 const Wrapper = styled.div`
   display: flex;
-  height: 100vh;
   flex-direction: column;
   overflow: hidden;
 `;

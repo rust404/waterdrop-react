@@ -24,7 +24,7 @@ a {
   color: inherit;
 }
 html {
-  height: 100vh;
+  height: 100%;
 }
 body {
   font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica,
@@ -32,7 +32,7 @@ body {
     "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN",
     "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti",
     SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 #root {
@@ -131,6 +131,6 @@ body {
 }
 .transition-wrapper {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }

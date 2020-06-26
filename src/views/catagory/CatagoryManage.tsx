@@ -16,7 +16,6 @@ const Left = styled.span`
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
-  height: 100vh;
   overflow: hidden;
   > ul {
     display: flex;
