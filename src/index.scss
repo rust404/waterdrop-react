@@ -42,3 +42,26 @@ body {
   display: block;
   clear: both;
 }
+.right-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.right-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 500ms;
+}
+.right-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+.right-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 500ms;
+}
+.transition-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
