@@ -27,6 +27,7 @@
     "classnames": "^2.2.6",
     "css-loader": "3.4.2",
     "datejs": "^1.0.0-rc3",
+    "dayjs": "^1.8.28",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
     "echarts": "^4.8.0",
@@ -65,6 +66,7 @@
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
     "semver": "6.3.0",
+    "source-map-explorer": "^2.4.2",
     "style-loader": "0.23.1",
     "styled-components": "^5.1.1",
     "terser-webpack-plugin": "2.3.5",
@@ -77,6 +79,7 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"

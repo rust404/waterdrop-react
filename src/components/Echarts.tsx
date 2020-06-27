@@ -1,5 +1,5 @@
 import React, {FC, useRef, useEffect, useState} from "react";
-import echarts, {ECharts, EChartOption} from "echarts";
+import {ECharts, EChartOption, init} from "echarts";
 
 interface IEchartsProps {
   option: EChartOption
@@ -13,7 +13,7 @@ const Echarts: FC<IEchartsProps> = (props) => {
     const node = chartContainerRef.current;
     node.style.width = "100vw";
     node.style.height = "300px";
-    setChart(echarts.init(node));
+    setChart(init(node));
   }, []);
 
   useEffect(() => {

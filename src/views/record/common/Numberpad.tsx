@@ -3,6 +3,7 @@ import styled from "styled-components";
 import useCalcStr from "hooks/useCalcStr";
 import useDatePicker from "hooks/useDatePicker";
 import Datepicker from "react-mobile-datepicker";
+import dayjs from 'dayjs'
 
 const Wrapper = styled.section`
   background-color: #ffd947;
@@ -139,7 +140,7 @@ const NumberPad: FC<INumberPadProps> = props => {
           <button data-value="2">2</button>
           <button data-value="3">3</button>
           <button data-value="date" onClick={handleClick}>
-            {new Date(pickerState.time).toString("yyyy/MM/dd")}
+            {dayjs(pickerState.time).format("YYYY/MM/DD")}
           </button>
           <button data-value="4">4</button>
           <button data-value="5">5</button>

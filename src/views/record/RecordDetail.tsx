@@ -10,6 +10,7 @@ import {IRecord} from "store/moneyRecordReducer";
 import {findCatagory, MoneyDirection} from "store/catagoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
+import dayjs from 'dayjs'
 
 const GeneralInfo = styled.div`
   padding: 36px;
@@ -107,7 +108,7 @@ const RecordDetail: FC = () => {
   });
   const hashMap: {[index: string]: IRecord[]} = {};
   filterdRecords.forEach(record => {
-    const key = new Date(record.time).toString("yyyy-MM-dd");
+    const key = dayjs(record.time).format("YYYY-MM-DD");
     if (hashMap[key]) {
       hashMap[key].push(record);
     } else {
@@ -172,7 +173,7 @@ const RecordDetail: FC = () => {
           return (
             <RecordItem key={item[0]}>
               <div className="date-info">
-                <span>{new Date(item[0]).toString("yyyy年MM月dd日")}</span>
+                <span>{dayjs(item[0]).format("YYYY年MM月DD日")}</span>
                 <span>
                   收入：
                   {item[1].reduce<number>((acc, item) => {

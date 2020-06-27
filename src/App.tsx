@@ -5,7 +5,6 @@ import {
 import catagoryReducer, {loadCatagory} from "store/catagoryReducer";
 import {CatagoryContext, RecordContext} from "store";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
-import "datejs";
 import Routes from './routes'
 
 function App() {

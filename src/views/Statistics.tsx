@@ -1,6 +1,5 @@
-import React, {FC, useContext} from "react";
+import React, {FC, useContext, lazy, Suspense} from "react";
 import Layout from "components/Layout";
-import Echarts from "components/Echarts";
 import {RecordContext, CatagoryContext} from "store";
 import {EChartOption} from "echarts";
 import {MoneyDirection, findCatagory} from "store/catagoryReducer";
@@ -9,6 +8,9 @@ import Datepicker from "react-mobile-datepicker";
 import useDatePicker from "hooks/useDatePicker";
 import {IRecord} from "store/moneyRecordReducer";
 import styled from "styled-components";
+import dayjs from "dayjs";
+// import Echarts from "components/Echarts";
+const Echarts = lazy(() => import("components/Echarts"));
 
 const ContentWrapper = styled.div`
   flex: 1;
@@ -31,7 +33,7 @@ const Statistics: FC = () => {
     );
   });
   const getDatesByTime = (time: Date) => {
-    const dateCount = Date.getDaysInMonth(time.getFullYear(), time.getMonth());
+    const dateCount = dayjs(time).daysInMonth();
     return Array(dateCount)
       .fill(0)
       .map((_, i) => i + 1);
@@ -184,12 +186,14 @@ const Statistics: FC = () => {
     <Layout>
       <TopBar style={{flexShrink: 0}}>
         <span onClick={handleClick}>
-          {new Date(pickerState.time).toString("yyyy年MM月")}&#9660;
+          {dayjs(pickerState.time).format("YYYY年MM月")}&#9660;
         </span>
       </TopBar>
       <ContentWrapper>
-           <Echarts option={option} />
-            <Echarts option={pieOption} />
+        <Suspense fallback={<div>图表加载中</div>}>
+          <Echarts option={option} />
+          <Echarts option={pieOption} />
+        </Suspense>
       </ContentWrapper>
       <Datepicker
         theme="ios"
