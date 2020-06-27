@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState, useEffect} from "react";
+import React, {FC, useContext} from "react";
 import Layout from "components/Layout";
 import Echarts from "components/Echarts";
 import {RecordContext, CatagoryContext} from "store";
@@ -17,12 +17,6 @@ const ContentWrapper = styled.div`
 const Statistics: FC = () => {
   const {state: records} = useContext(RecordContext);
   const {state: catagory} = useContext(CatagoryContext);
-  const [showCharts, setShowCharts] = useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      setShowCharts(true);
-    }, 800);
-  }, []);
   const {
     pickerState,
     handleCancel,
@@ -194,14 +188,8 @@ const Statistics: FC = () => {
         </span>
       </TopBar>
       <ContentWrapper>
-        {showCharts ? (
-          <>
-            <Echarts option={option} />
+           <Echarts option={option} />
             <Echarts option={pieOption} />
-          </>
-        ) : (
-            <div>loading</div>
-          )}
       </ContentWrapper>
       <Datepicker
         theme="ios"
