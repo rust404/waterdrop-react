@@ -120,14 +120,14 @@ body {
 }
 .fade-enter-active {
   opacity: 1;
-  transition: all $duration;
+  // transition: all $duration;
 }
 .fade-exit {
   opacity: 1;
 }
 .fade-exit-active {
   opacity: 0;
-  transition: all $duration;
+  // transition: all $duration;
 }
 .transition-wrapper {
   width: 100vw;

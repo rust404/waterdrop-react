@@ -17,12 +17,12 @@ const ContentWrapper = styled.div`
 const Statistics: FC = () => {
   const {state: records} = useContext(RecordContext);
   const {state: catagory} = useContext(CatagoryContext);
-  const [showCharts, setShowCharts] = useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      setShowCharts(true);
-    }, 800);
-  }, []);
+  // const [showCharts, setShowCharts] = useState(false);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setShowCharts(true);
+  //   }, 800);
+  // }, []);
   const {
     pickerState,
     handleCancel,
@@ -194,14 +194,14 @@ const Statistics: FC = () => {
         </span>
       </TopBar>
       <ContentWrapper>
-        {showCharts ? (
-          <>
+        {/* {showCharts ? ( */}
+        {/*   <> */}
             <Echarts option={option} />
             <Echarts option={pieOption} />
-          </>
-        ) : (
-            <div>loading</div>
-          )}
+          {/* </> */}
+        {/* ) : ( */}
+          {/*   <div>loading</div> */}
+          {/* )} */}
       </ContentWrapper>
       <Datepicker
         theme="ios"
