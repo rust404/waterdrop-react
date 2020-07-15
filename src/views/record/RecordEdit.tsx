@@ -5,19 +5,19 @@ import React, {
   useCallback,
   useMemo,
   useContext,
-  FC
+  FC,
 } from "react";
 import styled from "styled-components";
 import Catagory from "./common/Catagory";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/Numberpad";
-import {MoneyDirection, findCatagory} from "store/catagoryReducer";
+import { MoneyDirection, findCatagory } from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
-import {ValueOf} from "util/index";
-import {IRecord, findRecord} from "store/moneyRecordReducer";
-import {RecordContext, CatagoryContext} from "store";
-import {useHistory, useParams} from "react-router-dom";
+import { ValueOf } from "util/index";
+import { IRecord, findRecord } from "store/moneyRecordReducer";
+import { RecordContext, CatagoryContext } from "store";
+import { useHistory, useParams } from "react-router-dom";
 import Icon from "components/Icon";
 
 const Left = styled.span`
@@ -55,75 +55,79 @@ export type recordDataFieldType = Partial<RecordData>;
 
 const RecordEdit: FC = () => {
   const history = useHistory();
-  const {state: records, dispatch: dispatchRecords} = useContext(
+  const { state: records, dispatch: dispatchRecords } = useContext(
     RecordContext
   );
-  const {state: catagory} = useContext(CatagoryContext)
-  const {id} = useParams();
+  const { state: catagory } = useContext(CatagoryContext);
+  const { id } = useParams();
 
   const [recordData, setRecordData] = useState<RecordData>({
     catagoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
     amount: 0,
-    time: new Date().toISOString()
+    time: new Date().toISOString(),
   });
   const isSubmitting = useRef(false);
-  const {catagoryId, direction, time, amount} = recordData;
+  const { catagoryId, direction, time, amount } = recordData;
 
   useEffect(() => {
     const record = findRecord(records, parseInt(id));
     if (!record) {
       history.push("/record/detail");
     } else {
-      const {catagoryId, direction, amount, time} = record;
+      const { catagoryId, direction, amount, time } = record;
       setRecordData({
         catagoryId,
         direction,
         amount,
-        time
+        time,
       });
     }
   }, [id, history, records]);
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
-      setRecordData(state => {
+      setRecordData((state) => {
         const data = {
           ...state,
-          [key]: value
+          [key]: value,
         };
         if (data.direction === MoneyDirection.INCOME) {
           data.amount = Math.abs(data.amount);
         } else {
           data.amount = -Math.abs(data.amount);
         }
-        const catagoryItem = findCatagory(catagory, data.catagoryId)
+        const catagoryItem = findCatagory(catagory, data.catagoryId);
         if (catagoryItem && catagoryItem.direction !== data.direction) {
-          data.catagoryId = -1
+          data.catagoryId = -1;
         }
         return data;
       });
     },
     [catagory]
   );
-  const submit = useCallback((amount: number, time: string) => {
-    onChange("amount")(amount);
-    onChange("time")(time);
-    isSubmitting.current = true;
-  }, [onChange]);
+  const submit = useCallback(
+    (amount: number, time: string) => {
+      onChange("amount")(amount);
+      onChange("time")(time);
+      isSubmitting.current = true;
+    },
+    [onChange]
+  );
   // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
 
     const alertData: alertDataType = {
       catagoryId: "请选择分类",
-      amount: "钱不能为0"
+      amount: "钱不能为0",
     };
     // 不能为空
     for (let i of Object.keys(recordData)) {
       if (
-        (recordData as IndexedRecordDataType)[i] === undefined ||
-        (i === "catagoryId" && recordData[i] === -1)
+        (i === "catagoryId" && recordData[i] === -1) ||
+        (i === "amount" && recordData[i] === 0) ||
+        (recordData as IndexedRecordDataType)[i] === undefined
       ) {
         alert(alertData[i]);
         isSubmitting.current = false;
@@ -134,8 +138,8 @@ const RecordEdit: FC = () => {
       type: "modifyRecord",
       payload: {
         id: parseInt(id),
-        ...recordData
-      }
+        ...recordData,
+      },
     });
     history.goBack();
     isSubmitting.current = false;
@@ -147,7 +151,7 @@ const RecordEdit: FC = () => {
         value={direction}
         map={{
           支出: MoneyDirection.EXPENDITURE,
-          收入: MoneyDirection.INCOME
+          收入: MoneyDirection.INCOME,
         }}
       />
     );
@@ -162,16 +166,20 @@ const RecordEdit: FC = () => {
           </Left>
         }
         right={
-          <div onClick={() => {
-            if (window.confirm('确定删除此记录？')) {
-              dispatchRecords({
-                type: 'deleteRecord',
-                payload: {
-                  id: parseInt(id)
-                }
-              })
-            }
-          }}>删除</div>
+          <div
+            onClick={() => {
+              if (window.confirm("确定删除此记录？")) {
+                dispatchRecords({
+                  type: "deleteRecord",
+                  payload: {
+                    id: parseInt(id),
+                  },
+                });
+              }
+            }}
+          >
+            删除
+          </div>
         }
       >
         {MTab}

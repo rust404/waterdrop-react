@@ -5,20 +5,20 @@ import React, {
   useCallback,
   useMemo,
   useContext,
-  FC
+  FC,
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
 import Catagory from "./common/Catagory";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/Numberpad";
-import {MoneyDirection} from "store/catagoryReducer";
+import { MoneyDirection } from "store/catagoryReducer";
 import TopBar from "components/TopBar";
 import Tab from "components/Tab";
-import {ValueOf} from "util/index";
-import {IRecord} from 'store/moneyRecordReducer'
-import {RecordContext} from "store";
-import {useHistory} from "react-router-dom";
+import { ValueOf } from "util/index";
+import { IRecord } from "store/moneyRecordReducer";
+import { RecordContext } from "store";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,19 +54,19 @@ const RecordAdd: FC = () => {
     catagoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
     amount: 0,
-    time: (new Date()).toISOString()
+    time: new Date().toISOString(),
   });
-  const history = useHistory()
-  const {dispatch} = useContext(RecordContext)
+  const history = useHistory();
+  const { dispatch } = useContext(RecordContext);
   const isSubmitting = useRef(false);
-  const {catagoryId, direction, time} = recordData;
+  const { catagoryId, direction, time } = recordData;
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
-      setRecordData(state => {
+      setRecordData((state) => {
         const data = {
           ...state,
-          [key]: value
+          [key]: value,
         };
         if (data.direction === MoneyDirection.INCOME) {
           data.amount = Math.abs(data.amount);
@@ -78,37 +78,42 @@ const RecordAdd: FC = () => {
     },
     []
   );
-  const submit = useCallback((amount: number, time: string) => {
-    onChange("amount")(amount);
-    onChange("time")(time);
-    isSubmitting.current = true;
-  }, [onChange]);
+  const submit = useCallback(
+    (amount: number, time: string) => {
+      onChange("amount")(amount);
+      onChange("time")(time);
+      isSubmitting.current = true;
+    },
+    [onChange]
+  );
   // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
 
     const alertData: alertDataType = {
       catagoryId: "请选择分类",
-      amount: "钱不能为0"
+      amount: "钱不能为0",
     };
     // 不能为空
     for (let i of Object.keys(recordData)) {
       if (
-        !(recordData as IndexedRecordDataType)[i] ||
-        (i === "catagoryId" && recordData[i] === -1)
+        (i === "catagoryId" && recordData[i] === -1) ||
+        (i === "amount" && recordData[i] === 0) ||
+        (recordData as IndexedRecordDataType)[i] === undefined
       ) {
         alert(alertData[i]);
         isSubmitting.current = false;
         return;
       }
     }
+    console.log(recordData);
     dispatch({
-      type: 'addRecord',
+      type: "addRecord",
       payload: {
-        ...recordData
-      }
-    })
-    history.push('/record/detail')
+        ...recordData,
+      },
+    });
+    history.push("/record/detail");
     isSubmitting.current = false;
   }, [recordData, history, dispatch]);
   const MTab = useMemo(() => {
@@ -118,7 +123,7 @@ const RecordAdd: FC = () => {
         value={direction}
         map={{
           支出: MoneyDirection.EXPENDITURE,
-          收入: MoneyDirection.INCOME
+          收入: MoneyDirection.INCOME,
         }}
       />
     );
