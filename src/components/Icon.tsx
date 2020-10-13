@@ -18,7 +18,7 @@ interface IProps {
   onClick?: (e: React.MouseEvent<SVGSVGElement>) => void
 }
 const Icon: FC<IProps> = (props) => {
-  const {id, size = '24px', ...rest} = props
+  const {id, size = '1em', ...rest} = props
   return (
     <svg {...rest} width={size} height={size}>
       <use xlinkHref={'#' + id} />
@@ -26,7 +26,7 @@ const Icon: FC<IProps> = (props) => {
   )
 }
 Icon.defaultProps = {
-  size: '24px',
+  size: '1em',
   fill: '#000',
   className: '',
   onClick: () => {}
