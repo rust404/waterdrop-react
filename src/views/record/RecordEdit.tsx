@@ -9,7 +9,7 @@ import React, {
 import styled from "styled-components";
 import Category from "./common/Category";
 import Remarks from "./common/Remarks";
-import NumberPad from "./common/Numberpad";
+import NumberPad from "./common/NumberPad";
 import { MoneyDirection, findCategory } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
@@ -18,6 +18,7 @@ import { RecordContext, CategoryContext } from "store";
 import { useHistory, useParams } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
+import CalcStrBar from "./common/CalcStrBar";
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,6 +54,7 @@ const RecordEdit: FC = () => {
   const { state: records, dispatch: dispatchRecords } = useContext(
     RecordContext
   );
+  const [calcStr, setCalcStr] = useState('0')
   const { state: category } = useContext(CategoryContext);
   const { id } = useParams();
 
@@ -77,6 +79,7 @@ const RecordEdit: FC = () => {
         amount,
         time,
       });
+      setCalcStr(''+amount)
     }
   }, [id, history, records]);
 
@@ -109,6 +112,18 @@ const RecordEdit: FC = () => {
     },
     [onChange]
   );
+  const onDateChange = useCallback((date: Date) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        time: date.toISOString()
+      }
+    })
+  }, [])
+  const onCalcStrChange = useCallback((str: string) => {
+    console.log('change', str)
+    setCalcStr(str)
+  }, [])
   // validate
   useEffect(() => {
     if (!isSubmitting.current) return;
@@ -154,11 +169,14 @@ const RecordEdit: FC = () => {
         className="category"
       />
       <Remarks/>
+      <CalcStrBar calcStr={calcStr}/>
       <NumberPad
+        date={new Date(time)}
         amount={amount}
-        time={time}
+        onDateChange={onDateChange}
+        onCalcStrChange={onCalcStrChange}
         className="pad"
-        onChange={submit}
+        onSubmit={submit}
       />
     </Wrapper>
   );

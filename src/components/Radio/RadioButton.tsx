@@ -1,4 +1,4 @@
-import React, {MouseEvent, FC} from "react";
+import React, {FC} from "react";
 import {brandColor} from "../../style/variables";
 import styled from "styled-components";
 import classNames from "classnames";

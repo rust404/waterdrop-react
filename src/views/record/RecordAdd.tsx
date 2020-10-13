@@ -10,7 +10,7 @@ import Layout from "components/Layout";
 import styled from "styled-components";
 import Category from "./common/Category";
 import Remarks from "./common/Remarks";
-import NumberPad from "./common/Numberpad";
+import NumberPad from "./common/NumberPad";
 import { MoneyDirection } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
@@ -19,6 +19,7 @@ import { RecordContext } from "store";
 import { useHistory } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
+import CalcStrBar from "./common/CalcStrBar";
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,6 +57,7 @@ const RecordAdd: FC = () => {
     amount: 0,
     time: new Date().toISOString(),
   });
+  const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
   const { dispatch } = useContext(RecordContext);
   const isSubmitting = useRef(false);
@@ -78,6 +80,17 @@ const RecordAdd: FC = () => {
     },
     []
   );
+  const onDateChange = useCallback((date: Date) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        time: date.toISOString()
+      }
+    })
+  }, [])
+  const onCalcStrChange = useCallback((str: string) => {
+    setCalcStr(str)
+  }, [])
   const submit = useCallback(
     (amount: number, time: string) => {
       onChange("amount")(amount);
@@ -131,7 +144,14 @@ const RecordAdd: FC = () => {
           className="category"
         />
         <Remarks/>
-        <NumberPad time={time} className="pad" onChange={submit}/>
+        <CalcStrBar calcStr={calcStr}/>
+        <NumberPad
+          date={new Date(time)}
+          onDateChange={onDateChange}
+          onCalcStrChange={onCalcStrChange}
+          className="pad"
+          onSubmit={submit}
+        />
       </Wrapper>
     </Layout>
   );

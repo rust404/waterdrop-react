@@ -51,32 +51,33 @@ const useCalcStr = (initNum?: number) => {
     }
   }
   function addOp(op: string) {
-    const ret = getValue();
-    setLeft(ret + "");
-    setRight("");
+    if (right.length !== 0) {
+      getValue()
+    }
     setOp(op);
   }
   const getValue = () => {
-    let ret;
-    if (right.length === 0) {
-      ret = parseFloat(left);
+    let result:number
+    if (op === '+') {
+      result = +left + +right
     } else {
-      if (op === "+") {
-        ret = parseFloat(left) + parseFloat(right);
-      } else if (op === "-") {
-        ret = parseFloat(left) - parseFloat(right);
-      }
+      result = +left - +right
     }
-    if (!ret) return 0;
-    if (/\.\d{2,}/.test(ret.toString())) {
-      ret = ret.toFixed(2);
-    }
-    return ret as number;
+    // 如果为.00，则说明为整数，可以去除
+    setLeft(result.toFixed(2).replace(/\.00$/, ''))
+    setRight('')
+    setOp('')
   };
   const clear = () => {
-    setLeft("0");
-    setRight("");
-    setOp("");
+    if (right) {
+      setRight(right.slice(0, -1))
+    } else if (op) {
+      setOp('')
+    } else if (left.length > 1) {
+      setLeft(left.slice(0, -1))
+    } else {
+      setLeft('0')
+    }
   };
   const expStr = left + op + right;
   return {expStr, add, clear, getValue, setInitNum};
