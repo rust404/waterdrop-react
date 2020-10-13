@@ -11,6 +11,7 @@ import {findCategory, MoneyDirection} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
+import DatePicker from "../../components/DatePicker/DatePicker";
 
 const GeneralInfo = styled.div`
   padding: 36px;
@@ -159,15 +160,15 @@ const RecordDetail: FC = () => {
           <div className="date">{month}月支出</div>
         </div>
       </GeneralInfo>
-      <Datepicker
-        theme="ios"
-        headerFormat="YYYY/MM"
-        dateConfig={dateConfig}
-        value={pickerState.time}
-        onCancel={handleCancel}
-        onSelect={handleSelect}
-        isOpen={pickerState.isOpen}
-      />
+      {/*<Datepicker*/}
+      {/*  theme="ios"*/}
+      {/*  headerFormat="YYYY/MM"*/}
+      {/*  dateConfig={dateConfig}*/}
+      {/*  value={pickerState.time}*/}
+      {/*  onCancel={handleCancel}*/}
+      {/*  onSelect={handleSelect}*/}
+      {/*  isOpen={pickerState.isOpen}*/}
+      {/*/>*/}
       <RecordsWrapper>
         {orderedRecords.map(item => {
           return (
@@ -216,6 +217,10 @@ const RecordDetail: FC = () => {
           );
         })}
       </RecordsWrapper>
+      <DatePicker
+        date={new Date()}
+        pickerType="full-date"
+      />
     </Layout>
   );
 };
