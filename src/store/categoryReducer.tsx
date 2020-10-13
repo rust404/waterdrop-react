@@ -8,24 +8,24 @@ export function isMoneyDirection(type: string) {
   return type in MoneyDirection;
 }
 
-export interface ICatagoryItem {
+export interface ICategoryItem {
   name: string;
   icon: string;
   id: number;
   direction: MoneyDirection;
 }
 
-export type ICatagoryAction =
-  | IAddCatagoryAction
-  | IDeleteCatagoryAction
-  | IModifyCatagoryAction;
+export type ICategoryAction =
+  | IAddCategoryAction
+  | IDeleteCategoryAction
+  | IModifyCategoryAction;
 
-type ICatagoryReducer<T extends ICatagoryAction> = React.Reducer<
-  ICatagoryItem[],
+type ICategoryReducer<T extends ICategoryAction> = React.Reducer<
+  ICategoryItem[],
   T
 >;
 
-const defaultCatagoryList = [
+const defaultCategoryList = [
   {name: "餐饮", icon: "canyin", direction: MoneyDirection.EXPENDITURE},
   {name: "服饰", icon: "fushi", direction: MoneyDirection.EXPENDITURE},
   {name: "读书", icon: "dushu", direction: MoneyDirection.EXPENDITURE},
@@ -41,12 +41,12 @@ const defaultCatagoryList = [
   {name: "理财", icon: "licai", direction: MoneyDirection.INCOME}
 ];
 
-interface IAddCatagoryAction {
-  type: "addCatagory";
-  payload: Pick<ICatagoryItem, "name" | "direction" | "icon">;
+interface IAddCategoryAction {
+  type: "addCategory";
+  payload: Pick<ICategoryItem, "name" | "direction" | "icon">;
 }
 
-const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (state, action) => {
+const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
   for (let i = 0; i < state.length; i++) {
     if (state[i].name === action.payload.name) return state;
   }
@@ -61,11 +61,11 @@ const addCatagory: ICatagoryReducer<IAddCatagoryAction> = (state, action) => {
   return newList;
 };
 
-interface IDeleteCatagoryAction {
-  type: "deleteCatagory";
-  payload: Pick<ICatagoryItem, "id">;
+interface IDeleteCategoryAction {
+  type: "deleteCategory";
+  payload: Pick<ICategoryItem, "id">;
 }
-const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (
+const deleteCategory: ICategoryReducer<IDeleteCategoryAction> = (
   state,
   action
 ) => {
@@ -74,11 +74,11 @@ const deleteCatagory: ICatagoryReducer<IDeleteCatagoryAction> = (
   });
 };
 
-interface IModifyCatagoryAction {
-  type: "modifyCatagory";
-  payload: Pick<ICatagoryItem, "id"> & Partial<ICatagoryItem>;
+interface IModifyCategoryAction {
+  type: "modifyCategory";
+  payload: Pick<ICategoryItem, "id"> & Partial<ICategoryItem>;
 }
-const modifyCatagory: ICatagoryReducer<IModifyCatagoryAction> = (
+const modifyCategory: ICategoryReducer<IModifyCategoryAction> = (
   state,
   action
 ) => {
@@ -94,11 +94,11 @@ const modifyCatagory: ICatagoryReducer<IModifyCatagoryAction> = (
   return newState;
 };
 
-export const loadCatagory = () => {
-  const catagoryStr = window.localStorage.getItem("catagory");
-  let catagory: ICatagoryItem[];
-  if (!catagoryStr) {
-    catagory = defaultCatagoryList.map(item => {
+export const loadCategory = () => {
+  const categoryStr = window.localStorage.getItem("category");
+  let category: ICategoryItem[];
+  if (!categoryStr) {
+    category = defaultCategoryList.map(item => {
       return {
         ...item,
         direction: item.direction,
@@ -106,30 +106,30 @@ export const loadCatagory = () => {
       };
     });
   } else {
-    catagory = JSON.parse(catagoryStr);
-    cid = Math.max(...catagory.map(item => item.id)) + 1;
+    category = JSON.parse(categoryStr);
+    cid = Math.max(...category.map(item => item.id)) + 1;
   }
-  return catagory;
+  return category;
 };
 
-export const findCatagory = (
-  state: ICatagoryItem[],
+export const findCategory = (
+  state: ICategoryItem[],
   id: number
 ) => {
   return state.filter(item => item.id === id)[0];
 };
 
-const catagoryReducer: ICatagoryReducer<ICatagoryAction> = (state, action) => {
+const categoryReducer: ICategoryReducer<ICategoryAction> = (state, action) => {
   switch (action.type) {
-    case "addCatagory":
-      return addCatagory(state, action);
-    case "deleteCatagory":
-      return deleteCatagory(state, action);
-    case "modifyCatagory":
-      return modifyCatagory(state, action);
+    case "addCategory":
+      return addCategory(state, action);
+    case "deleteCategory":
+      return deleteCategory(state, action);
+    case "modifyCategory":
+      return modifyCategory(state, action);
     default:
       return state;
   }
 };
 
-export default catagoryReducer;
+export default categoryReducer;

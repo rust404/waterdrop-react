@@ -1,12 +1,12 @@
 import React, {useContext, useState, useRef, useEffect} from "react";
-import {CatagoryContext} from "store";
+import {CategoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import {findParent} from "util/index";
 import useQuery from "hooks/useQuery";
-import {isMoneyDirection, MoneyDirection} from "store/catagoryReducer";
+import {isMoneyDirection, MoneyDirection} from "store/categoryReducer";
 import {CATAGORY_ICON_NAMES} from "icons";
 
 interface IconWrapperProps {
@@ -16,10 +16,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-`;
-const Left = styled.span`
-  display: flex;
-  align-items: center;
 `;
 const Right = styled.span`
   font-size: 14px;
@@ -35,7 +31,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
     props.backgroundColor ? props.backgroundColor : "#ffd947"};
 `;
 
-const CatagoryBox = styled.div`
+const CategoryBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,7 +40,7 @@ const CatagoryBox = styled.div`
   *:first-child {
     flex-shrink: 0;
   }
-  .catagory-name {
+  .category-name {
     width: 0;
     flex: 1;
     border: none;
@@ -72,38 +68,38 @@ const IconList = styled.div`
     }
   }
 `;
-const CatagoryAdd = () => {
-  const {dispatch} = useContext(CatagoryContext);
+const CategoryAdd = () => {
+  const {dispatch} = useContext(CategoryContext);
   const query = useQuery();
   const history = useHistory();
   const refInput = useRef<HTMLInputElement>(null);
-  const [catagoryName, setCatagoryName] = useState("");
+  const [categoryName, setCategoryName] = useState("");
   const [iconName, setIconName] = useState("canyin");
   const direction = query.get("direction");
   if (!isMoneyDirection(direction || "")) {
-    history.push("/catagory/manage");
+    history.push("/category/manage");
   }
   const MoneyDirectionMap = {
     [MoneyDirection.INCOME]: "收入",
     [MoneyDirection.EXPENDITURE]: "支出"
   };
   const submit = () => {
-    if (!catagoryName || !iconName) {
+    if (!categoryName || !iconName) {
       alert("未填写完整");
       return;
     }
     dispatch({
-      type: "addCatagory",
+      type: "addCategory",
       payload: {
         direction: direction as MoneyDirection,
         icon: iconName,
-        name: catagoryName
+        name: categoryName
       }
     });
     history.goBack();
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCatagoryName(e.currentTarget.value);
+    setCategoryName(e.currentTarget.value);
   };
   useEffect(() => {
     let element = refInput.current;
@@ -123,29 +119,24 @@ const CatagoryAdd = () => {
   return (
     <Wrapper>
       <TopBar
-        left={
-          <Left onClick={() => history.goBack()}>
-            <Icon id="left" />
-            返回
-          </Left>
-        }
+        showBack
         right={<Right onClick={submit}>完成</Right>}
       >
         增加{MoneyDirectionMap[direction as MoneyDirection]}类别
       </TopBar>
-      <CatagoryBox>
+      <CategoryBox>
         <IconWrapper>
           <Icon id={iconName} />
         </IconWrapper>
         <input
           placeholder="分类名称"
           ref={refInput}
-          className="catagory-name"
+          className="category-name"
           type="text"
-          value={catagoryName}
+          value={categoryName}
           onChange={handleInput}
         />
-      </CatagoryBox>
+      </CategoryBox>
       <IconList>
         <ul onClick={handleIconListClick}>
           {CATAGORY_ICON_NAMES.map((name, index) => {
@@ -165,4 +156,4 @@ const CatagoryAdd = () => {
   );
 };
 
-export default CatagoryAdd;
+export default CategoryAdd;

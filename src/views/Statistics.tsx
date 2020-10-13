@@ -1,15 +1,16 @@
 import React, { FC, useContext, useState, lazy, Suspense } from "react";
 import Layout from "components/Layout";
-import { RecordContext, CatagoryContext } from "store";
+import { RecordContext, CategoryContext } from "store";
 import { EChartOption } from "echarts";
-import { MoneyDirection, findCatagory } from "store/catagoryReducer";
+import { MoneyDirection, findCategory } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import Datepicker from "react-mobile-datepicker";
 import useDatePicker from "hooks/useDatePicker";
 import { IRecord } from "store/moneyRecordReducer";
 import styled from "styled-components";
 import dayjs from "dayjs";
-import Tab from "components/Tab";
+import RadioGroup from "../components/Radio/RadioGroup";
+import RadioButton from "../components/Radio/RadioButton";
 // import Echarts from "components/Echarts";
 const Echarts = lazy(() => import("components/Echarts"));
 
@@ -32,7 +33,7 @@ const directionName = {
 };
 const Statistics: FC = () => {
   const { state: records } = useContext(RecordContext);
-  const { state: catagory } = useContext(CatagoryContext);
+  const { state: category } = useContext(CategoryContext);
   const {
     pickerState,
     handleCancel,
@@ -70,18 +71,18 @@ const Statistics: FC = () => {
     amountsReducer,
     dates.map(() => 0)
   );
-  const catagoryAmounts = (records: IRecord[]) => {
+  const categoryAmounts = (records: IRecord[]) => {
     return records.reduce<{ [index: string]: number }>((acc, record) => {
-      const catagoryName = findCatagory(catagory, record.catagoryId).name;
-      if (acc[catagoryName]) {
-        acc[catagoryName] += record.amount;
+      const categoryName = findCategory(category, record.categoryId).name;
+      if (acc[categoryName]) {
+        acc[categoryName] += record.amount;
       } else {
-        acc[catagoryName] = record.amount;
+        acc[categoryName] = record.amount;
       }
       return acc;
     }, {});
   };
-  const catagoryData = Object.entries(catagoryAmounts(filteredRecords))
+  const categoryData = Object.entries(categoryAmounts(filteredRecords))
     .map((item) => {
       return {
         name: item[0],
@@ -120,7 +121,7 @@ const Statistics: FC = () => {
       {
         name: directionName[direction],
         type: "pie",
-        data: catagoryData,
+        data: categoryData,
         label: {
           position: "inner",
           formatter: "{b}:{c}\n{d}%",
@@ -142,17 +143,11 @@ const Statistics: FC = () => {
   };
   return (
     <Layout>
-      <TopBar>
-        <Tab
-          onChange={(direction) => {
-            setDirection(direction);
-          }}
-          value={direction}
-          map={{
-            支出: MoneyDirection.EXPENDITURE,
-            收入: MoneyDirection.INCOME,
-          }}
-        />
+     <TopBar>
+        <RadioGroup value={direction} onChange={(d) => setDirection(d as MoneyDirection)}>
+          <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
+          <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+        </RadioGroup>
       </TopBar>
       <ContentWrapper>
         <div className="date" onClick={handleClick}>

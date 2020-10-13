@@ -3,22 +3,22 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo,
   useContext,
   FC,
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
-import Catagory from "./common/Catagory";
+import Category from "./common/Category";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/Numberpad";
-import { MoneyDirection } from "store/catagoryReducer";
+import { MoneyDirection } from "store/categoryReducer";
 import TopBar from "components/TopBar";
-import Tab from "components/Tab";
 import { ValueOf } from "util/index";
 import { IRecord } from "store/moneyRecordReducer";
 import { RecordContext } from "store";
 import { useHistory } from "react-router-dom";
+import RadioGroup from "../../components/Radio/RadioGroup";
+import RadioButton from "../../components/Radio/RadioButton";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   height: 100%;
   min-height: 0;
   flex: 1;
-  .catagory {
+  .category {
     flex: 1;
     overflow: auto;
   }
@@ -34,14 +34,14 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-type RecordData = Pick<IRecord, "catagoryId" | "time" | "direction" | "amount">;
+type RecordData = Pick<IRecord, "categoryId" | "time" | "direction" | "amount">;
 
 interface IndexedRecordDataType extends RecordData {
   [index: string]: number | MoneyDirection | string;
 }
 
 interface alertDataType {
-  catagoryId: string;
+  categoryId: string;
   direction?: string;
   amount: string;
   [index: string]: string | undefined;
@@ -51,7 +51,7 @@ export type recordDataFieldType = Partial<RecordData>;
 
 const RecordAdd: FC = () => {
   const [recordData, setRecordData] = useState<RecordData>({
-    catagoryId: -1,
+    categoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
     amount: 0,
     time: new Date().toISOString(),
@@ -59,7 +59,7 @@ const RecordAdd: FC = () => {
   const history = useHistory();
   const { dispatch } = useContext(RecordContext);
   const isSubmitting = useRef(false);
-  const { catagoryId, direction, time } = recordData;
+  const { categoryId, direction, time } = recordData;
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
@@ -91,13 +91,13 @@ const RecordAdd: FC = () => {
     if (!isSubmitting.current) return;
 
     const alertData: alertDataType = {
-      catagoryId: "请选择分类",
+      categoryId: "请选择分类",
       amount: "钱不能为0",
     };
     // 不能为空
     for (let i of Object.keys(recordData)) {
       if (
-        (i === "catagoryId" && recordData[i] === -1) ||
+        (i === "categoryId" && recordData[i] === -1) ||
         (i === "amount" && recordData[i] === 0) ||
         (recordData as IndexedRecordDataType)[i] === undefined
       ) {
@@ -106,7 +106,6 @@ const RecordAdd: FC = () => {
         return;
       }
     }
-    console.log(recordData);
     dispatch({
       type: "addRecord",
       payload: {
@@ -116,30 +115,23 @@ const RecordAdd: FC = () => {
     history.push("/record/detail");
     isSubmitting.current = false;
   }, [recordData, history, dispatch]);
-  const MTab = useMemo(() => {
-    return (
-      <Tab
-        onChange={onChange("direction")}
-        value={direction}
-        map={{
-          支出: MoneyDirection.EXPENDITURE,
-          收入: MoneyDirection.INCOME,
-        }}
-      />
-    );
-  }, [direction, onChange]);
   return (
     <Layout>
       <Wrapper>
-        <TopBar>{MTab}</TopBar>
-        <Catagory
+        <TopBar>
+          <RadioGroup value={recordData.direction} onChange={onChange('direction')}>
+            <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
+            <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+          </RadioGroup>
+        </TopBar>
+        <Category
           direction={direction}
-          catagoryId={catagoryId}
-          onChange={onChange("catagoryId")}
-          className="catagory"
-        ></Catagory>
-        <Remarks></Remarks>
-        <NumberPad time={time} className="pad" onChange={submit}></NumberPad>
+          categoryId={categoryId}
+          onChange={onChange("categoryId")}
+          className="category"
+        />
+        <Remarks/>
+        <NumberPad time={time} className="pad" onChange={submit}/>
       </Wrapper>
     </Layout>
   );

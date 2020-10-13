@@ -1,9 +1,9 @@
 import React, {useContext, FC} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {MoneyDirection} from 'store/catagoryReducer'
+import {MoneyDirection} from 'store/categoryReducer'
 import {useHistory} from "react-router-dom";
-import {CatagoryContext} from "store";
+import {CategoryContext} from "store";
 
 const Wrapper = styled.section`
   display: flex;
@@ -39,16 +39,16 @@ const Wrapper = styled.section`
   }
 `;
 
-interface ICatagoryProps {
-  catagoryId: number;
+interface ICategoryProps {
+  categoryId: number;
   direction: MoneyDirection;
   className?: string;
   onChange: (value: number) => void;
 }
-const Catagory: FC<ICatagoryProps> = props => {
-  const {state} = useContext(CatagoryContext);
+const Category: FC<ICategoryProps> = props => {
+  const {state} = useContext(CategoryContext);
   const history = useHistory();
-  const {direction, catagoryId} = props
+  const {direction, categoryId} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
@@ -62,13 +62,13 @@ const Catagory: FC<ICatagoryProps> = props => {
     }
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
-    if (id === catagoryId) return
-    // add catagory
+    if (id === categoryId) return
+    // add category
     props.onChange(id);
   };
 
   const onSettingClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/catagory/manage?direction=${direction}`)
+    history.push(`/category/manage?direction=${direction}`)
     e.stopPropagation()
   }
   return (
@@ -78,12 +78,12 @@ const Catagory: FC<ICatagoryProps> = props => {
           <li key={item.id} data-id={item.id}>
             <div
               className={`icon-wrapper ${
-                item.id === props.catagoryId ? "selected" : ""
+                item.id === props.categoryId ? "selected" : ""
                 }`}
             >
               <Icon className="icon" id={item.icon} size="60%" />
             </div>
-            <p className={props.catagoryId === item.id ? "selected" : ""}>
+            <p className={props.categoryId === item.id ? "selected" : ""}>
               {item.name}
             </p>
           </li>
@@ -99,4 +99,4 @@ const Catagory: FC<ICatagoryProps> = props => {
   );
 };
 
-export default React.memo(Catagory);
+export default React.memo(Category);

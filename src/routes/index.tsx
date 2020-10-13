@@ -1,11 +1,11 @@
 import React, {FC} from "react";
 import {Switch, Route, Redirect, useLocation, useHistory, matchPath} from "react-router-dom";
-import CatagoryManage from "../views/catagory/CatagoryManage";
+import CategoryManage from "../views/category/CategoryManage";
 import RecordAdd from "../views/record/RecordAdd";
 import Statistics from "../views/Statistics";
 import Notfound from "../views/Notfound";
-import CatagoryEdit from "../views/catagory/CatagoryEdit";
-import CatagoryAdd from "../views/catagory/CatagoryAdd";
+import CategoryEdit from "../views/category/CategoryEdit";
+import CategoryAdd from "../views/category/CategoryAdd";
 import RecordDetail from "../views/record/RecordDetail";
 import RecordEdit from "../views/record/RecordEdit";
 import {TransitionGroup, CSSTransition} from "react-transition-group";
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 interface ISceneConfig {
   POP: string;
   PUSH: string;
-};
+}
 
 interface IRoutesConfigItem {
   path: string;
@@ -32,18 +32,18 @@ interface IRoutesConfigItem {
 }
 const RoutesConfig: IRoutesConfigItem[] = [
   {
-    path: "/catagory/manage",
-    component: CatagoryManage,
+    path: "/category/manage",
+    component: CategoryManage,
     sceneConfig: {POP: "l-to-r", PUSH: "r-to-l"}
   },
   {
-    path: "/catagory/edit/:id",
-    component: CatagoryEdit,
+    path: "/category/edit/:id",
+    component: CategoryEdit,
     sceneConfig: {POP: "l-to-r", PUSH: "r-to-l"}
   },
   {
-    path: "/catagory/add",
-    component: CatagoryAdd,
+    path: "/category/add",
+    component: CategoryAdd,
     sceneConfig: {POP: "l-to-r", PUSH: "r-to-l"}
   },
   {

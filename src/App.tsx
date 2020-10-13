@@ -2,32 +2,32 @@ import React, {useEffect, useRef, useReducer} from "react";
 import {
   HashRouter as Router,
 } from "react-router-dom";
-import catagoryReducer, {loadCatagory} from "store/catagoryReducer";
-import {CatagoryContext, RecordContext} from "store";
+import categoryReducer, {loadCategory} from "store/categoryReducer";
+import {CategoryContext, RecordContext} from "store";
 import moneyRecordReducer, {loadRecords} from "store/moneyRecordReducer";
 import Routes from './routes'
 
 function App() {
-  const [catagory, dispatchCatagory] = useReducer(
-    catagoryReducer,
+  const [category, dispatchCategory] = useReducer(
+    categoryReducer,
     null,
-    loadCatagory
+    loadCategory
   );
   const [records, dispatchRecord] = useReducer(
     moneyRecordReducer,
     null,
     loadRecords
   );
-  const refCatagory = useRef(catagory);
+  const refCategory = useRef(category);
   const refRecords = useRef(records);
-  refCatagory.current = catagory;
+  refCategory.current = category;
   refRecords.current = records;
   useEffect(() => {
     // 不要beforeunload，照顾safari
     window.addEventListener("pagehide", () => {
       window.localStorage.setItem(
-        "catagory",
-        JSON.stringify(refCatagory.current)
+        "category",
+        JSON.stringify(refCategory.current)
       );
       window.localStorage.setItem(
         "records",
@@ -39,13 +39,13 @@ function App() {
     <RecordContext.Provider
       value={{state: records, dispatch: dispatchRecord}}
     >
-      <CatagoryContext.Provider
-        value={{state: catagory, dispatch: dispatchCatagory}}
+      <CategoryContext.Provider
+        value={{state: category, dispatch: dispatchCategory}}
       >
         <Router>
           <Routes />
         </Router>
-      </CatagoryContext.Provider>
+      </CategoryContext.Provider>
     </RecordContext.Provider>
   );
 }

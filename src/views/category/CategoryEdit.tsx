@@ -1,5 +1,5 @@
 import React, {useContext, useState, useRef, useEffect, FC} from "react";
-import {CatagoryContext} from "store";
+import {CategoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -14,10 +14,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-`;
-const Left = styled.span`
-  display: flex;
-  align-items: center;
 `;
 const Right = styled.span`
   font-size: 14px;
@@ -38,7 +34,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
     props.backgroundColor ? props.backgroundColor : "#ffd947"};
 `;
 
-const CatagoryBox = styled.div`
+const CategoryBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,7 +43,7 @@ const CatagoryBox = styled.div`
   *:first-child {
     flex-shrink: 0;
   }
-  .catagory-name {
+  .category-name {
     width: 0;
     flex: 1;
     border: none;
@@ -75,29 +71,29 @@ const IconList = styled.div`
     }
   }
 `;
-const CatagoryEdit: FC = () => {
-  const {state: catagory, dispatch} = useContext(CatagoryContext);
+const CategoryEdit: FC = () => {
+  const {state: category, dispatch} = useContext(CategoryContext);
   const {id} = useParams();
   const history = useHistory();
-  const item = catagory.filter(value => {
+  const item = category.filter(value => {
     return parseInt(id) === value.id;
   })[0];
   const refInput = useRef<HTMLInputElement>(null);
-  const [catagoryName, setCatagoryName] = useState(item ? item.name : "");
+  const [categoryName, setCategoryName] = useState(item ? item.name : "");
   const [iconName, setIconName] = useState(item ? item.icon : "");
   const submit = () => {
     dispatch({
-      type: "modifyCatagory",
+      type: "modifyCategory",
       payload: {
         id: parseInt(id),
-        name: catagoryName,
+        name: categoryName,
         icon: iconName
       }
     });
     history.goBack();
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCatagoryName(e.currentTarget.value);
+    setCategoryName(e.currentTarget.value);
   };
   useEffect(() => {
     let element = refInput.current;
@@ -117,12 +113,7 @@ const CatagoryEdit: FC = () => {
   return (
     <Wrapper>
       <TopBar
-        left={
-          <Left onClick={() => history.goBack()}>
-            <Icon id="left" />
-            返回
-          </Left>
-        }
+        showBack
         right={<Right onClick={submit}>完成</Right>}
       >
         编辑类别
@@ -131,18 +122,18 @@ const CatagoryEdit: FC = () => {
         "没有这个分类"
       ) : (
           <ContentWrapper>
-            <CatagoryBox>
+            <CategoryBox>
               <IconWrapper>
                 <Icon id={iconName} />
               </IconWrapper>
               <input
                 ref={refInput}
-                className="catagory-name"
+                className="category-name"
                 type="text"
-                value={catagoryName}
+                value={categoryName}
                 onChange={handleInput}
               />
-            </CatagoryBox>
+            </CategoryBox>
             <IconList>
               <ul onClick={handleIconListClick}>
                 {CATAGORY_ICON_NAMES.map((name, index) => {
@@ -166,4 +157,4 @@ const CatagoryEdit: FC = () => {
   );
 };
 
-export default CatagoryEdit;
+export default CategoryEdit;

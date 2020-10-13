@@ -5,9 +5,9 @@ import styled from "styled-components";
 import Datepicker from "react-mobile-datepicker";
 import {formatTime} from "util/index";
 import useDatePicker from "hooks/useDatePicker";
-import {RecordContext, CatagoryContext} from "store";
+import {RecordContext, CategoryContext} from "store";
 import {IRecord} from "store/moneyRecordReducer";
-import {findCatagory, MoneyDirection} from "store/catagoryReducer";
+import {findCategory, MoneyDirection} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
@@ -77,7 +77,7 @@ const RecordItem = styled.div`
       align-items: center;
       background-color: #ffd947;
     }
-    .record-catagory {
+    .record-category {
       font-size: 18px;
       margin-left: 14px;
     }
@@ -94,7 +94,7 @@ const RecordDetail: FC = () => {
     handleCancel,
     handleSelect
   } = useDatePicker();
-  const {state: catagory} = useContext(CatagoryContext);
+  const {state: category} = useContext(CategoryContext);
   const {state: records} = useContext(
     RecordContext
   );
@@ -194,20 +194,20 @@ const RecordDetail: FC = () => {
                 </span>
               </div>
               {item[1].map(record => {
-                const catagoryItem = findCatagory(catagory, record.catagoryId);
+                const categoryItem = findCategory(category, record.categoryId);
                 return (
                   <div
                     className="record-info"
                     data-id={record.id}
                     key={record.id}
-                    onClick={e => {
+                    onClick={() => {
                       history.push(`/record/edit/${record.id}`);
                     }}
                   >
                     <div className="icon-wrapper">
-                      <Icon id={catagoryItem.icon} />
+                      <Icon id={categoryItem.icon} />
                     </div>
-                    <div className="record-catagory">{catagoryItem.name}</div>
+                    <div className="record-category">{categoryItem.name}</div>
                     <div className="money">{record.amount}</div>
                   </div>
                 );

@@ -1,18 +1,15 @@
 import React, {useState, useContext, FC} from "react";
-import {MoneyDirection} from "store/catagoryReducer";
+import {MoneyDirection} from "store/categoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import TopBar from "components/TopBar";
-import Tab from "components/Tab";
 import useQuery from "hooks/useQuery";
-import {CatagoryContext} from "store";
+import {CategoryContext} from "store";
 import {useHistory} from "react-router-dom";
 import {findParent} from "util/index";
+import RadioGroup from "../../components/Radio/RadioGroup";
+import RadioButton from "../../components/Radio/RadioButton";
 
-const Left = styled.span`
-  display: flex;
-  align-items: center;
-`;
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -49,16 +46,15 @@ const Wrapper = styled.section`
   }
 `;
 
-interface ICatagoryManageProps extends React.HTMLProps<HTMLElement> {}
+interface ICategoryManageProps extends React.HTMLProps<HTMLElement> {}
 
-const CatagoryManage: FC<ICatagoryManageProps> = props => {
+const CategoryManage: FC<ICategoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory();
-  const {state: catagory} = useContext(CatagoryContext);
+  const {state: category} = useContext(CategoryContext);
   const [direction, setDirection] = useState(
     query.get("direction") || MoneyDirection.EXPENDITURE
   );
-  console.log("h");
 
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
@@ -68,39 +64,23 @@ const CatagoryManage: FC<ICatagoryManageProps> = props => {
     }) as HTMLElement;
     if (!li || !li.dataset["id"]) return;
     let id = parseInt(li.dataset["id"]);
-    history.push(`/catagory/edit/${id}`);
+    history.push(`/category/edit/${id}`);
   };
 
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/catagory/add?direction=${direction}`);
+    history.push(`/category/add?direction=${direction}`);
     e.stopPropagation();
-  };
-  const onTabClick = (direction: string) => {
-    setDirection(direction);
   };
   return (
     <Wrapper className={props.className}>
-      <TopBar
-        left={
-          <Left
-            onClick={() => history.goBack()}
-          >
-            <Icon id="left" />
-            返回
-          </Left>
-        }
-      >
-        <Tab
-          onChange={onTabClick}
-          value={direction}
-          map={{
-            支出: MoneyDirection.EXPENDITURE,
-            收入: MoneyDirection.INCOME
-          }}
-        />
+      <TopBar showBack>
+        <RadioGroup value={direction} onChange={(d) => setDirection(d as MoneyDirection)}>
+          <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
+          <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+        </RadioGroup>
       </TopBar>
       <ul onClick={handleClick}>
-        {catagory
+        {category
           .filter(item => item.direction === direction)
           .map(item => (
             <li key={item.id} data-id={item.id}>
@@ -120,4 +100,4 @@ const CatagoryManage: FC<ICatagoryManageProps> = props => {
     </Wrapper>
   );
 };
-export default CatagoryManage;
+export default CategoryManage;
