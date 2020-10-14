@@ -19,7 +19,6 @@ interface IAddRecordAction {
 }
 
 const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
-  console.log("hello");
   return [
     ...state,
     {

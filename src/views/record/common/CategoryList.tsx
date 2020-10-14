@@ -38,16 +38,17 @@ const IconWrapper = styled.div`
   }
 `
 interface CategoryListProps {
-  selectedId: number,
+  selectedId?: number,
   listData: ICategoryItem[],
   type: 'manage' | 'add'
-  onChange: (id: number) => void
+  onChange?: (id: number) => void
+  onItemClick?: (id: number) => void
   onManageClick?: (e: MouseEvent) => void
   onAddClick?: (e: MouseEvent) => void
   className?: string
 }
 const CategoryList:FC<CategoryListProps> = (props) => {
-  const {selectedId, listData, type, onChange, onManageClick, onAddClick, className} = props
+  const {selectedId, listData, type, onChange, onItemClick, onManageClick, onAddClick, className} = props
   return (
     <Wrapper className={className}>
       {listData.map(category => {
@@ -55,7 +56,8 @@ const CategoryList:FC<CategoryListProps> = (props) => {
           'is-active': selectedId === category.id
         })
         const handleClick = () => {
-          onChange(category.id)
+          onChange && onChange(category.id)
+          onItemClick && onItemClick(category.id)
         }
         return (
           <CategoryItem key={category.id} onClick={handleClick}>

@@ -1,7 +1,5 @@
 import React, {
   useState,
-  useEffect,
-  useRef,
   useCallback,
   useContext,
   FC,

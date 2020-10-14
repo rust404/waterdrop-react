@@ -1,7 +1,6 @@
 import React, {
   useState,
   useEffect,
-  useRef,
   useCallback,
   useContext,
   FC, MouseEvent,
@@ -147,7 +146,6 @@ const RecordEdit: FC = () => {
     })
   }, [])
   const onCalcStrChange = useCallback((str: string) => {
-    console.log('change', str)
     setCalcStr(str)
   }, [])
   const onAmountChange = useCallback((amount: number) => {

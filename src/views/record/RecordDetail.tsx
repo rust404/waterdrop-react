@@ -65,7 +65,7 @@ const RecordItem = styled.div`
     display: flex;
     margin: 10px 20px;
     border-radius: 10px;
-    padding: 22px 26px;
+    padding: 12px 16px;
     align-items: center;
     background-color: #fff;
     .icon-wrapper {
@@ -196,7 +196,7 @@ const RecordDetail: FC = () => {
       </RecordsWrapper>
       <PopUp show={show} onCancel={() => setShow(false)} position="bottom">
         <DatePicker
-          date={new Date()}
+          date={curDate}
           pickerType="year-month"
           onOk={(d) => {
             setCurDate(d)

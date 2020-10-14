@@ -5,7 +5,6 @@ import styled from "styled-components";
 import {brandColor, grey2} from "../../../style/variables";
 import PopUp from "../../../components/PopUp";
 import DatePicker from "../../../components/DatePicker/DatePicker";
-import Layout from "../../../components/Layout";
 
 const gap = '10px'
 const Wrapper = styled.div`
@@ -100,7 +99,6 @@ const NumberPad: FC<NumberPadProps> = (props) => {
     add(operator)
   }
   const onClearClick = () => {
-    console.log('clear', amount, expStr)
     clear()
   }
   const onEqualClick = () => {

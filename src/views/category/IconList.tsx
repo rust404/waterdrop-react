@@ -1,6 +1,9 @@
 import React, {FC} from 'react'
 import styled from "styled-components";
-import {brandColor} from "../../style/variables";
+import {brandColor, grey2} from "../../style/variables";
+import {CATEGORY_ICON_NAMES} from "../../icons";
+import Icon from "../../components/Icon";
+import classNames from "classnames";
 
 
 const Wrapper = styled.ul`
@@ -21,23 +24,38 @@ const IconWrapper = styled.span`
   height: 50px;
   border-radius: 10px;
   margin: 10px 10px;
-  background: $grey-2;
+  background: ${grey2};
   &.is-active {
     background-color: ${brandColor};
-    .category-icon {
-      color: #fff;
+    .icon {
+      fill: #fff;
     }
   }
 `
 
 interface IconListProps {
   icon: string
+  onChange?: (icon: string) => void
 }
 
-const IconList:FC<IconListProps> = (props) => {
+const IconList: FC<IconListProps> = (props) => {
+  const {icon, onChange} = props
   return (
     <Wrapper>
-      {}
+      {CATEGORY_ICON_NAMES.map(name => {
+        const IconClass = classNames({
+          'is-active': icon === name
+        })
+        return (
+          <li key={name} onClick={() => {onChange && onChange(name)}}>
+            <IconWrapper className={IconClass}>
+              <Icon id={name} size="24px" className="icon"/>
+            </IconWrapper>
+          </li>
+        )
+      })}
     </Wrapper>
   )
 }
+
+export default IconList

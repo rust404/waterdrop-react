@@ -100,11 +100,13 @@ const Animation = createGlobalStyle`
   height: 100%;
   overflow: hidden;
 }
-.slide-from-bottom-enter {
+.slide-from-bottom-enter,
+.slide-from-bottom-appear {
   opacity: 0;
   transform: translateY(100%);
 }
-.slide-from-bottom-enter-active {
+.slide-from-bottom-enter-active,
+.slide-from-bottom-appear-active {
   opacity: 1;
   transform: translateY(0);
   transition: all ${duration};

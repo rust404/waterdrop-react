@@ -58,7 +58,7 @@ const PickerList: FC<PickerListProps> = (props) => {
         top: -index * itemHeight + 'px'
       }
     })
-  }, [])
+  }, [value, listData])
   const onTouchStart = (e: TouchEvent<HTMLUListElement>) => {
     setStartY(e.touches[0].clientY)
     setStartTop(parseInt(style.top))
