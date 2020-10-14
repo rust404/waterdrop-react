@@ -3,6 +3,9 @@ import dayjs from "dayjs";
 import useCalcStr from "../../../hooks/useCalcStr";
 import styled from "styled-components";
 import {brandColor, grey2} from "../../../style/variables";
+import PopUp from "../../../components/PopUp";
+import DatePicker from "../../../components/DatePicker/DatePicker";
+import Layout from "../../../components/Layout";
 
 const gap = '10px'
 const Wrapper = styled.div`
@@ -106,6 +109,13 @@ const NumberPad: FC<NumberPadProps> = (props) => {
   const onSubmitClick = () => {
     onSubmit()
   }
+  const handleCancel = () => {
+    setShowDatePicker(false)
+  }
+  const handleOk = (d: Date) => {
+    setCurDate(d)
+    setShowDatePicker(false)
+  }
   return (
     <Wrapper>
       <button className="calc-button" onClick={onNumberClick('1')}>1</button>
@@ -128,6 +138,17 @@ const NumberPad: FC<NumberPadProps> = (props) => {
         :
         <button className="equal-button" onClick={onEqualClick}>=</button>
       }
+      <PopUp
+        show={showDatePicker}
+        onCancel={handleCancel}
+        position="bottom"
+      >
+        <DatePicker
+          date={curDate}
+          pickerType="full-date"
+          onOk={handleOk}
+        />
+      </PopUp>
     </Wrapper>
   )
 }

@@ -1,44 +1,7 @@
-$duration: 500ms;
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-* {
-  margin: 0;
-  padding: 0;
-}
+import {createGlobalStyle} from "styled-components";
 
-ul,
-ol {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-html {
-  height: 100%;
-}
-body {
-  font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica,
-    "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB",
-    "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN",
-    "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti",
-    SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-  height: 100%;
-  font-size: 14px;
-  overflow: hidden;
-}
-#root {
-  height: 100%;
-}
-.clearfix::after {
-  content: "";
-  display: block;
-  clear: both;
-}
+const duration = '250ms'
+const Animation = createGlobalStyle`
 .l-to-r-enter {
   opacity: 0;
   transform: translateX(-100%);
@@ -46,7 +9,7 @@ body {
 .l-to-r-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .l-to-r-exit {
   opacity: 1;
@@ -55,7 +18,7 @@ body {
 .l-to-r-exit-active {
   opacity: 0;
   transform: translateX(100%);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .r-to-l-enter {
   opacity: 0;
@@ -64,7 +27,7 @@ body {
 .r-to-l-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .r-to-l-exit {
   opacity: 1;
@@ -73,7 +36,7 @@ body {
 .r-to-l-exit-active {
   opacity: 0;
   transform: translateX(-100%);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .t-to-b-enter {
   opacity: 0;
@@ -82,7 +45,7 @@ body {
 .t-to-b-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .t-to-b-exit {
   opacity: 1;
@@ -91,7 +54,7 @@ body {
 .t-to-b-exit-active {
   opacity: 0;
   transform: translateY(100%);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .b-to-t-enter {
   opacity: 0;
@@ -100,7 +63,7 @@ body {
 .b-to-t-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .b-to-t-exit {
   opacity: 1;
@@ -109,24 +72,51 @@ body {
 .b-to-t-exit-active {
   opacity: 0;
   transform: translateY(-100%);
-  transition: all $duration;
+  transition: all ${duration};
 }
 .fade-enter {
   opacity: 0;
 }
 .fade-enter-active {
   opacity: 1;
-  // transition: all $duration;
+  transition: all ${duration};
+}
+.fade-enter-done {
+  opacity: 1;
+  transition: all ${duration};
 }
 .fade-exit {
   opacity: 1;
 }
 .fade-exit-active {
   opacity: 0;
-  // transition: all $duration;
+  transition: all ${duration};
+}
+.fade-exit-done {
+  opacity: 0;
 }
 .transition-wrapper {
   width: 100vw;
   height: 100%;
   overflow: hidden;
 }
+.slide-from-bottom-enter {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.slide-from-bottom-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all ${duration};
+}
+.slide-from-bottom-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.slide-from-bottom-exit-active {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all ${duration};
+}
+`;
+export default Animation
