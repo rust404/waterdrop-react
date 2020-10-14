@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   FC,
+  MouseEvent
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
@@ -15,11 +16,12 @@ import { MoneyDirection } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
 import { IRecord } from "store/moneyRecordReducer";
-import { RecordContext } from "store";
+import {CategoryContext, RecordContext} from "store";
 import { useHistory } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import CalcStrBar from "./common/CalcStrBar";
+import CategoryList from "./common/CategoryList";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ const Wrapper = styled.div`
   min-height: 0;
   flex: 1;
   .category {
+    align-content: flex-start;
     flex: 1;
     overflow: auto;
   }
@@ -51,6 +54,7 @@ interface alertDataType {
 export type recordDataFieldType = Partial<RecordData>;
 
 const RecordAdd: FC = () => {
+  const {state: category} = useContext(CategoryContext);
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
     direction: MoneyDirection.EXPENDITURE,
@@ -63,6 +67,11 @@ const RecordAdd: FC = () => {
   const isSubmitting = useRef(false);
   const { categoryId, direction, time } = recordData;
 
+  const filterdCategory = category.filter(item => item.direction === direction)
+  const handleManageClick = (e: MouseEvent) => {
+    history.push(`/category/manage?direction=${direction}`)
+    e.stopPropagation()
+  }
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
       setRecordData((state) => {
@@ -137,11 +146,19 @@ const RecordAdd: FC = () => {
             <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
           </RadioGroup>
         </TopBar>
-        <Category
-          direction={direction}
-          categoryId={categoryId}
-          onChange={onChange("categoryId")}
+        {/*<Category*/}
+        {/*  direction={direction}*/}
+        {/*  categoryId={categoryId}*/}
+        {/*  onChange={onChange("categoryId")}*/}
+        {/*  className="category"*/}
+        {/*/>*/}
+        <CategoryList
           className="category"
+          selectedId={categoryId}
+          listData={filterdCategory}
+          type="manage"
+          onChange={onChange("categoryId")}
+          onManageClick={handleManageClick}
         />
         <Remarks/>
         <CalcStrBar calcStr={calcStr}/>
