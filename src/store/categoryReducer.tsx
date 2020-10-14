@@ -1,18 +1,18 @@
 let cid = 0;
 
-export enum MoneyDirection {
+export enum MoneyType {
   INCOME = "INCOME",
   EXPENDITURE = "EXPENDITURE"
 }
-export function isMoneyDirection(type: string) {
-  return type in MoneyDirection;
+export function isMoneyType(type: string) {
+  return type in MoneyType;
 }
 
 export interface ICategoryItem {
   name: string;
   icon: string;
   id: number;
-  direction: MoneyDirection;
+  moneyType: MoneyType;
 }
 
 export type ICategoryAction =
@@ -26,24 +26,24 @@ type ICategoryReducer<T extends ICategoryAction> = React.Reducer<
 >;
 
 const defaultCategoryList = [
-  {name: "餐饮", icon: "canyin", direction: MoneyDirection.EXPENDITURE},
-  {name: "服饰", icon: "fushi", direction: MoneyDirection.EXPENDITURE},
-  {name: "读书", icon: "dushu", direction: MoneyDirection.EXPENDITURE},
-  {name: "交通", icon: "jiaotong", direction: MoneyDirection.EXPENDITURE},
-  {name: "旅行", icon: "lvxing", direction: MoneyDirection.EXPENDITURE},
+  {name: "餐饮", icon: "canyin", moneyType: MoneyType.EXPENDITURE},
+  {name: "服饰", icon: "fushi", moneyType: MoneyType.EXPENDITURE},
+  {name: "读书", icon: "dushu", moneyType: MoneyType.EXPENDITURE},
+  {name: "交通", icon: "jiaotong", moneyType: MoneyType.EXPENDITURE},
+  {name: "旅行", icon: "lvxing", moneyType: MoneyType.EXPENDITURE},
   {
     name: "日用",
     icon: "riyongpin",
-    direction: MoneyDirection.EXPENDITURE
+    moneyType: MoneyType.EXPENDITURE
   },
-  {name: "工资", icon: "gongzi", direction: MoneyDirection.INCOME},
-  {name: "兼职", icon: "jianzhi", direction: MoneyDirection.INCOME},
-  {name: "理财", icon: "licai", direction: MoneyDirection.INCOME}
+  {name: "工资", icon: "gongzi", moneyType: MoneyType.INCOME},
+  {name: "兼职", icon: "jianzhi", moneyType: MoneyType.INCOME},
+  {name: "理财", icon: "licai", moneyType: MoneyType.INCOME}
 ];
 
 interface IAddCategoryAction {
   type: "addCategory";
-  payload: Pick<ICategoryItem, "name" | "direction" | "icon">;
+  payload: Pick<ICategoryItem, "name" | "moneyType" | "icon">;
 }
 
 const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
@@ -51,12 +51,12 @@ const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
     if (state[i].name === action.payload.name) return state;
   }
   const newList = state.concat();
-  const {name, direction, icon} = action.payload;
+  const {name, moneyType, icon} = action.payload;
   newList.push({
     name,
     icon,
     id: cid++,
-    direction
+    moneyType
   });
   return newList;
 };
@@ -101,7 +101,7 @@ export const loadCategory = () => {
     category = defaultCategoryList.map(item => {
       return {
         ...item,
-        direction: item.direction,
+        moneyType: item.moneyType,
         id: cid++
       };
     });

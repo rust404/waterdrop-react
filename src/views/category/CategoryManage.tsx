@@ -1,5 +1,5 @@
 import React, {useState, useContext, FC} from "react";
-import {MoneyDirection} from "store/categoryReducer";
+import {MoneyType} from "store/categoryReducer";
 import styled from "styled-components";
 import Icon from "components/Icon";
 import TopBar from "components/TopBar";
@@ -52,8 +52,8 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory();
   const {state: category} = useContext(CategoryContext);
-  const [direction, setDirection] = useState(
-    query.get("direction") || MoneyDirection.EXPENDITURE
+  const [moneyType, setMoneyType] = useState(
+    query.get("moneyType") || MoneyType.EXPENDITURE
   );
 
   const handleClick = (e: React.MouseEvent<Element>) => {
@@ -68,20 +68,20 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
   };
 
   const onAddClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/category/add?direction=${direction}`);
+    history.push(`/category/add?moneyType=${moneyType}`);
     e.stopPropagation();
   };
   return (
     <Wrapper className={props.className}>
       <TopBar showBack>
-        <RadioGroup value={direction} onChange={(d) => setDirection(d as MoneyDirection)}>
-          <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+        <RadioGroup value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
+          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
+          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <ul onClick={handleClick}>
         {category
-          .filter(item => item.direction === direction)
+          .filter(item => item.moneyType === moneyType)
           .map(item => (
             <li key={item.id} data-id={item.id}>
               <div className="icon-wrapper">

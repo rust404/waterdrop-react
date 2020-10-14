@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Icon from "components/Icon";
 import {findParent} from "util/index";
 import useQuery from "hooks/useQuery";
-import {isMoneyDirection, MoneyDirection} from "store/categoryReducer";
+import {isMoneyType, MoneyType} from "store/categoryReducer";
 import {CATAGORY_ICON_NAMES} from "icons";
 
 interface IconWrapperProps {
@@ -75,13 +75,13 @@ const CategoryAdd = () => {
   const refInput = useRef<HTMLInputElement>(null);
   const [categoryName, setCategoryName] = useState("");
   const [iconName, setIconName] = useState("canyin");
-  const direction = query.get("direction");
-  if (!isMoneyDirection(direction || "")) {
+  const moneyType = query.get("moneyType");
+  if (!isMoneyType(moneyType || "")) {
     history.push("/category/manage");
   }
-  const MoneyDirectionMap = {
-    [MoneyDirection.INCOME]: "收入",
-    [MoneyDirection.EXPENDITURE]: "支出"
+  const MoneyTypeMap = {
+    [MoneyType.INCOME]: "收入",
+    [MoneyType.EXPENDITURE]: "支出"
   };
   const submit = () => {
     if (!categoryName || !iconName) {
@@ -91,7 +91,7 @@ const CategoryAdd = () => {
     dispatch({
       type: "addCategory",
       payload: {
-        direction: direction as MoneyDirection,
+        moneyType: moneyType as MoneyType,
         icon: iconName,
         name: categoryName
       }
@@ -122,7 +122,7 @@ const CategoryAdd = () => {
         showBack
         right={<Right onClick={submit}>完成</Right>}
       >
-        增加{MoneyDirectionMap[direction as MoneyDirection]}类别
+        增加{MoneyTypeMap[moneyType as MoneyType]}类别
       </TopBar>
       <CategoryBox>
         <IconWrapper>

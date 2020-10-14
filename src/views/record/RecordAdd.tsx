@@ -9,10 +9,9 @@ import React, {
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
-import Category from "./common/Category";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
-import { MoneyDirection } from "store/categoryReducer";
+import { MoneyType } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
 import { IRecord } from "store/moneyRecordReducer";
@@ -38,15 +37,15 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-type RecordData = Pick<IRecord, "categoryId" | "time" | "direction" | "amount">;
+type RecordData = Pick<IRecord, "categoryId" | "time" | "moneyType" | "amount">;
 
 interface IndexedRecordDataType extends RecordData {
-  [index: string]: number | MoneyDirection | string;
+  [index: string]: number | MoneyType | string;
 }
 
 interface alertDataType {
   categoryId: string;
-  direction?: string;
+  moneyType?: string;
   amount: string;
   [index: string]: string | undefined;
 }
@@ -57,7 +56,7 @@ const RecordAdd: FC = () => {
   const {state: category} = useContext(CategoryContext);
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
-    direction: MoneyDirection.EXPENDITURE,
+    moneyType: MoneyType.EXPENDITURE,
     amount: 0,
     time: new Date().toISOString(),
   });
@@ -65,11 +64,11 @@ const RecordAdd: FC = () => {
   const history = useHistory();
   const { dispatch } = useContext(RecordContext);
   const isSubmitting = useRef(false);
-  const { categoryId, direction, time } = recordData;
+  const { categoryId, moneyType, time } = recordData;
 
-  const filterdCategory = category.filter(item => item.direction === direction)
+  const filterdCategory = category.filter(item => item.moneyType === moneyType)
   const handleManageClick = (e: MouseEvent) => {
-    history.push(`/category/manage?direction=${direction}`)
+    history.push(`/category/manage?moneyType=${moneyType}`)
     e.stopPropagation()
   }
   const onChange = useCallback(
@@ -79,7 +78,7 @@ const RecordAdd: FC = () => {
           ...state,
           [key]: value,
         };
-        if (data.direction === MoneyDirection.INCOME) {
+        if (data.moneyType === MoneyType.INCOME) {
           data.amount = Math.abs(data.amount);
         } else {
           data.amount = -Math.abs(data.amount);
@@ -141,13 +140,13 @@ const RecordAdd: FC = () => {
     <Layout>
       <Wrapper>
         <TopBar>
-          <RadioGroup value={recordData.direction} onChange={onChange('direction')}>
-            <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
-            <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+          <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
+            <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
+            <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
           </RadioGroup>
         </TopBar>
         {/*<Category*/}
-        {/*  direction={direction}*/}
+        {/*  moneyType={moneyType}*/}
         {/*  categoryId={categoryId}*/}
         {/*  onChange={onChange("categoryId")}*/}
         {/*  className="category"*/}

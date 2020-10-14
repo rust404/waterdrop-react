@@ -2,17 +2,15 @@ import React, {FC, useContext, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
-import Datepicker from "react-mobile-datepicker";
 import {formatTime} from "util/index";
 import useDatePicker from "hooks/useDatePicker";
 import {RecordContext, CategoryContext} from "store";
 import {IRecord} from "store/moneyRecordReducer";
-import {findCategory, MoneyDirection} from "store/categoryReducer";
+import {findCategory, MoneyType} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
-import Overlay from "../../components/Overlay";
 import PopUp from "../../components/PopUp";
 
 const GeneralInfo = styled.div`
@@ -127,7 +125,7 @@ const RecordDetail: FC = () => {
         <div className="general-record">
           <div className="money">
             {filterdRecords.reduce<number>((acc, item) => {
-              if (item.direction === MoneyDirection.INCOME) {
+              if (item.moneyType === MoneyType.INCOME) {
                 return acc + Math.abs(item.amount);
               }
               return acc;
@@ -142,7 +140,7 @@ const RecordDetail: FC = () => {
         <div className="general-record">
           <div className="money">
             {filterdRecords.reduce<number>((acc, item) => {
-              if (item.direction === MoneyDirection.EXPENDITURE) {
+              if (item.moneyType === MoneyType.EXPENDITURE) {
                 return acc + Math.abs(item.amount);
               }
               return acc;
@@ -160,7 +158,7 @@ const RecordDetail: FC = () => {
                 <span>
                   收入：
                   {item[1].reduce<number>((acc, item) => {
-                    if (item.direction === MoneyDirection.INCOME) {
+                    if (item.moneyType === MoneyType.INCOME) {
                       return acc + Math.abs(item.amount);
                     } else {
                       return acc;
@@ -168,7 +166,7 @@ const RecordDetail: FC = () => {
                   }, 0)}
                   ；支出：
                   {item[1].reduce<number>((acc, item) => {
-                    if (item.direction === MoneyDirection.EXPENDITURE) {
+                    if (item.moneyType === MoneyType.EXPENDITURE) {
                       return acc + Math.abs(item.amount);
                     } else {
                       return acc;

@@ -1,21 +1,21 @@
 import React from "react";
-import {MoneyDirection} from "./categoryReducer";
+import {MoneyType} from "./categoryReducer";
 
 let recordId = 0;
 export interface IRecord {
   time: string;
-  direction: MoneyDirection;
+  moneyType: MoneyType;
   categoryId: number;
   id: number;
   amount: number;
-  [index: string]: number | string | MoneyDirection | undefined;
+  [index: string]: number | string | MoneyType | undefined;
 }
 
 type IRecordReducer<T extends IRecordAction> = React.Reducer<IRecord[], T>;
 
 interface IAddRecordAction {
   type: "addRecord";
-  payload: Pick<IRecord, "time" | "direction" | "categoryId" | "amount">;
+  payload: Pick<IRecord, "time" | "moneyType" | "categoryId" | "amount">;
 }
 
 const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {

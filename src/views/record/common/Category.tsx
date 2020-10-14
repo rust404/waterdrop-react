@@ -1,7 +1,7 @@
 import React, {useContext, FC} from "react";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {MoneyDirection} from 'store/categoryReducer'
+import {MoneyType} from 'store/categoryReducer'
 import {useHistory} from "react-router-dom";
 import {CategoryContext} from "store";
 
@@ -41,14 +41,14 @@ const Wrapper = styled.section`
 
 interface ICategoryProps {
   categoryId: number;
-  direction: MoneyDirection;
+  moneyType: MoneyType;
   className?: string;
   onChange: (value: number) => void;
 }
 const Category: FC<ICategoryProps> = props => {
   const {state} = useContext(CategoryContext);
   const history = useHistory();
-  const {direction, categoryId} = props
+  const {moneyType, categoryId} = props
   const handleClick = (e: React.MouseEvent<Element>) => {
     if (!(e.target instanceof Element)) return;
     let target = e.target;
@@ -68,13 +68,13 @@ const Category: FC<ICategoryProps> = props => {
   };
 
   const onSettingClick = (e: React.MouseEvent<HTMLLIElement>) => {
-    history.push(`/category/manage?direction=${direction}`)
+    history.push(`/category/manage?moneyType=${moneyType}`)
     e.stopPropagation()
   }
   return (
     <Wrapper className={props.className}>
       <ul onClick={handleClick}>
-        {state.filter(item => item.direction === direction).map((item) => (
+        {state.filter(item => item.moneyType === moneyType).map((item) => (
           <li key={item.id} data-id={item.id}>
             <div
               className={`icon-wrapper ${

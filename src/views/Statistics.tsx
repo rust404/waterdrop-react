@@ -2,7 +2,7 @@ import React, { FC, useContext, useState, lazy, Suspense } from "react";
 import Layout from "components/Layout";
 import { RecordContext, CategoryContext } from "store";
 import { EChartOption } from "echarts";
-import { MoneyDirection, findCategory } from "store/categoryReducer";
+import { MoneyType, findCategory } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import Datepicker from "react-mobile-datepicker";
 import useDatePicker from "hooks/useDatePicker";
@@ -29,17 +29,17 @@ const ContentWrapper = styled.div`
     text-align: center;
   }
 `;
-const directionName = {
-  [MoneyDirection.INCOME]: "收入",
-  [MoneyDirection.EXPENDITURE]: "支出",
+const moneyTypeName = {
+  [MoneyType.INCOME]: "收入",
+  [MoneyType.EXPENDITURE]: "支出",
 };
 const Statistics: FC = () => {
   const { state: records } = useContext(RecordContext);
   const { state: category } = useContext(CategoryContext);
   const [curDate, setCurDate] = useState(new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [direction, setDirection] = useState<MoneyDirection>(
-    MoneyDirection.EXPENDITURE
+  const [moneyType, setMoneyType] = useState<MoneyType>(
+    MoneyType.EXPENDITURE
   );
   const handleCancel = () => {
     setShowDatePicker(false)
@@ -67,7 +67,7 @@ const Statistics: FC = () => {
   const dates = getDatesByTime(curDate);
 
   // const filteredRecords = timeFilteredRecords.filter((record: IRecord) => {
-  //   return record.direction === direction;
+  //   return record.moneyType === moneyType;
   // });
   //
   // const amountsReducer = (acc: number[], record: IRecord) => {
@@ -75,7 +75,7 @@ const Statistics: FC = () => {
   //   acc[index] += Math.abs(record.amount);
   //   return acc;
   // };
-  // const directionAmounts = filteredRecords.reduce<number[]>(
+  // const moneyTypeAmounts = filteredRecords.reduce<number[]>(
   //   amountsReducer,
   //   dates.map(() => 0)
   // );
@@ -111,9 +111,9 @@ const Statistics: FC = () => {
   //   yAxis: {},
   //   series: [
   //     {
-  //       name: directionName[direction],
+  //       name: moneyTypeName[moneyType],
   //       type: "bar",
-  //       data: directionAmounts,
+  //       data: moneyTypeAmounts,
   //       itemStyle: { color: "#ffd947" },
   //     },
   //   ],
@@ -127,7 +127,7 @@ const Statistics: FC = () => {
   //   },
   //   series: [
   //     {
-  //       name: directionName[direction],
+  //       name: moneyTypeName[moneyType],
   //       type: "pie",
   //       data: categoryData,
   //       label: {
@@ -140,9 +140,9 @@ const Statistics: FC = () => {
   return (
     <Layout>
      <TopBar>
-        <RadioGroup value={direction} onChange={(d) => setDirection(d as MoneyDirection)}>
-          <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+        <RadioGroup value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
+          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
+          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <ContentWrapper>
@@ -150,7 +150,7 @@ const Statistics: FC = () => {
           {dayjs(curDate).format("YYYY年MM月")}&#9660;
         </div>
         {/*{filteredRecords.length === 0 ? (*/}
-        {/*  <div className="message">本月{directionName[direction]}数据为空</div>*/}
+        {/*  <div className="message">本月{moneyTypeName[moneyType]}数据为空</div>*/}
         {/*) : (*/}
         {/*  <Suspense fallback={<div className="message">图表加载中</div>}>*/}
         {/*    <Echarts option={option} />*/}

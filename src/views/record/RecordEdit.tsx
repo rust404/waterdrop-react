@@ -10,7 +10,7 @@ import styled from "styled-components";
 import Category from "./common/Category";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
-import { MoneyDirection, findCategory } from "store/categoryReducer";
+import { MoneyType, findCategory } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
 import { IRecord, findRecord } from "store/moneyRecordReducer";
@@ -34,15 +34,15 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-type RecordData = Pick<IRecord, "categoryId" | "time" | "direction" | "amount">;
+type RecordData = Pick<IRecord, "categoryId" | "time" | "moneyType" | "amount">;
 
 interface IndexedRecordDataType extends RecordData {
-  [index: string]: number | MoneyDirection | string;
+  [index: string]: number | MoneyType | string;
 }
 
 interface alertDataType {
   categoryId: string;
-  direction?: string;
+  moneyType?: string;
   amount: string;
   [index: string]: string | undefined;
 }
@@ -60,22 +60,22 @@ const RecordEdit: FC = () => {
 
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
-    direction: MoneyDirection.EXPENDITURE,
+    moneyType: MoneyType.EXPENDITURE,
     amount: 0,
     time: new Date().toISOString(),
   });
   const isSubmitting = useRef(false);
-  const { categoryId, direction, time, amount } = recordData;
+  const { categoryId, moneyType, time, amount } = recordData;
 
   useEffect(() => {
     const record = findRecord(records, parseInt(id));
     if (!record) {
       history.push("/record/detail");
     } else {
-      const { categoryId, direction, amount, time } = record;
+      const { categoryId, moneyType, amount, time } = record;
       setRecordData({
         categoryId,
-        direction,
+        moneyType,
         amount,
         time,
       });
@@ -90,13 +90,13 @@ const RecordEdit: FC = () => {
           ...state,
           [key]: value,
         };
-        if (data.direction === MoneyDirection.INCOME) {
+        if (data.moneyType === MoneyType.INCOME) {
           data.amount = Math.abs(data.amount);
         } else {
           data.amount = -Math.abs(data.amount);
         }
         const categoryItem = findCategory(category, data.categoryId);
-        if (categoryItem && categoryItem.direction !== data.direction) {
+        if (categoryItem && categoryItem.moneyType !== data.moneyType) {
           data.categoryId = -1;
         }
         return data;
@@ -157,13 +157,13 @@ const RecordEdit: FC = () => {
   return (
     <Wrapper>
       <TopBar showBack>
-        <RadioGroup value={recordData.direction} onChange={onChange('direction')}>
-          <RadioButton label={MoneyDirection.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyDirection.EXPENDITURE}>支出</RadioButton>
+        <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
+          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
+          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <Category
-        direction={direction}
+        moneyType={moneyType}
         categoryId={categoryId}
         onChange={onChange("categoryId")}
         className="category"
