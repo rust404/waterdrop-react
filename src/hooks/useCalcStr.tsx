@@ -67,6 +67,7 @@ const useCalcStr = (initNum?: number) => {
     setLeft(result.toFixed(2).replace(/\.00$/, ''))
     setRight('')
     setOp('')
+    return result
   };
   const clear = () => {
     if (right) {

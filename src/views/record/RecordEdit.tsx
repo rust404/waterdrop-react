@@ -4,10 +4,9 @@ import React, {
   useRef,
   useCallback,
   useContext,
-  FC,
+  FC, MouseEvent,
 } from "react";
 import styled from "styled-components";
-import Category from "./common/Category";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
 import { MoneyType, findCategory } from "store/categoryReducer";
@@ -19,6 +18,7 @@ import { useHistory, useParams } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import CalcStrBar from "./common/CalcStrBar";
+import CategoryList from "./common/CategoryList";
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,6 +29,7 @@ const Wrapper = styled.div`
   .category {
     flex: 1;
     overflow: auto;
+    align-content: flex-start;
   }
   .pad {
     margin-top: auto;
@@ -64,8 +65,8 @@ const RecordEdit: FC = () => {
     amount: 0,
     time: new Date().toISOString(),
   });
-  const isSubmitting = useRef(false);
   const { categoryId, moneyType, time, amount } = recordData;
+  const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
   useEffect(() => {
     const record = findRecord(records, parseInt(id));
@@ -82,6 +83,11 @@ const RecordEdit: FC = () => {
       setCalcStr(''+amount)
     }
   }, [id, history, records]);
+
+  const handleManageClick = (e: MouseEvent) => {
+    history.push(`/category/manage?moneyType=${moneyType}`)
+    e.stopPropagation()
+  }
 
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
@@ -105,12 +111,32 @@ const RecordEdit: FC = () => {
     [category]
   );
   const submit = useCallback(
-    (amount: number, time: string) => {
-      onChange("amount")(amount);
-      onChange("time")(time);
-      isSubmitting.current = true;
+    () => {
+      const alertData: alertDataType = {
+        categoryId: "请选择分类",
+        amount: "钱不能为0",
+      };
+      // 不能为空
+      for (let i of Object.keys(recordData)) {
+        if (
+          (i === "categoryId" && recordData[i] === -1) ||
+          (i === "amount" && recordData[i] === 0) ||
+          (recordData as IndexedRecordDataType)[i] === undefined
+        ) {
+          alert(alertData[i]);
+          return;
+        }
+      }
+      dispatchRecords({
+        type: "modifyRecord",
+        payload: {
+          id: parseInt(id),
+          ...recordData,
+        },
+      });
+      history.goBack();
     },
-    [onChange]
+    [history, recordData, dispatchRecords, id]
   );
   const onDateChange = useCallback((date: Date) => {
     setRecordData((state) => {
@@ -124,36 +150,14 @@ const RecordEdit: FC = () => {
     console.log('change', str)
     setCalcStr(str)
   }, [])
-  // validate
-  useEffect(() => {
-    if (!isSubmitting.current) return;
-
-    const alertData: alertDataType = {
-      categoryId: "请选择分类",
-      amount: "钱不能为0",
-    };
-    // 不能为空
-    for (let i of Object.keys(recordData)) {
-      if (
-        (i === "categoryId" && recordData[i] === -1) ||
-        (i === "amount" && recordData[i] === 0) ||
-        (recordData as IndexedRecordDataType)[i] === undefined
-      ) {
-        alert(alertData[i]);
-        isSubmitting.current = false;
-        return;
+  const onAmountChange = useCallback((amount: number) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        amount
       }
-    }
-    dispatchRecords({
-      type: "modifyRecord",
-      payload: {
-        id: parseInt(id),
-        ...recordData,
-      },
-    });
-    history.goBack();
-    isSubmitting.current = false;
-  }, [recordData, dispatchRecords, history, id]);
+    })
+  }, [])
   return (
     <Wrapper>
       <TopBar showBack>
@@ -162,17 +166,20 @@ const RecordEdit: FC = () => {
           <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
-      <Category
-        moneyType={moneyType}
-        categoryId={categoryId}
-        onChange={onChange("categoryId")}
+      <CategoryList
         className="category"
+        selectedId={categoryId}
+        listData={filteredCategory}
+        type="manage"
+        onChange={onChange("categoryId")}
+        onManageClick={handleManageClick}
       />
       <Remarks/>
       <CalcStrBar calcStr={calcStr}/>
       <NumberPad
         date={new Date(time)}
         amount={amount}
+        onAmountChange={onAmountChange}
         onDateChange={onDateChange}
         onCalcStrChange={onCalcStrChange}
         className="pad"

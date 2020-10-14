@@ -12,7 +12,7 @@ const Wrapper = styled.header`
   padding: ${ySpace} 0px;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
   box-shadow: 0 2px 8px #e0e0e0;
   line-height: 28px;
   flex-shrink: 0;

@@ -63,10 +63,9 @@ const RecordAdd: FC = () => {
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
   const { dispatch } = useContext(RecordContext);
-  const isSubmitting = useRef(false);
   const { categoryId, moneyType, time } = recordData;
 
-  const filterdCategory = category.filter(item => item.moneyType === moneyType)
+  const filteredCategory = category.filter(item => item.moneyType === moneyType)
   const handleManageClick = (e: MouseEvent) => {
     history.push(`/category/manage?moneyType=${moneyType}`)
     e.stopPropagation()
@@ -96,46 +95,45 @@ const RecordAdd: FC = () => {
       }
     })
   }, [])
+  const onAmountChange = useCallback((amount: number) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        amount
+      }
+    })
+  }, [])
   const onCalcStrChange = useCallback((str: string) => {
     setCalcStr(str)
   }, [])
   const submit = useCallback(
-    (amount: number, time: string) => {
-      onChange("amount")(amount);
-      onChange("time")(time);
-      isSubmitting.current = true;
-    },
-    [onChange]
-  );
-  // validate
-  useEffect(() => {
-    if (!isSubmitting.current) return;
-
-    const alertData: alertDataType = {
-      categoryId: "请选择分类",
-      amount: "钱不能为0",
-    };
-    // 不能为空
-    for (let i of Object.keys(recordData)) {
-      if (
-        (i === "categoryId" && recordData[i] === -1) ||
-        (i === "amount" && recordData[i] === 0) ||
-        (recordData as IndexedRecordDataType)[i] === undefined
-      ) {
-        alert(alertData[i]);
-        isSubmitting.current = false;
-        return;
+    () => {
+      // validate
+      const alertData: alertDataType = {
+        categoryId: "请选择分类",
+        amount: "钱不能为0",
+      };
+      // 不能为空
+      for (let i of Object.keys(recordData)) {
+        if (
+          (i === "categoryId" && recordData[i] === -1) ||
+          (i === "amount" && recordData[i] === 0) ||
+          (recordData as IndexedRecordDataType)[i] === undefined
+        ) {
+          alert(alertData[i]);
+          return;
+        }
       }
-    }
-    dispatch({
-      type: "addRecord",
-      payload: {
-        ...recordData,
-      },
-    });
-    history.push("/record/detail");
-    isSubmitting.current = false;
-  }, [recordData, history, dispatch]);
+      dispatch({
+        type: "addRecord",
+        payload: {
+          ...recordData,
+        },
+      });
+      history.push("/record/detail");
+    },
+    [recordData, history, dispatch]
+  );
   return (
     <Layout>
       <Wrapper>
@@ -145,16 +143,10 @@ const RecordAdd: FC = () => {
             <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
           </RadioGroup>
         </TopBar>
-        {/*<Category*/}
-        {/*  moneyType={moneyType}*/}
-        {/*  categoryId={categoryId}*/}
-        {/*  onChange={onChange("categoryId")}*/}
-        {/*  className="category"*/}
-        {/*/>*/}
         <CategoryList
           className="category"
           selectedId={categoryId}
-          listData={filterdCategory}
+          listData={filteredCategory}
           type="manage"
           onChange={onChange("categoryId")}
           onManageClick={handleManageClick}
@@ -165,6 +157,7 @@ const RecordAdd: FC = () => {
           date={new Date(time)}
           onDateChange={onDateChange}
           onCalcStrChange={onCalcStrChange}
+          onAmountChange={onAmountChange}
           className="pad"
           onSubmit={submit}
         />

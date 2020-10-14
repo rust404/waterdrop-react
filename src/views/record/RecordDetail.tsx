@@ -3,7 +3,6 @@ import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
 import {formatTime} from "util/index";
-import useDatePicker from "hooks/useDatePicker";
 import {RecordContext, CategoryContext} from "store";
 import {IRecord} from "store/moneyRecordReducer";
 import {findCategory, MoneyType} from "store/categoryReducer";
@@ -12,14 +11,14 @@ import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
+import {brandColor, grey1} from "../../style/variables";
 
 const GeneralInfo = styled.div`
-  padding: 36px;
+  padding: 20px 16px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #ffd947;
   text-align: center;
   .general-record {
     display: flex;
@@ -48,7 +47,7 @@ const GeneralInfo = styled.div`
 `;
 
 const RecordsWrapper = styled.div`
-  background-color: #f5f5f5;
+  background-color: ${grey1};
   flex: 1;
   overflow: auto;
 `;
@@ -76,7 +75,10 @@ const RecordItem = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #ffd947;
+      background-color: ${brandColor};
+      > .icon {
+        fill: #fff;
+      }
     }
     .record-category {
       font-size: 18px;
@@ -90,26 +92,21 @@ const RecordItem = styled.div`
 `;
 const RecordDetail: FC = () => {
   const [show, setShow] = useState(false)
-  const {
-    pickerState,
-    handleClick,
-    handleCancel,
-    handleSelect
-  } = useDatePicker();
+  const [curDate, setCurDate] = useState(new Date())
   const {state: category} = useContext(CategoryContext);
   const {state: records} = useContext(
     RecordContext
   );
   const history = useHistory();
-  const {year, month} = formatTime(pickerState.time);
-  const filterdRecords = records.filter(record => {
+  const {year, month} = formatTime(curDate);
+  const filteredRecords = records.filter(record => {
     const {year: recordYear, month: recordMonth} = formatTime(
       new Date(record.time)
     );
     return recordYear === year && recordMonth === month;
   });
   const hashMap: { [index: string]: IRecord[] } = {};
-  filterdRecords.forEach(record => {
+  filteredRecords.forEach(record => {
     const key = dayjs(record.time).format("YYYY-MM-DD");
     if (hashMap[key]) {
       hashMap[key].push(record);
@@ -120,11 +117,11 @@ const RecordDetail: FC = () => {
   const orderedRecords = Object.entries(hashMap).sort().reverse();
   return (
     <Layout>
-      <TopBar>收入支出明细</TopBar>
+      <TopBar style={{boxShadow: 'none'}}>收入支出明细</TopBar>
       <GeneralInfo>
         <div className="general-record">
           <div className="money">
-            {filterdRecords.reduce<number>((acc, item) => {
+            {filteredRecords.reduce<number>((acc, item) => {
               if (item.moneyType === MoneyType.INCOME) {
                 return acc + Math.abs(item.amount);
               }
@@ -133,13 +130,13 @@ const RecordDetail: FC = () => {
           </div>
           <div className="date">{month}月收入</div>
         </div>
-        <div className="pick-date" onClick={handleClick}>
+        <div className="pick-date" onClick={() => setShow(true)}>
           <div className="month">{month}月&#9660;</div>
           <div className="year">{year}年</div>
         </div>
         <div className="general-record">
           <div className="money">
-            {filterdRecords.reduce<number>((acc, item) => {
+            {filteredRecords.reduce<number>((acc, item) => {
               if (item.moneyType === MoneyType.EXPENDITURE) {
                 return acc + Math.abs(item.amount);
               }
@@ -186,7 +183,7 @@ const RecordDetail: FC = () => {
                     }}
                   >
                     <div className="icon-wrapper">
-                      <Icon id={categoryItem.icon}/>
+                      <Icon id={categoryItem.icon} className="icon" size="24px"/>
                     </div>
                     <div className="record-category">{categoryItem.name}</div>
                     <div className="money">{record.amount}</div>
@@ -197,11 +194,14 @@ const RecordDetail: FC = () => {
           );
         })}
       </RecordsWrapper>
-      <button onClick={() => setShow(true)}>123</button>
-      <PopUp show={show} onCancel={() => setShow(state => !state)} position="bottom">
+      <PopUp show={show} onCancel={() => setShow(false)} position="bottom">
         <DatePicker
           date={new Date()}
-          pickerType="full-date"
+          pickerType="year-month"
+          onOk={(d) => {
+            setCurDate(d)
+            setShow(false)
+          }}
         />
       </PopUp>
     </Layout>

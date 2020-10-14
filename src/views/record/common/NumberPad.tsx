@@ -64,12 +64,13 @@ interface NumberPadProps {
   amount?: number
   onDateChange: (date: Date) => void
   onCalcStrChange: (str: string) => void
+  onAmountChange: (amount: number) => void
   className: string
   onSubmit: Function
 }
 
 const NumberPad: FC<NumberPadProps> = (props) => {
-  const {date, amount, onDateChange, onCalcStrChange, onSubmit} = props
+  const {date, amount, onDateChange, onCalcStrChange, onSubmit, onAmountChange} = props
   const [curDate, setCurDate] = useState(date || new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
   const {expStr, add, clear, getValue, setInitNum} = useCalcStr(amount)
@@ -82,7 +83,9 @@ const NumberPad: FC<NumberPadProps> = (props) => {
   }, [curDate, onDateChange])
   useEffect(() => {
     onCalcStrChange(expStr)
-  }, [expStr, onCalcStrChange])
+    const amount = Number(expStr)
+    !isNaN(amount) && onAmountChange(amount)
+  }, [expStr, onCalcStrChange, onAmountChange])
   useEffect(() => {
     amount !== undefined && setInitNum(amount)
   }, [amount, setInitNum])
@@ -101,7 +104,7 @@ const NumberPad: FC<NumberPadProps> = (props) => {
     clear()
   }
   const onEqualClick = () => {
-    getValue()
+    onAmountChange(getValue())
   }
   const onDotClick = () => {
     add('.')
