@@ -153,7 +153,6 @@ const RecordAdd: FC = () => {
           onChange={onChange("categoryId")}
           onManageClick={handleManageClick}
         />
-        {recordData.remarks}
         <InfoBar calcStr={calcStr} remarks={remarks} onRemarksChange={onRemarksChange}/>
         <NumberPad
           date={new Date(time)}
