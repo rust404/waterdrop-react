@@ -8,16 +8,18 @@ import React, {
 import styled from "styled-components";
 import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
-import { MoneyType, findCategory } from "store/categoryReducer";
+import {MoneyType, getCategoryById} from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
-import { IRecord, findRecord } from "store/moneyRecordReducer";
+import { IRecord, getRecordById } from "store/moneyRecordReducer";
 import { RecordContext, CategoryContext } from "store";
 import { useHistory, useParams } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import CalcStrBar from "./common/CalcStrBar";
 import CategoryList from "./common/CategoryList";
+import {message} from "../../components/Message";
+import {danger} from "../../style/variables";
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,6 +36,9 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
+const DeleteBtn = styled.span`
+  color: ${danger}
+`
 type RecordData = Pick<IRecord, "categoryId" | "time" | "moneyType" | "amount">;
 
 interface IndexedRecordDataType extends RecordData {
@@ -68,7 +73,7 @@ const RecordEdit: FC = () => {
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
   useEffect(() => {
-    const record = findRecord(records, parseInt(id));
+    const record = getRecordById(records, parseInt(id));
     if (!record) {
       history.push("/record/detail");
     } else {
@@ -95,12 +100,7 @@ const RecordEdit: FC = () => {
           ...state,
           [key]: value,
         };
-        if (data.moneyType === MoneyType.INCOME) {
-          data.amount = Math.abs(data.amount);
-        } else {
-          data.amount = -Math.abs(data.amount);
-        }
-        const categoryItem = findCategory(category, data.categoryId);
+        const categoryItem = getCategoryById(category, data.categoryId);
         if (categoryItem && categoryItem.moneyType !== data.moneyType) {
           data.categoryId = -1;
         }
@@ -122,7 +122,7 @@ const RecordEdit: FC = () => {
           (i === "amount" && recordData[i] === 0) ||
           (recordData as IndexedRecordDataType)[i] === undefined
         ) {
-          alert(alertData[i]);
+          message.danger(alertData[i]);
           return;
         }
       }
@@ -133,6 +133,7 @@ const RecordEdit: FC = () => {
           ...recordData,
         },
       });
+      message.success('编辑记录成功')
       history.goBack();
     },
     [history, recordData, dispatchRecords, id]
@@ -156,9 +157,18 @@ const RecordEdit: FC = () => {
       }
     })
   }, [])
+  const handleDelete = () => {
+    dispatchRecords({
+      type: "deleteRecord",
+      payload: {
+        id: +id
+      }
+    })
+    message.success('删除成功')
+  }
   return (
     <Wrapper>
-      <TopBar showBack>
+      <TopBar showBack right={<DeleteBtn onClick={handleDelete}>删除</DeleteBtn>}>
         <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
           <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
           <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>

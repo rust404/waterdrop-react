@@ -3,9 +3,9 @@ import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
 import {formatTime} from "util/index";
-import {RecordContext, CategoryContext} from "store";
+import {CategoryContext, RecordContext} from "store";
 import {IRecord} from "store/moneyRecordReducer";
-import {findCategory, MoneyType} from "store/categoryReducer";
+import {getCategoryById, MoneyType} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
@@ -172,7 +172,7 @@ const RecordDetail: FC = () => {
                 </span>
               </div>
               {item[1].map(record => {
-                const categoryItem = findCategory(category, record.categoryId);
+                const categoryItem = getCategoryById(category, record.categoryId);
                 return (
                   <div
                     className="record-info"
@@ -186,7 +186,9 @@ const RecordDetail: FC = () => {
                       <Icon id={categoryItem.icon} className="icon" size="24px"/>
                     </div>
                     <div className="record-category">{categoryItem.name}</div>
-                    <div className="money">{record.amount}</div>
+                    <div className="money">
+                      {record.moneyType === MoneyType.EXPENDITURE && '-'}{record.amount}
+                    </div>
                   </div>
                 );
               })}

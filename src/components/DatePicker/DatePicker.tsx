@@ -38,7 +38,7 @@ const Container = styled.div`
   }
 `
 
-type DatePickerType = 'year' | 'full-date' | 'year-month' | 'month-date'
+export type DatePickerType = 'year' | 'full-date' | 'year-month' | 'month-date'
 
 interface DatePickerProps {
   date: Date,

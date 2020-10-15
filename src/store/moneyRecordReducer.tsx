@@ -1,7 +1,9 @@
 import React from "react";
 import {MoneyType} from "./categoryReducer";
+import dayjs from "dayjs";
 
-let recordId = 0;
+let recordId: number | undefined;
+const MAX_RECORD_ID_KEY = 'maxRecordId'
 export interface IRecord {
   time: string;
   moneyType: MoneyType;
@@ -18,14 +20,31 @@ interface IAddRecordAction {
   payload: Pick<IRecord, "time" | "moneyType" | "categoryId" | "amount">;
 }
 
+const getRecordId = () => {
+  if (recordId === undefined) {
+    const id = parseInt(window.localStorage.getItem(MAX_RECORD_ID_KEY) || '')
+    recordId = isNaN(id) ? 0 : id + 1
+  } else {
+    recordId++
+  }
+  saveRecordId()
+  return recordId
+}
+
+const saveRecordId = () => {
+  window.localStorage.setItem(MAX_RECORD_ID_KEY, recordId + '')
+}
+
 const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
-  return [
+  const newState = [
     ...state,
     {
       ...action.payload,
-      id: recordId++
+      id: getRecordId()
     }
   ];
+  saveRecords(newState)
+  return newState
 };
 
 interface IModifyRecordAction {
@@ -34,15 +53,17 @@ interface IModifyRecordAction {
 }
 
 const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
-  const record = findRecord(state, action.payload.id);
+  const record = getRecordById(state, action.payload.id);
   if (!record) {
     return state;
   }
-  for (let i in action.payload) {
+  for (let i of Object.keys(action.payload)) {
     if (action.payload[i] === undefined) continue;
     record[i] = action.payload[i];
   }
-  return [...state];
+  const newState = [...state];
+  saveRecords(newState)
+  return newState
 };
 
 interface IDeleteRecordAction {
@@ -55,15 +76,30 @@ const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
     if (action.payload.id === state[i].id) {
       const newState = [...state];
       newState.splice(i, 1);
+      saveRecords(newState)
       return newState;
     }
   }
   return state;
 };
-export const findRecord = (records: IRecord[], id: number): IRecord | null => {
+export const getRecordById = (records: IRecord[], id: number): IRecord | null => {
   return records.filter(record => record.id === id)[0];
 };
 
+export const getRecordsByTime = (records: IRecord[], time: Date, unit: dayjs.UnitType) => {
+  return records.filter(record => {
+    return dayjs(time).isSame(record.time, unit)
+  })
+}
+export const getRecords = (records: IRecord[], option: Partial<IRecord>) => {
+  return records.filter(record => {
+    for (const key in option) {
+      if (!Object.prototype.hasOwnProperty.call(option, key)) continue
+      if (record[key] !== option[key]) return false
+    }
+    return true
+  })
+}
 export const loadRecords = (): IRecord[] => {
   let recordsStr = window.localStorage.getItem("records");
   if (!recordsStr) {
@@ -73,9 +109,12 @@ export const loadRecords = (): IRecord[] => {
   if (!Array.isArray(records) || records.length === 0) {
     return [];
   }
-  recordId = Math.max(...records.map(record => record.id)) + 1;
   return records;
 };
+
+export const saveRecords = (records: IRecord[]) => {
+  window.localStorage.setItem("records", JSON.stringify(records));
+}
 
 export type IRecordAction =
   | IAddRecordAction

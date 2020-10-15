@@ -70,16 +70,12 @@ interface NumberPadProps {
 
 const NumberPad: FC<NumberPadProps> = (props) => {
   const {date, amount, onDateChange, onCalcStrChange, onSubmit, onAmountChange} = props
-  const [curDate, setCurDate] = useState(date || new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
   const {expStr, add, clear, getValue, setInitNum} = useCalcStr(amount)
 
-  const dateStr = dayjs(curDate).format('YYYY/MM/DD')
+  const dateStr = dayjs(date).format('YYYY/MM/DD')
   const showEqual = /^.+(\+|-)/.test(expStr)
 
-  useEffect(() => {
-    onDateChange(curDate)
-  }, [curDate, onDateChange])
   useEffect(() => {
     onCalcStrChange(expStr)
     const amount = Number(expStr)
@@ -114,7 +110,7 @@ const NumberPad: FC<NumberPadProps> = (props) => {
     setShowDatePicker(false)
   }
   const handleOk = (d: Date) => {
-    setCurDate(d)
+    onDateChange(d)
     setShowDatePicker(false)
   }
   return (
@@ -145,7 +141,7 @@ const NumberPad: FC<NumberPadProps> = (props) => {
         position="bottom"
       >
         <DatePicker
-          date={curDate}
+          date={date}
           pickerType="full-date"
           onOk={handleOk}
         />

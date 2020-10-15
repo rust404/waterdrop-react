@@ -43,7 +43,11 @@ const defaultCategoryList = [
 
 interface IAddCategoryAction {
   type: "addCategory";
-  payload: Pick<ICategoryItem, "name" | "moneyType" | "icon">;
+  payload: Omit<ICategoryItem, 'id'>;
+}
+
+export const getCategoryById = (categories: ICategoryItem[], id: number) => {
+  return categories.filter(category => category.id === id)[0]
 }
 
 const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
@@ -58,6 +62,7 @@ const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
     id: cid++,
     moneyType
   });
+  saveCategory(newList)
   return newList;
 };
 
@@ -69,9 +74,11 @@ const deleteCategory: ICategoryReducer<IDeleteCategoryAction> = (
   state,
   action
 ) => {
-  return state.filter(item => {
+  const newState = state.filter(item => {
     return item.id !== action.payload.id;
   });
+  saveCategory(newState)
+  return newState
 };
 
 interface IModifyCategoryAction {
@@ -91,6 +98,7 @@ const modifyCategory: ICategoryReducer<IModifyCategoryAction> = (
     ...state[index],
     ...action.payload
   });
+  saveCategory(newState)
   return newState;
 };
 
@@ -111,6 +119,10 @@ export const loadCategory = () => {
   }
   return category;
 };
+
+export const saveCategory = (category: ICategoryItem[]) => {
+  window.localStorage.setItem("category", JSON.stringify(category));
+}
 
 export const findCategory = (
   state: ICategoryItem[],

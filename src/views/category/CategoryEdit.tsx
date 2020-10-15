@@ -5,6 +5,7 @@ import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
+import {message} from "../../components/Message";
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,6 +37,7 @@ const CategoryEdit: FC = () => {
         icon: iconName
       }
     });
+    message.success('编辑分类成功')
     history.goBack();
   };
   const handleInput = (name: string) => {

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useRef} from "react";
+import React, {useContext, useState} from "react";
 import {CategoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
@@ -7,10 +7,8 @@ import useQuery from "hooks/useQuery";
 import {isMoneyType, MoneyType} from "store/categoryReducer";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
+import {message} from "../../components/Message";
 
-interface IconWrapperProps {
-  backgroundColor?: string;
-}
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,7 +25,7 @@ const CategoryAdd = () => {
   const [iconName, setIconName] = useState("canyin");
   const moneyType = query.get("moneyType");
   if (!isMoneyType(moneyType || "")) {
-    history.push("/category/manage");
+    history.replace("/category/manage");
   }
   const MoneyTypeMap = {
     [MoneyType.INCOME]: "收入",
@@ -35,7 +33,7 @@ const CategoryAdd = () => {
   };
   const submit = () => {
     if (!categoryName || !iconName) {
-      alert("未填写完整");
+      message.warning('请填写分类名，选择分类图标')
       return;
     }
     dispatch({
@@ -46,6 +44,7 @@ const CategoryAdd = () => {
         name: categoryName
       }
     });
+    message.success('添加分类成功')
     history.goBack();
   };
   const handleInput = (name: string) => {

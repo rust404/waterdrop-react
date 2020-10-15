@@ -19,6 +19,7 @@ import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import CalcStrBar from "./common/CalcStrBar";
 import CategoryList from "./common/CategoryList";
+import {message} from "../../components/Message";
 
 const Wrapper = styled.div`
   display: flex;
@@ -71,16 +72,10 @@ const RecordAdd: FC = () => {
   const onChange = useCallback(
     (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
       setRecordData((state) => {
-        const data = {
+        return {
           ...state,
           [key]: value,
         };
-        if (data.moneyType === MoneyType.INCOME) {
-          data.amount = Math.abs(data.amount);
-        } else {
-          data.amount = -Math.abs(data.amount);
-        }
-        return data;
       });
     },
     []
@@ -118,7 +113,7 @@ const RecordAdd: FC = () => {
           (i === "amount" && recordData[i] === 0) ||
           (recordData as IndexedRecordDataType)[i] === undefined
         ) {
-          alert(alertData[i]);
+          message.danger(alertData[i]);
           return;
         }
       }
@@ -128,6 +123,7 @@ const RecordAdd: FC = () => {
           ...recordData,
         },
       });
+      message.success('添加记录成功')
       history.push("/record/detail");
     },
     [recordData, history, dispatch]

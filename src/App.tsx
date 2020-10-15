@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useReducer} from "react";
+import React, {useReducer} from "react";
 import {
   HashRouter as Router,
 } from "react-router-dom";
@@ -20,23 +20,6 @@ function App() {
     null,
     loadRecords
   );
-  const refCategory = useRef(category);
-  const refRecords = useRef(records);
-  refCategory.current = category;
-  refRecords.current = records;
-  useEffect(() => {
-    // 不要beforeunload，照顾safari
-    window.addEventListener("pagehide", () => {
-      window.localStorage.setItem(
-        "category",
-        JSON.stringify(refCategory.current)
-      );
-      window.localStorage.setItem(
-        "records",
-        JSON.stringify(refRecords.current)
-      );
-    });
-  }, []);
   return (
     <React.Fragment>
       <GlobalStyle/>

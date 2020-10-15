@@ -19,7 +19,7 @@ const success = '#66bb6a'
 const danger = '#ef5350'
 const info = '#29b6f6'
 
-const theme = {
+const theme:{[index: string]: string}= {
   primary,
   secondary,
   warning,
