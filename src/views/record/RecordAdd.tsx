@@ -7,17 +7,16 @@ import React, {
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
-import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
 import { MoneyType } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
-import { IRecord } from "store/moneyRecordReducer";
+import { MoneyRecord } from "store/moneyRecordReducer";
 import {CategoryContext, RecordContext} from "store";
 import { useHistory } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
-import CalcStrBar from "./common/CalcStrBar";
+import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 
@@ -36,7 +35,7 @@ const Wrapper = styled.div`
     margin-top: auto;
   }
 `;
-type RecordData = Pick<IRecord, "categoryId" | "time" | "moneyType" | "amount">;
+type RecordData = Pick<MoneyRecord, "categoryId" | "time" | "moneyType" | "amount" | "remarks">;
 
 interface IndexedRecordDataType extends RecordData {
   [index: string]: number | MoneyType | string;
@@ -58,11 +57,12 @@ const RecordAdd: FC = () => {
     moneyType: MoneyType.EXPENDITURE,
     amount: 0,
     time: new Date().toISOString(),
+    remarks: ''
   });
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
   const { dispatch } = useContext(RecordContext);
-  const { categoryId, moneyType, time } = recordData;
+  const { categoryId, moneyType, time, remarks } = recordData;
 
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
   const handleManageClick = (e: MouseEvent) => {
@@ -93,6 +93,14 @@ const RecordAdd: FC = () => {
       return {
         ...state,
         amount
+      }
+    })
+  }, [])
+  const onRemarksChange = useCallback((remarks: string) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        remarks
       }
     })
   }, [])
@@ -145,8 +153,8 @@ const RecordAdd: FC = () => {
           onChange={onChange("categoryId")}
           onManageClick={handleManageClick}
         />
-        <Remarks/>
-        <CalcStrBar calcStr={calcStr}/>
+        {recordData.remarks}
+        <InfoBar calcStr={calcStr} remarks={remarks} onRemarksChange={onRemarksChange}/>
         <NumberPad
           date={new Date(time)}
           onDateChange={onDateChange}

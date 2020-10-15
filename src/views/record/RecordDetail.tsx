@@ -2,16 +2,15 @@ import React, {FC, useContext, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
-import {formatTime} from "util/index";
 import {CategoryContext, RecordContext} from "store";
-import {IRecord} from "store/moneyRecordReducer";
+import {MoneyRecord} from "store/moneyRecordReducer";
 import {getCategoryById, MoneyType} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
-import {brandColor, grey1} from "../../style/variables";
+import {brandColor, grey1, grey5,} from "../../style/variables";
 
 const GeneralInfo = styled.div`
   padding: 20px 16px;
@@ -83,6 +82,10 @@ const RecordItem = styled.div`
     .record-category {
       font-size: 18px;
       margin-left: 14px;
+      .remarks {
+        color: ${grey5};
+        font-size: 12px;
+      }
     }
     .money {
       font-size: 18px;
@@ -98,14 +101,14 @@ const RecordDetail: FC = () => {
     RecordContext
   );
   const history = useHistory();
-  const {year, month} = formatTime(curDate);
+  const year = dayjs(curDate).year()
+  const month = dayjs(curDate).month() + 1
   const filteredRecords = records.filter(record => {
-    const {year: recordYear, month: recordMonth} = formatTime(
-      new Date(record.time)
-    );
+    const recordYear = dayjs(record.time).year()
+    const recordMonth = dayjs(record.time).month() + 1
     return recordYear === year && recordMonth === month;
   });
-  const hashMap: { [index: string]: IRecord[] } = {};
+  const hashMap: { [index: string]: MoneyRecord[] } = {};
   filteredRecords.forEach(record => {
     const key = dayjs(record.time).format("YYYY-MM-DD");
     if (hashMap[key]) {
@@ -183,9 +186,12 @@ const RecordDetail: FC = () => {
                     }}
                   >
                     <div className="icon-wrapper">
-                      <Icon id={categoryItem.icon} className="icon" size="24px"/>
+                      <Icon id={categoryItem.icon} className="icon" size="60%"/>
                     </div>
-                    <div className="record-category">{categoryItem.name}</div>
+                    <div className="record-category">
+                      {categoryItem.name}
+                      <p className="remarks">{record.remarks}</p>
+                    </div>
                     <div className="money">
                       {record.moneyType === MoneyType.EXPENDITURE && '-'}{record.amount}
                     </div>

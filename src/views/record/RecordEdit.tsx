@@ -6,17 +6,16 @@ import React, {
   FC, MouseEvent,
 } from "react";
 import styled from "styled-components";
-import Remarks from "./common/Remarks";
 import NumberPad from "./common/NumberPad";
 import {MoneyType, getCategoryById} from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
-import { IRecord, getRecordById } from "store/moneyRecordReducer";
+import { MoneyRecord, getRecordById } from "store/moneyRecordReducer";
 import { RecordContext, CategoryContext } from "store";
 import { useHistory, useParams } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
-import CalcStrBar from "./common/CalcStrBar";
+import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
@@ -39,10 +38,10 @@ const Wrapper = styled.div`
 const DeleteBtn = styled.span`
   color: ${danger}
 `
-type RecordData = Pick<IRecord, "categoryId" | "time" | "moneyType" | "amount">;
+type RecordData = Pick<MoneyRecord, "categoryId" | "time" | "moneyType" | "amount" | "remarks">;
 
 interface IndexedRecordDataType extends RecordData {
-  [index: string]: number | MoneyType | string;
+  [index: string]: number | MoneyType | string | undefined;
 }
 
 interface alertDataType {
@@ -68,21 +67,31 @@ const RecordEdit: FC = () => {
     moneyType: MoneyType.EXPENDITURE,
     amount: 0,
     time: new Date().toISOString(),
+    remarks: ''
   });
-  const { categoryId, moneyType, time, amount } = recordData;
+  const { categoryId, moneyType, time, amount, remarks } = recordData;
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
+  const onRemarksChange = useCallback((remarks: string) => {
+    setRecordData((state) => {
+      return {
+        ...state,
+        remarks
+      }
+    })
+  }, [])
   useEffect(() => {
     const record = getRecordById(records, parseInt(id));
     if (!record) {
       history.push("/record/detail");
     } else {
-      const { categoryId, moneyType, amount, time } = record;
+      const { categoryId, moneyType, amount, time, remarks } = record;
       setRecordData({
         categoryId,
         moneyType,
         amount,
         time,
+        remarks: remarks || ''
       });
       setCalcStr(''+amount)
     }
@@ -182,8 +191,7 @@ const RecordEdit: FC = () => {
         onChange={onChange("categoryId")}
         onManageClick={handleManageClick}
       />
-      <Remarks/>
-      <CalcStrBar calcStr={calcStr}/>
+      <InfoBar calcStr={calcStr} remarks={remarks} onRemarksChange={onRemarksChange}/>
       <NumberPad
         date={new Date(time)}
         amount={amount}

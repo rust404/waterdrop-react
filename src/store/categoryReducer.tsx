@@ -124,13 +124,6 @@ export const saveCategory = (category: ICategoryItem[]) => {
   window.localStorage.setItem("category", JSON.stringify(category));
 }
 
-export const findCategory = (
-  state: ICategoryItem[],
-  id: number
-) => {
-  return state.filter(item => item.id === id)[0];
-};
-
 const categoryReducer: ICategoryReducer<ICategoryAction> = (state, action) => {
   switch (action.type) {
     case "addCategory":

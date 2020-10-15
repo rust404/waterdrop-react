@@ -19,6 +19,7 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 100%;
 `;
+
 interface ISceneConfig {
   POP: string;
   PUSH: string;
@@ -30,6 +31,7 @@ interface IRoutesConfigItem {
   sceneConfig: ISceneConfig,
   exact?: boolean;
 }
+
 const RoutesConfig: IRoutesConfigItem[] = [
   {
     path: "/category/manage",
@@ -71,14 +73,13 @@ const RoutesConfig: IRoutesConfigItem[] = [
 
 RoutesConfig.forEach(route => {
   const Comp = route.component;
-  const Wrap: FC = props => {
+  route.component = props => {
     return (
       <Wrapper className="wrap">
         <Comp {...props} />
       </Wrapper>
     );
   };
-  route.component = Wrap;
 });
 const DEFAULT_SCENE_CONFIG: ISceneConfig = {
   PUSH: "r-to-l",
@@ -86,9 +87,6 @@ const DEFAULT_SCENE_CONFIG: ISceneConfig = {
 };
 
 const getSceneConfig = (location: H.Location) => {
-  // const matchedRoute = RoutesConfig.find(config =>
-  //   new RegExp(`^${config.path}$`).test(location.pathname)
-  // );
   const matchedRoute = RoutesConfig.filter(config => {
     if (config.path === '*') return false
     return matchPath(location.pathname, {
@@ -116,9 +114,9 @@ const Routes: FC = () => {
     <TransitionGroup className="transition-wrapper" childFactory={
       child => React.cloneElement(child, {classNames})
     }>
-      <CSSTransition timeout={500} key={location.pathname} classNames={"b-to-t"}>
+      <CSSTransition timeout={500} key={location.pathname} classNames="b-to-t">
         <Switch location={location}>
-          <Redirect from="/" exact to="/record/add" />
+          <Redirect from="/" exact to="/record/add"/>
           {RoutesConfig.map(({path, component, exact = false}) => {
             return (
               <Route

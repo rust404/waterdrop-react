@@ -6,6 +6,7 @@ import classNames from "classnames";
 import Icon from "../../../components/Icon";
 
 const gap = '20px'
+const iconSize = '60%'
 const Wrapper = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -62,7 +63,7 @@ const CategoryList:FC<CategoryListProps> = (props) => {
         return (
           <CategoryItem key={category.id} onClick={handleClick}>
             <IconWrapper className={iconClassName}>
-              <Icon className="icon" id={category.icon} size="24px" />
+              <Icon className="icon" id={category.icon} size={iconSize} />
             </IconWrapper>
             {category.name}
           </CategoryItem>
@@ -71,7 +72,7 @@ const CategoryList:FC<CategoryListProps> = (props) => {
       {type === 'manage' && (
         <CategoryItem onClick={onManageClick}>
           <IconWrapper>
-            <Icon className="icon" id="settings" size="24px" />
+            <Icon className="icon" id="settings" size={iconSize} />
           </IconWrapper>
           设置
         </CategoryItem>
@@ -79,7 +80,7 @@ const CategoryList:FC<CategoryListProps> = (props) => {
       {type === 'add' && (
         <CategoryItem onClick={onAddClick}>
           <IconWrapper>
-            <Icon className="icon" id="tianjia" size="24px" />
+            <Icon className="icon" id="tianjia" size={iconSize} />
           </IconWrapper>
           添加
         </CategoryItem>

@@ -49,7 +49,7 @@ const IconList: FC<IconListProps> = (props) => {
         return (
           <li key={name} onClick={() => {onChange && onChange(name)}}>
             <IconWrapper className={IconClass}>
-              <Icon id={name} size="24px" className="icon"/>
+              <Icon id={name} size="60%" className="icon"/>
             </IconWrapper>
           </li>
         )

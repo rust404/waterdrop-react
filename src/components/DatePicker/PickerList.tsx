@@ -1,4 +1,4 @@
-import React, {FC, useState, TouchEvent, useEffect} from "react";
+import React, {FC, useState, useEffect} from "react";
 import styled from "styled-components";
 import {brandColor} from "../../style/variables";
 
@@ -59,7 +59,7 @@ const PickerList: FC<PickerListProps> = (props) => {
       }
     })
   }, [value, listData])
-  const onTouchStart = (e: TouchEvent<HTMLUListElement>) => {
+  const onTouchStart = (e: React.TouchEvent<HTMLUListElement>) => {
     setStartY(e.touches[0].clientY)
     setStartTop(parseInt(style.top))
     setStyle(state => {
@@ -69,7 +69,7 @@ const PickerList: FC<PickerListProps> = (props) => {
       }
     })
   }
-  const onTouchMove = (e: TouchEvent<HTMLUListElement>) => {
+  const onTouchMove = (e: React.TouchEvent<HTMLUListElement>) => {
     const limitRange = 50
     const maxTop = limitRange
     const minTop = -(listData.length - 1) * itemHeight - limitRange
@@ -83,7 +83,7 @@ const PickerList: FC<PickerListProps> = (props) => {
       }
     })
   }
-  const onTouchEnd = (e: TouchEvent) => {
+  const onTouchEnd = () => {
     let top = parseInt(style.top)
     top > 0 && (top = 0)
     let index = -Math.round(top / itemHeight)
@@ -95,7 +95,6 @@ const PickerList: FC<PickerListProps> = (props) => {
       }
     })
     onChange(listData[index])
-    e.preventDefault()
   }
 
   return (<Wrapper>

@@ -3,7 +3,7 @@ import Layout from "components/Layout";
 import {CategoryContext, RecordContext} from "store";
 import {getCategoryById, MoneyType} from "store/categoryReducer";
 import TopBar from "components/TopBar";
-import {getRecords, getRecordsByTime, IRecord} from "store/moneyRecordReducer";
+import {getRecords, getRecordsByTime, MoneyRecord} from "store/moneyRecordReducer";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import RadioGroup from "../components/Radio/RadioGroup";
@@ -88,7 +88,7 @@ const RankList = styled.ol`
     }
   }
 `
-type CategoryToRecordsMap = { [categoryId: number]: IRecord[] }
+type CategoryToRecordsMap = { [categoryId: number]: MoneyRecord[] }
 type CategoryToSumMap = { [categoryId: number]: number }
 
 const Statistics: FC = () => {
@@ -118,7 +118,7 @@ const Statistics: FC = () => {
   const handleDateClick = () => {
     setShowDatePicker(true)
   }
-  const getSumForDates = (records: IRecord[], date: Date) => {
+  const getSumForDates = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'month')
     const ret = {
       [MoneyType.INCOME]: dateArr.map(_ => 0),
@@ -129,7 +129,7 @@ const Statistics: FC = () => {
       return acc
     }, ret)
   }
-  const getSumForMonths = (records: IRecord[], date: Date) => {
+  const getSumForMonths = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'year')
     const ret = {
       [MoneyType.INCOME]: monthArr.map(_ => 0),
@@ -140,8 +140,8 @@ const Statistics: FC = () => {
       return acc
     }, ret)
   }
-  const getSumsForCategories = (records: IRecord[]): CategoryToSumMap => {
-    function getCategoryToRecordMap(records: IRecord[]) {
+  const getSumsForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
+    function getCategoryToRecordMap(records: MoneyRecord[]) {
       const map: CategoryToRecordsMap = {}
       return records.reduce((acc, record) => {
         if (acc[record.categoryId]) {

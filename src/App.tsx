@@ -1,4 +1,4 @@
-import React, {useReducer} from "react";
+import React, {useEffect, useReducer} from "react";
 import {
   HashRouter as Router,
 } from "react-router-dom";
@@ -20,6 +20,15 @@ function App() {
     null,
     loadRecords
   );
+  useEffect(() => {
+    // 禁止橡皮筋效应
+    const bodyTouchMoveHandler = (e: TouchEvent) => {
+      e.preventDefault()
+    }
+    document.body.addEventListener('touchmove', bodyTouchMoveHandler, {passive: false})
+    // 解决微信端伪类active无效的问题
+    document.body.addEventListener('touchstart', () => {})
+  }, [])
   return (
     <React.Fragment>
       <GlobalStyle/>
