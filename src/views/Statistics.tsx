@@ -1,9 +1,8 @@
 import React, {FC, lazy, useContext, useState, Suspense} from "react";
 import Layout from "components/Layout";
-import {CategoryContext, RecordContext} from "store";
-import {getCategoryById, MoneyType} from "store/categoryReducer";
+import {getCategoryById} from "store/categoryReducer";
 import TopBar from "components/TopBar";
-import {getRecords, getRecordsByTime, MoneyRecord} from "store/moneyRecordReducer";
+import {getRecords, getRecordsByTime} from "store/moneyRecordReducer";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import RadioGroup from "../components/Radio/RadioGroup";
@@ -13,6 +12,8 @@ import DatePicker, {DatePickerType} from "../components/DatePicker/DatePicker";
 import {brandColor, grey1, grey2, grey5} from "../style/variables";
 import {EChartOption} from "echarts";
 import Icon from "../components/Icon";
+import {MoneyRecordContext} from "../store/moneyRecordStore";
+import {CategoryContext} from "../store/categoryStore";
 
 const Echarts = lazy(() => import("components/Echarts"));
 
@@ -92,13 +93,13 @@ type CategoryToRecordsMap = { [categoryId: number]: MoneyRecord[] }
 type CategoryToSumMap = { [categoryId: number]: number }
 
 const Statistics: FC = () => {
-  const {state: records} = useContext(RecordContext);
+  const {state: records} = useContext(MoneyRecordContext);
   const {state: category} = useContext(CategoryContext);
   const [curDate, setCurDate] = useState(new Date())
   const [dateType, setDateType] = useState('year-month')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [moneyType, setMoneyType] = useState<MoneyType>(
-    MoneyType.EXPENDITURE
+    'expenditure'
   );
   const monthArr = Array(12).fill(0).map((_, index) => index + 1)
   const dateArr = Array(dayjs(curDate).daysInMonth()).fill(0).map((_, index) => index + 1)
@@ -121,8 +122,8 @@ const Statistics: FC = () => {
   const getSumForDates = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'month')
     const ret = {
-      [MoneyType.INCOME]: dateArr.map(_ => 0),
-      [MoneyType.EXPENDITURE]: dateArr.map(_ => 0)
+      income: dateArr.map(_ => 0),
+      expenditure: dateArr.map(_ => 0)
     }
     return records.reduce((acc, record) => {
       acc[record.moneyType][dayjs(record.time).date() - 1] += record.amount
@@ -132,8 +133,8 @@ const Statistics: FC = () => {
   const getSumForMonths = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'year')
     const ret = {
-      [MoneyType.INCOME]: monthArr.map(_ => 0),
-      [MoneyType.EXPENDITURE]: monthArr.map(_ => 0)
+      income: monthArr.map(_ => 0),
+      expenditure: monthArr.map(_ => 0)
     }
     return records.reduce((acc, record) => {
       acc[record.moneyType][dayjs(record.time).month()] += record.amount
@@ -226,7 +227,7 @@ const Statistics: FC = () => {
       type: 'value',
       show: false
     },
-    series: [moneyType === MoneyType.EXPENDITURE ? {
+    series: [moneyType === 'expenditure' ? {
       name: '支出',
       seriesLayoutBy: 'row',
       type: 'line',
@@ -236,7 +237,7 @@ const Statistics: FC = () => {
         color: '#bbb',
         width: 1,
       },
-      data: ySeriesData[MoneyType.EXPENDITURE]
+      data: ySeriesData['expenditure']
     } : {
       name: '收入',
       seriesLayoutBy: 'row',
@@ -247,7 +248,7 @@ const Statistics: FC = () => {
         color: '#bbb',
         width: 1,
       },
-      data: ySeriesData[MoneyType.INCOME]
+      data: ySeriesData['income']
     }]
   }
   return (
@@ -263,8 +264,8 @@ const Statistics: FC = () => {
           {dateStr}&#9660;
         </div>
         <RadioGroup block value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
-          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
+          <RadioButton label={'income'}>收入</RadioButton>
+          <RadioButton label={'expenditure'}>支出</RadioButton>
         </RadioGroup>
         {categoryRankData.length === 0 ?
           <FallBackMessage>暂无数据</FallBackMessage> :

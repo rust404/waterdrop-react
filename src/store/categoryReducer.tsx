@@ -1,11 +1,27 @@
-let cid = 0;
+import {PREFIX} from "./constant";
+import {getKeyWithPrefix} from "./utils";
 
-export enum MoneyType {
-  INCOME = "INCOME",
-  EXPENDITURE = "EXPENDITURE"
-}
+let cid = 0;
+const MAX_CATEGORY_ID_KEY = getKeyWithPrefix('maxCategoryId', PREFIX)
+const CATEGORY_KEY = getKeyWithPrefix('category', PREFIX)
+
 export function isMoneyType(type: string) {
-  return type in MoneyType;
+  return type === 'income' || type === 'expenditure';
+}
+
+const generateCategoryId = () => {
+  if (cid === undefined) {
+    const id = parseInt(window.localStorage.getItem(MAX_CATEGORY_ID_KEY) || '')
+    cid = isNaN(id) ? 0 : id + 1
+  } else {
+    cid++
+  }
+  saveCategoryId()
+  return cid
+}
+
+const saveCategoryId = () => {
+  window.localStorage.setItem(MAX_CATEGORY_ID_KEY, cid + '')
 }
 
 export interface ICategoryItem {
@@ -20,25 +36,19 @@ export type ICategoryAction =
   | IDeleteCategoryAction
   | IModifyCategoryAction;
 
-type ICategoryReducer<T extends ICategoryAction> = React.Reducer<
-  ICategoryItem[],
-  T
->;
+type ICategoryReducer<T extends ICategoryAction> = React.Reducer<ICategoryItem[],
+  T>;
 
-const defaultCategoryList = [
-  {name: "餐饮", icon: "canyin", moneyType: MoneyType.EXPENDITURE},
-  {name: "服饰", icon: "fushi", moneyType: MoneyType.EXPENDITURE},
-  {name: "读书", icon: "dushu", moneyType: MoneyType.EXPENDITURE},
-  {name: "交通", icon: "jiaotong", moneyType: MoneyType.EXPENDITURE},
-  {name: "旅行", icon: "lvxing", moneyType: MoneyType.EXPENDITURE},
-  {
-    name: "日用",
-    icon: "riyongpin",
-    moneyType: MoneyType.EXPENDITURE
-  },
-  {name: "工资", icon: "gongzi", moneyType: MoneyType.INCOME},
-  {name: "兼职", icon: "jianzhi", moneyType: MoneyType.INCOME},
-  {name: "理财", icon: "licai", moneyType: MoneyType.INCOME}
+const defaultCategoryList: Omit<ICategoryItem, 'id'>[] = [
+  {name: "餐饮", icon: "canyin", moneyType: 'expenditure'},
+  {name: "服饰", icon: "fushi", moneyType: 'expenditure'},
+  {name: "读书", icon: "dushu", moneyType: 'expenditure'},
+  {name: "交通", icon: "jiaotong", moneyType: 'expenditure'},
+  {name: "旅行", icon: "lvxing", moneyType: 'expenditure'},
+  {name: "日用", icon: "riyongpin", moneyType: 'expenditure'},
+  {name: "工资", icon: "gongzi", moneyType: 'income'},
+  {name: "兼职", icon: "jianzhi", moneyType: 'income'},
+  {name: "理财", icon: "licai", moneyType: 'income'}
 ];
 
 interface IAddCategoryAction {
@@ -59,7 +69,7 @@ const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
   newList.push({
     name,
     icon,
-    id: cid++,
+    id: generateCategoryId(),
     moneyType
   });
   saveCategory(newList)
@@ -70,6 +80,7 @@ interface IDeleteCategoryAction {
   type: "deleteCategory";
   payload: Pick<ICategoryItem, "id">;
 }
+
 const deleteCategory: ICategoryReducer<IDeleteCategoryAction> = (
   state,
   action
@@ -85,6 +96,7 @@ interface IModifyCategoryAction {
   type: "modifyCategory";
   payload: Pick<ICategoryItem, "id"> & Partial<ICategoryItem>;
 }
+
 const modifyCategory: ICategoryReducer<IModifyCategoryAction> = (
   state,
   action
@@ -103,16 +115,17 @@ const modifyCategory: ICategoryReducer<IModifyCategoryAction> = (
 };
 
 export const loadCategory = () => {
-  const categoryStr = window.localStorage.getItem("category");
+  const categoryStr = window.localStorage.getItem(CATEGORY_KEY);
   let category: ICategoryItem[];
   if (!categoryStr) {
     category = defaultCategoryList.map(item => {
       return {
         ...item,
         moneyType: item.moneyType,
-        id: cid++
+        id: generateCategoryId()
       };
     });
+    saveCategory(category)
   } else {
     category = JSON.parse(categoryStr);
     cid = Math.max(...category.map(item => item.id)) + 1;
@@ -121,7 +134,7 @@ export const loadCategory = () => {
 };
 
 export const saveCategory = (category: ICategoryItem[]) => {
-  window.localStorage.setItem("category", JSON.stringify(category));
+  window.localStorage.setItem(CATEGORY_KEY, JSON.stringify(category));
 }
 
 const categoryReducer: ICategoryReducer<ICategoryAction> = (state, action) => {

@@ -1,5 +1,5 @@
 import React, {useContext, useState, FC} from "react";
-import {CategoryContext} from "store";
+import {CategoryContext} from "store/categoryStore";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";

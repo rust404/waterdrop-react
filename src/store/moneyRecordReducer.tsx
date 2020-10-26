@@ -1,18 +1,12 @@
 import React from "react";
-import {MoneyType} from "./categoryReducer";
 import dayjs from "dayjs";
+import {PREFIX} from "./constant";
+import {getKeyWithPrefix} from "./utils";
 
 let recordId: number | undefined;
-const MAX_RECORD_ID_KEY = 'maxRecordId'
-export interface MoneyRecord {
-  time: string;
-  moneyType: MoneyType;
-  categoryId: number;
-  id: number;
-  amount: number;
-  remarks: string;
-  [index: string]: number | string | MoneyType | undefined;
-}
+const MAX_RECORD_ID_KEY = getKeyWithPrefix('maxRecordId', PREFIX)
+const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
+
 
 type IRecordReducer<T extends IRecordAction> = React.Reducer<MoneyRecord[], T>;
 
@@ -102,7 +96,7 @@ export const getRecords = (records: MoneyRecord[], option: Partial<MoneyRecord>)
   })
 }
 export const loadRecords = (): MoneyRecord[] => {
-  let recordsStr = window.localStorage.getItem("records");
+  let recordsStr = window.localStorage.getItem(RECORD_KEY);
   if (!recordsStr) {
     return [];
   }
@@ -114,7 +108,7 @@ export const loadRecords = (): MoneyRecord[] => {
 };
 
 export const saveRecords = (records: MoneyRecord[]) => {
-  window.localStorage.setItem("records", JSON.stringify(records));
+  window.localStorage.setItem(RECORD_KEY, JSON.stringify(records));
 }
 
 export type IRecordAction =

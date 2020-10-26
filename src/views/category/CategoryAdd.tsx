@@ -1,13 +1,13 @@
 import React, {useContext, useState} from "react";
-import {CategoryContext} from "store";
 import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useQuery from "hooks/useQuery";
-import {isMoneyType, MoneyType} from "store/categoryReducer";
+import {isMoneyType} from "store/categoryReducer";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
+import {CategoryContext} from "../../store/categoryStore";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,8 +28,8 @@ const CategoryAdd = () => {
     history.replace("/category/manage");
   }
   const MoneyTypeMap = {
-    [MoneyType.INCOME]: "收入",
-    [MoneyType.EXPENDITURE]: "支出"
+    income: "收入",
+    expenditure: "支出"
   };
   const submit = () => {
     if (!categoryName || !iconName) {

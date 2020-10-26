@@ -7,11 +7,10 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
-import {MoneyType, getCategoryById} from "store/categoryReducer";
+import {getCategoryById} from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
-import { MoneyRecord, getRecordById } from "store/moneyRecordReducer";
-import { RecordContext, CategoryContext } from "store";
+import {  getRecordById } from "store/moneyRecordReducer";
 import { useHistory, useParams } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -19,6 +18,8 @@ import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
+import {MoneyRecordContext} from "../../store/moneyRecordStore";
+import {CategoryContext} from "../../store/categoryStore";
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,7 +57,7 @@ export type recordDataFieldType = Partial<RecordData>;
 const RecordEdit: FC = () => {
   const history = useHistory();
   const { state: records, dispatch: dispatchRecords } = useContext(
-    RecordContext
+    MoneyRecordContext
   );
   const [calcStr, setCalcStr] = useState('0')
   const { state: category } = useContext(CategoryContext);
@@ -64,7 +65,7 @@ const RecordEdit: FC = () => {
 
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
-    moneyType: MoneyType.EXPENDITURE,
+    moneyType: 'expenditure',
     amount: 0,
     time: new Date().toISOString(),
     remarks: ''
@@ -179,8 +180,8 @@ const RecordEdit: FC = () => {
     <Wrapper>
       <TopBar showBack right={<DeleteBtn onClick={handleDelete}>删除</DeleteBtn>}>
         <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
-          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
+          <RadioButton label={'income'}>收入</RadioButton>
+          <RadioButton label={'expenditure'}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <CategoryList

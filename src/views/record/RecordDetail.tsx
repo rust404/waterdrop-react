@@ -2,15 +2,15 @@ import React, {FC, useContext, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
-import {CategoryContext, RecordContext} from "store";
-import {MoneyRecord} from "store/moneyRecordReducer";
-import {getCategoryById, MoneyType} from "store/categoryReducer";
+import {getCategoryById} from "store/categoryReducer";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
 import {brandColor, grey1, grey5,} from "../../style/variables";
+import {MoneyRecordContext} from "../../store/moneyRecordStore";
+import {CategoryContext} from "../../store/categoryStore";
 
 const GeneralInfo = styled.div`
   padding: 20px 16px;
@@ -97,9 +97,7 @@ const RecordDetail: FC = () => {
   const [show, setShow] = useState(false)
   const [curDate, setCurDate] = useState(new Date())
   const {state: category} = useContext(CategoryContext);
-  const {state: records} = useContext(
-    RecordContext
-  );
+  const {state: records} = useContext(MoneyRecordContext);
   const history = useHistory();
   const year = dayjs(curDate).year()
   const month = dayjs(curDate).month() + 1
@@ -125,7 +123,7 @@ const RecordDetail: FC = () => {
         <div className="general-record">
           <div className="money">
             {filteredRecords.reduce<number>((acc, item) => {
-              if (item.moneyType === MoneyType.INCOME) {
+              if (item.moneyType === 'income') {
                 return acc + Math.abs(item.amount);
               }
               return acc;
@@ -140,7 +138,7 @@ const RecordDetail: FC = () => {
         <div className="general-record">
           <div className="money">
             {filteredRecords.reduce<number>((acc, item) => {
-              if (item.moneyType === MoneyType.EXPENDITURE) {
+              if (item.moneyType === 'expenditure') {
                 return acc + Math.abs(item.amount);
               }
               return acc;
@@ -158,7 +156,7 @@ const RecordDetail: FC = () => {
                 <span>
                   收入：
                   {item[1].reduce<number>((acc, item) => {
-                    if (item.moneyType === MoneyType.INCOME) {
+                    if (item.moneyType === 'income') {
                       return acc + Math.abs(item.amount);
                     } else {
                       return acc;
@@ -166,7 +164,7 @@ const RecordDetail: FC = () => {
                   }, 0)}
                   ；支出：
                   {item[1].reduce<number>((acc, item) => {
-                    if (item.moneyType === MoneyType.EXPENDITURE) {
+                    if (item.moneyType === 'expenditure') {
                       return acc + Math.abs(item.amount);
                     } else {
                       return acc;
@@ -193,7 +191,7 @@ const RecordDetail: FC = () => {
                       <p className="remarks">{record.remarks}</p>
                     </div>
                     <div className="money">
-                      {record.moneyType === MoneyType.EXPENDITURE && '-'}{record.amount}
+                      {record.moneyType === 'expenditure' && '-'}{record.amount}
                     </div>
                   </div>
                 );

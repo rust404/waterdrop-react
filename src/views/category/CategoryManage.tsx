@@ -1,9 +1,8 @@
 import React, {useState, useContext, FC} from "react";
-import {MoneyType} from "store/categoryReducer";
 import styled from "styled-components";
 import TopBar from "components/TopBar";
 import useQuery from "hooks/useQuery";
-import {CategoryContext} from "store";
+import {CategoryContext} from "store/categoryStore";
 import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -22,7 +21,7 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
   const history = useHistory();
   const {state: category} = useContext(CategoryContext);
   const [moneyType, setMoneyType] = useState(
-    query.get("moneyType") || MoneyType.EXPENDITURE
+    query.get("moneyType") || 'expenditure'
   );
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
@@ -38,8 +37,8 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
     <Wrapper className={props.className}>
       <TopBar showBack>
         <RadioGroup value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
-          <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
-          <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
+          <RadioButton label={'income'}>收入</RadioButton>
+          <RadioButton label={'expenditure'}>支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <CategoryList

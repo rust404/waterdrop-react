@@ -8,11 +8,10 @@ import React, {
 import Layout from "components/Layout";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
-import { MoneyType } from "store/categoryReducer";
 import TopBar from "components/TopBar";
 import { ValueOf } from "util/index";
-import { MoneyRecord } from "store/moneyRecordReducer";
-import {CategoryContext, RecordContext} from "store";
+import {CategoryContext} from "store/categoryStore";
+import {MoneyRecordContext} from "store/moneyRecordStore";
 import { useHistory } from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -54,14 +53,14 @@ const RecordAdd: FC = () => {
   const {state: category} = useContext(CategoryContext);
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
-    moneyType: MoneyType.EXPENDITURE,
+    moneyType: 'expenditure',
     amount: 0,
     time: new Date().toISOString(),
     remarks: ''
   });
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
-  const { dispatch } = useContext(RecordContext);
+  const { dispatch } = useContext(MoneyRecordContext);
   const { categoryId, moneyType, time, remarks } = recordData;
 
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
@@ -141,8 +140,8 @@ const RecordAdd: FC = () => {
       <Wrapper>
         <TopBar>
           <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
-            <RadioButton label={MoneyType.INCOME}>收入</RadioButton>
-            <RadioButton label={MoneyType.EXPENDITURE}>支出</RadioButton>
+            <RadioButton label={'income'}>收入</RadioButton>
+            <RadioButton label={'expenditure'}>支出</RadioButton>
           </RadioGroup>
         </TopBar>
         <CategoryList
