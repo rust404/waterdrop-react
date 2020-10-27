@@ -9,6 +9,8 @@ import IconList from "./IconList";
 import {message} from "../../components/Message";
 import {CategoriesContext} from "../../store/categoriesStore";
 import {addCategory} from "../../store/actions/category";
+import {categoryValidator} from "../../util";
+import {ErrorList} from "async-validator";
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,17 +35,24 @@ const CategoryAdd = () => {
     expenditure: "支出"
   };
   const submit = () => {
-    if (!categoryName || !iconName) {
-      message.warning('请填写分类名，选择分类图标')
-      return;
-    }
-    dispatchCategories(addCategory({
+    const newCategory = {
       moneyType: moneyType as MoneyType,
       icon: iconName,
       name: categoryName
-    }))
-    message.success('添加分类成功')
-    history.goBack();
+    }
+    categoryValidator.validate(newCategory).then(() => {
+      dispatchCategories(addCategory({
+        moneyType: moneyType as MoneyType,
+        icon: iconName,
+        name: categoryName
+      }))
+      message.success('添加分类成功')
+      history.goBack();
+    }).catch(({errors}: {errors: ErrorList}) => {
+      errors.forEach(error => {
+        message.danger(error.message)
+      })
+    })
   };
   const handleInput = (name: string) => {
     setCategoryName(name);

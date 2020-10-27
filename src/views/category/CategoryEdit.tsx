@@ -7,6 +7,8 @@ import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
 import {modifyCategory} from "../../store/actions/category";
+import {categoryValidator} from "../../util";
+import {ErrorList} from "async-validator";
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,13 +32,20 @@ const CategoryEdit: FC = () => {
   const [categoryName, setCategoryName] = useState(curCategory ? curCategory.name : "");
   const [iconName, setIconName] = useState(curCategory ? curCategory.icon : "");
   const submit = () => {
-    dispatchCategories(modifyCategory({
-      id,
+    const newCategory = {
+      ...curCategory,
+      icon: iconName,
       name: categoryName,
-      icon: iconName
-    }));
-    message.success('编辑分类成功')
-    history.goBack();
+    }
+    categoryValidator.validate(newCategory).then(() => {
+      dispatchCategories(modifyCategory(newCategory));
+      message.success('编辑分类成功')
+      history.goBack();
+    }).catch(({errors}: {errors: ErrorList}) => {
+      errors.forEach(error => {
+        message.danger(error.message)
+      })
+    })
   };
   const handleInput = (name: string) => {
     setCategoryName(name);

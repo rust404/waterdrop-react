@@ -9,7 +9,7 @@ import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
 import {getCategoryById} from "store/selectors/category";
 import TopBar from "components/TopBar";
-import {ValueOf} from "util/index";
+import {moneyRecordValidator, ValueOf} from "util/index";
 import {getRecordById} from "store/selectors/moneyRecord";
 import {useHistory, useParams} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
@@ -21,6 +21,7 @@ import {danger} from "../../style/variables";
 import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
 import {CategoriesContext} from "../../store/categoriesStore";
 import {deleteRecord, modifyRecord} from "../../store/actions/moneyRecord";
+import {ErrorList} from "async-validator";
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,18 +42,6 @@ const DeleteBtn = styled.span`
   color: ${danger}
 `
 type RecordData = Pick<MoneyRecord, "categoryId" | "time" | "moneyType" | "amount" | "remarks">;
-
-interface IndexedRecordDataType extends RecordData {
-  [index: string]: number | MoneyType | string | undefined;
-}
-
-interface alertDataType {
-  categoryId: string;
-  moneyType?: string;
-  amount: string;
-
-  [index: string]: string | undefined;
-}
 
 export type recordDataFieldType = Partial<RecordData>;
 
@@ -121,27 +110,18 @@ const RecordEdit: FC = () => {
   );
   const submit = useCallback(
     () => {
-      const alertData: alertDataType = {
-        categoryId: "请选择分类",
-        amount: "钱不能为0",
-      };
-      // 不能为空
-      for (let i of Object.keys(recordData)) {
-        if (
-          (i === "categoryId" && recordData[i] === '') ||
-          (i === "amount" && recordData[i] === 0) ||
-          (recordData as IndexedRecordDataType)[i] === undefined
-        ) {
-          message.danger(alertData[i]);
-          return;
-        }
-      }
-      dispatchMoneyRecords(modifyRecord({
-        id,
-        ...recordData,
-      }));
-      message.success('编辑记录成功')
-      history.goBack();
+      moneyRecordValidator.validate(recordData).then(() => {
+        dispatchMoneyRecords(modifyRecord({
+          id,
+          ...recordData,
+        }));
+        message.success('编辑记录成功')
+        history.goBack();
+      }).catch(({errors}: { errors: ErrorList }) => {
+        errors.forEach(error => {
+          message.danger(error.message)
+        })
+      })
     },
     [history, recordData, dispatchMoneyRecords, id]
   );
