@@ -3,7 +3,7 @@ import React, {
   useCallback,
   useContext,
   FC,
-  MouseEvent
+  MouseEvent, ChangeEvent
 } from "react";
 import Layout from "components/Layout";
 import styled from "styled-components";
@@ -81,6 +81,13 @@ const RecordAdd: FC = () => {
     },
     []
   );
+  const onMoneyTypeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as MoneyType
+    setRecordData((state) => ({
+      ...state,
+      moneyType: value,
+    }))
+  }, [])
   const onDateChange = useCallback((date: Date) => {
     setRecordData((state) => {
       return {
@@ -136,7 +143,7 @@ const RecordAdd: FC = () => {
     <Layout>
       <Wrapper>
         <TopBar>
-          <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
+          <RadioGroup value={recordData.moneyType} onChange={onMoneyTypeChange}>
             <RadioButton label={'income'}>收入</RadioButton>
             <RadioButton label={'expenditure'}>支出</RadioButton>
           </RadioGroup>

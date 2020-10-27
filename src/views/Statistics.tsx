@@ -39,14 +39,12 @@ const FallBackMessage = styled.div`
 `
 const RankList = styled.ol`
   padding: 10px;
-
   > li {
     display: flex;
     align-items: center;
     margin: 10px 0;
     padding: 10px 0;
     border-bottom: 1px solid ${grey2};
-
     .icon-wrapper {
       width: 40px;
       height: 40px;
@@ -56,29 +54,23 @@ const RankList = styled.ol`
       align-items: center;
       border-radius: 20px;
       margin-right: 10px;
-
       .icon {
         fill: ${brandColor};
       }
     }
-
     .info {
       flex: 1;
-
       .text-info {
         display: flex;
         align-items: center;
-
         .percent {
           font-size: 12px;
           margin-left: 6px;
         }
-
         .amount {
           margin-left: auto;
         }
       }
-
       .percent-bar {
         margin: 4px 0;
         height: 6px;
@@ -254,7 +246,7 @@ const Statistics: FC = () => {
   return (
     <Layout>
       <TopBar>
-        <RadioGroup value={dateType} onChange={(dateType) => setDateType(dateType)}>
+        <RadioGroup value={dateType} onChange={(e) => setDateType(e.target.value)}>
           <RadioButton label="year">年</RadioButton>
           <RadioButton label="year-month">月</RadioButton>
         </RadioGroup>
@@ -263,7 +255,7 @@ const Statistics: FC = () => {
         <div className="date" onClick={handleDateClick}>
           {dateStr}&#9660;
         </div>
-        <RadioGroup block value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
+        <RadioGroup block value={moneyType} onChange={(e) => setMoneyType(e.target.value as MoneyType)}>
           <RadioButton label={'income'}>收入</RadioButton>
           <RadioButton label={'expenditure'}>支出</RadioButton>
         </RadioGroup>

@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useCallback,
   useContext,
-  FC, MouseEvent,
+  FC, MouseEvent, ChangeEvent,
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
@@ -170,12 +170,19 @@ const RecordEdit: FC = () => {
     }))
     message.success('删除成功')
   }
+  const onMoneyTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as MoneyType
+    setRecordData((state) => ({
+      ...state,
+      moneyType: value,
+    }))
+  }
   return (
     <Wrapper>
       <TopBar showBack right={<DeleteBtn onClick={handleDelete}>删除</DeleteBtn>}>
-        <RadioGroup value={recordData.moneyType} onChange={onChange('moneyType')}>
-          <RadioButton label={'income'}>收入</RadioButton>
-          <RadioButton label={'expenditure'}>支出</RadioButton>
+        <RadioGroup value={recordData.moneyType} onChange={onMoneyTypeChange}>
+          <RadioButton label="income">收入</RadioButton>
+          <RadioButton label="expenditure">支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <CategoryList

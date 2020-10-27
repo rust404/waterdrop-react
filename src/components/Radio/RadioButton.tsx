@@ -1,7 +1,8 @@
-import React, {CSSProperties, FC} from "react";
+import React, {ChangeEvent, CSSProperties, FC, useContext} from "react";
 import {brandColor} from "../../style/variables";
 import styled from "styled-components";
 import classNames from "classnames";
+import {RadioGroupContext} from "./context";
 
 
 const Wrapper = styled.label`
@@ -24,26 +25,30 @@ const Wrapper = styled.label`
 
 interface RadioButtonProps {
   label: string
-  value?: string
-  onChange?: (value: string) => void
   className?: string
   style?: CSSProperties
 }
 
 const RadioButton: FC<RadioButtonProps> = (props) => {
-  const {label, value, onChange, children, className, ...restProps} = props
+  const {label, children, className, ...restProps} = props
+  const context = useContext(RadioGroupContext)
   const radioButtonClassName = classNames(className, {
-    'is-active': label === value
+    'is-active': label === context?.value
   })
-  const onClick = () => {
-    onChange && onChange(label)
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value !== label) return
+    if (context?.onChange) {
+      context.onChange(e)
+    }
   }
   return (
-    <Wrapper className={radioButtonClassName} onClick={onClick} {...restProps}>
+    <Wrapper className={radioButtonClassName}  {...restProps}>
       <input
         className="radio-button-input"
         type="radio"
         value={label}
+        checked={label === context?.value}
+        onChange={onChange}
       />
       <span className="radio-button-text">
         {children}

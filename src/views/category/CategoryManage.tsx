@@ -37,7 +37,7 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
   return (
     <Wrapper className={props.className}>
       <TopBar showBack>
-        <RadioGroup value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
+        <RadioGroup value={moneyType} onChange={(e) => setMoneyType(e.target.value as MoneyType)}>
           <RadioButton label="income">收入</RadioButton>
           <RadioButton label="expenditure">支出</RadioButton>
         </RadioGroup>

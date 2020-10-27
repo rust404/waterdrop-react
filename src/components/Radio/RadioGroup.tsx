@@ -1,6 +1,7 @@
-import React, {CSSProperties, FC, ReactElement} from "react";
+import React, {ChangeEvent, CSSProperties, FC} from "react";
 import styled from "styled-components";
 import classNames from "classnames";
+import {RadioGroupContext} from "./context";
 
 const Wrapper = styled.div`
   > :nth-child(n+2) {
@@ -18,24 +19,31 @@ const Wrapper = styled.div`
 interface RadioGroupProps {
   value: string
   block?: boolean
-  onChange: (value: string) => void
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
   className?: string
   style?: CSSProperties
 }
 
-const RadioGroup:FC<RadioGroupProps> = (props) => {
+const RadioGroup: FC<RadioGroupProps> = (props) => {
   const {value, onChange, children, block, className, ...restProps} = props
+
   const wrapperClass = classNames(className, {
     'is-block': block
   })
-  return (<Wrapper className={wrapperClass} {...restProps}>{
-    React.Children.map(children, (child) => {
-      return React.cloneElement(child as ReactElement, {
+
+  return (
+    <RadioGroupContext.Provider
+      value={{
         value,
         onChange
-      })
-    })
-  }</Wrapper>)
+      }}
+    >
+      <Wrapper className={wrapperClass} {...restProps}>
+        {children}
+      </Wrapper>
+    </RadioGroupContext.Provider>
+
+  )
 }
 
 export default RadioGroup
