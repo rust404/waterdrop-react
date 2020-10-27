@@ -1,9 +1,9 @@
 import React, {FC, useReducer} from 'react'
-import categoryReducer, {ICategoryAction, loadCategory} from "./categoryReducer";
+import categoryReducer, {CategoryAction, loadCategory} from "./categoryReducer";
 
 export const CategoryContext = React.createContext<{
-  state: ICategoryItem[],
-  dispatch: React.Dispatch<ICategoryAction>
+  state: CategoryItem[],
+  dispatch: React.Dispatch<CategoryAction>
 }>({
   state: [],
   dispatch: () => {}

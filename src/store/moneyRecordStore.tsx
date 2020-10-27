@@ -1,9 +1,9 @@
 import React, {FC, useReducer} from 'react'
-import moneyRecordReducer, {IRecordAction, loadRecords} from "./moneyRecordReducer";
+import moneyRecordReducer, {RecordAction, loadRecords} from "./moneyRecordReducer";
 
 export const MoneyRecordContext = React.createContext<{
   state: MoneyRecord[],
-  dispatch: React.Dispatch<IRecordAction>
+  dispatch: React.Dispatch<RecordAction>
 }>({
   state: [],
   dispatch: () => {}

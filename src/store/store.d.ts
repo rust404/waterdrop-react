@@ -16,7 +16,7 @@ interface MoneyRecord {
   [index: string]: number | string | MoneyType | undefined;
 }
 
-interface ICategoryItem {
+interface CategoryItem {
   name: string;
   icon: string;
   id: number;

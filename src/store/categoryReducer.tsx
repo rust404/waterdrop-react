@@ -1,3 +1,4 @@
+import React from 'react'
 import {getKeyWithPrefix} from "./utils";
 import {PREFIX} from "./constants";
 
@@ -24,15 +25,14 @@ const saveCategoryId = () => {
   window.localStorage.setItem(MAX_CATEGORY_ID_KEY, cid + '')
 }
 
-export type ICategoryAction =
-  | IAddCategoryAction
-  | IDeleteCategoryAction
-  | IModifyCategoryAction;
+export type CategoryAction =
+  | AddCategoryAction
+  | DeleteCategoryAction
+  | ModifyCategoryAction;
 
-type ICategoryReducer<T extends ICategoryAction> = React.Reducer<ICategoryItem[],
-  T>;
+type CategoryReducer<T extends CategoryAction> = React.Reducer<CategoryItem[], T>;
 
-const defaultCategoryList: Omit<ICategoryItem, 'id'>[] = [
+const defaultCategoryList: Omit<CategoryItem, 'id'>[] = [
   {name: "餐饮", icon: "canyin", moneyType: 'expenditure'},
   {name: "服饰", icon: "fushi", moneyType: 'expenditure'},
   {name: "读书", icon: "dushu", moneyType: 'expenditure'},
@@ -44,68 +44,24 @@ const defaultCategoryList: Omit<ICategoryItem, 'id'>[] = [
   {name: "理财", icon: "licai", moneyType: 'income'}
 ];
 
-export interface IAddCategoryAction {
+export interface AddCategoryAction {
   type: "addCategory";
-  payload: Omit<ICategoryItem, 'id'>;
+  payload: Omit<CategoryItem, 'id'>;
 }
 
-const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
-  for (let i = 0; i < state.length; i++) {
-    if (state[i].name === action.payload.name) return state;
-  }
-  const newList = state.concat();
-  const {name, moneyType, icon} = action.payload;
-  newList.push({
-    name,
-    icon,
-    id: generateCategoryId(),
-    moneyType
-  });
-  saveCategory(newList)
-  return newList;
-};
-
-export interface IDeleteCategoryAction {
+export interface DeleteCategoryAction {
   type: "deleteCategory";
-  payload: Pick<ICategoryItem, "id">;
+  payload: Pick<CategoryItem, "id">;
 }
 
-const deleteCategory: ICategoryReducer<IDeleteCategoryAction> = (
-  state,
-  action
-) => {
-  const newState = state.filter(item => {
-    return item.id !== action.payload.id;
-  });
-  saveCategory(newState)
-  return newState
-};
-
-export interface IModifyCategoryAction {
+export interface ModifyCategoryAction {
   type: "modifyCategory";
-  payload: Pick<ICategoryItem, "id"> & Partial<ICategoryItem>;
+  payload: Pick<CategoryItem, "id"> & Partial<CategoryItem>;
 }
-
-const modifyCategory: ICategoryReducer<IModifyCategoryAction> = (
-  state,
-  action
-) => {
-  const newState = state.concat();
-  const index = state.findIndex(({id}) => action.payload.id === id);
-  if (index === -1) {
-    return state;
-  }
-  newState.splice(index, 1, {
-    ...state[index],
-    ...action.payload
-  });
-  saveCategory(newState)
-  return newState;
-};
 
 export const loadCategory = () => {
   const categoryStr = window.localStorage.getItem(CATEGORY_KEY);
-  let category: ICategoryItem[];
+  let category: CategoryItem[];
   if (!categoryStr) {
     category = defaultCategoryList.map(item => {
       return {
@@ -122,21 +78,35 @@ export const loadCategory = () => {
   return category;
 };
 
-export const saveCategory = (category: ICategoryItem[]) => {
+export const saveCategory = (category: CategoryItem[]) => {
   window.localStorage.setItem(CATEGORY_KEY, JSON.stringify(category));
 }
 
-const categoryReducer: ICategoryReducer<ICategoryAction> = (state, action) => {
+const categoryReducer: CategoryReducer<CategoryAction> = (state, action) => {
+  let newState = state
   switch (action.type) {
     case "addCategory":
-      return addCategory(state, action);
+      for (let i = 0; i < state.length; i++) {
+        if (state[i].name === action.payload.name) return state;
+      }
+      newState = [...state, {
+        id: generateCategoryId(),
+        ...action.payload
+      }];
+      break
     case "deleteCategory":
-      return deleteCategory(state, action);
+      newState = state.filter(item => item.id !== action.payload.id);
+      break
     case "modifyCategory":
-      return modifyCategory(state, action);
+      newState = state.map(category => category.id === action.payload.id ? {...category, ...action.payload} : category)
+      break
     default:
-      return state;
+      return state
   }
+  // TODO
+  // 是否可以用中间件来处理
+  saveCategory(newState)
+  return newState
 };
 
 export default categoryReducer;

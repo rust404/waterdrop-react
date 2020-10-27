@@ -1,6 +1,5 @@
 import React from "react";
 import {getKeyWithPrefix} from "./utils";
-import {getRecordById} from "./selectors/moneyRecord";
 import {PREFIX} from "./constants";
 
 let recordId: number | undefined;
@@ -8,7 +7,7 @@ const MAX_RECORD_ID_KEY = getKeyWithPrefix('maxRecordId', PREFIX)
 const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
 
 
-type IRecordReducer<T extends IRecordAction> = React.Reducer<MoneyRecord[], T>;
+type MoneyRecordReducer<T extends RecordAction> = React.Reducer<MoneyRecord[], T>;
 
 const generateRecordId = () => {
   if (recordId === undefined) {
@@ -25,59 +24,20 @@ const saveRecordId = () => {
   window.localStorage.setItem(MAX_RECORD_ID_KEY, recordId + '')
 }
 
-export interface IAddRecordAction {
+export interface AddRecordAction {
   type: "addRecord";
   payload: Pick<MoneyRecord, "time" | "moneyType" | "categoryId" | "amount" | "remarks">;
 }
 
-const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
-  const newState = [
-    ...state,
-    {
-      ...action.payload,
-      id: generateRecordId()
-    }
-  ];
-  saveRecords(newState)
-  return newState
-};
-
-export interface IModifyRecordAction {
+export interface ModifyRecordAction {
   type: "modifyRecord";
   payload: Pick<MoneyRecord, "id"> & Partial<MoneyRecord>;
 }
 
-const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
-  const record = getRecordById(state, action.payload.id);
-  if (!record) {
-    return state;
-  }
-  for (let i of Object.keys(action.payload)) {
-    if (action.payload[i] === undefined) continue;
-    record[i] = action.payload[i];
-  }
-  const newState = [...state];
-  saveRecords(newState)
-  return newState
-};
-
-
-export interface IDeleteRecordAction {
+export interface DeleteRecordAction {
   type: "deleteRecord";
   payload: Pick<MoneyRecord, "id">;
 }
-
-const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
-  for (let i = 0; i < state.length; i++) {
-    if (action.payload.id === state[i].id) {
-      const newState = [...state];
-      newState.splice(i, 1);
-      saveRecords(newState)
-      return newState;
-    }
-  }
-  return state;
-};
 
 export const loadRecords = (): MoneyRecord[] => {
   let recordsStr = window.localStorage.getItem(RECORD_KEY);
@@ -95,20 +55,29 @@ export const saveRecords = (records: MoneyRecord[]) => {
   window.localStorage.setItem(RECORD_KEY, JSON.stringify(records));
 }
 
-export type IRecordAction =
-  | IAddRecordAction
-  | IModifyRecordAction
-  | IDeleteRecordAction;
+export type RecordAction = AddRecordAction | ModifyRecordAction | DeleteRecordAction;
 
-const moneyRecordReducer: IRecordReducer<IRecordAction> = (state, action) => {
+const moneyRecordReducer: MoneyRecordReducer<RecordAction> = (state, action) => {
+  let newState = state
   switch (action.type) {
     case "addRecord":
-      return addRecord(state, action);
+      newState = [
+        ...state,
+        {
+          ...action.payload,
+          id: generateRecordId()
+        }
+      ];
+      break
     case "deleteRecord":
-      return deleteRecord(state, action);
+      newState = state.filter(moneyRecord => moneyRecord.id !== action.payload.id)
+      break
     case "modifyRecord":
-      return modifyRecord(state, action);
+      newState = state.map(moneyRecord => moneyRecord.id === action.payload.id ? {...moneyRecord, ...action.payload} : moneyRecord)
+      break
   }
+  saveRecords(newState)
+  return newState
 };
 
 export default moneyRecordReducer;
