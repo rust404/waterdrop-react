@@ -1,3 +1,9 @@
+type Payload<T> = T['payload']
+
+interface ActionCreator<T> {
+  (payload: Payload<T>):T
+}
+
 type MoneyType = 'income' | 'expenditure'
 
 interface MoneyRecord {
@@ -8,4 +14,11 @@ interface MoneyRecord {
   amount: number;
   remarks: string;
   [index: string]: number | string | MoneyType | undefined;
+}
+
+interface ICategoryItem {
+  name: string;
+  icon: string;
+  id: number;
+  moneyType: MoneyType;
 }

@@ -8,6 +8,7 @@ import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
 import {CategoryContext} from "../../store/categoryStore";
+import {addCategory} from "../../store/actions/category";
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,14 +37,11 @@ const CategoryAdd = () => {
       message.warning('请填写分类名，选择分类图标')
       return;
     }
-    dispatch({
-      type: "addCategory",
-      payload: {
-        moneyType: moneyType as MoneyType,
-        icon: iconName,
-        name: categoryName
-      }
-    });
+    dispatch(addCategory({
+      moneyType: moneyType as MoneyType,
+      icon: iconName,
+      name: categoryName
+    }))
     message.success('添加分类成功')
     history.goBack();
   };

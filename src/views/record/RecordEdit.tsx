@@ -7,11 +7,11 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
-import {getCategoryById} from "store/categoryReducer";
+import {getCategoryById} from "store/selectors/category";
 import TopBar from "components/TopBar";
-import { ValueOf } from "util/index";
-import {  getRecordById } from "store/moneyRecordReducer";
-import { useHistory, useParams } from "react-router-dom";
+import {ValueOf} from "util/index";
+import {getRecordById} from "store/selectors/moneyRecord";
+import {useHistory, useParams} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import InfoBar from "./common/InfoBar";
@@ -20,6 +20,7 @@ import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
 import {MoneyRecordContext} from "../../store/moneyRecordStore";
 import {CategoryContext} from "../../store/categoryStore";
+import {deleteRecord, modifyRecord} from "../../store/actions/moneyRecord";
 
 const Wrapper = styled.div`
   display: flex;
@@ -49,6 +50,7 @@ interface alertDataType {
   categoryId: string;
   moneyType?: string;
   amount: string;
+
   [index: string]: string | undefined;
 }
 
@@ -56,12 +58,12 @@ export type recordDataFieldType = Partial<RecordData>;
 
 const RecordEdit: FC = () => {
   const history = useHistory();
-  const { state: records, dispatch: dispatchRecords } = useContext(
+  const {state: records, dispatch: dispatchRecords} = useContext(
     MoneyRecordContext
   );
   const [calcStr, setCalcStr] = useState('0')
-  const { state: category } = useContext(CategoryContext);
-  const { id } = useParams();
+  const {state: category} = useContext(CategoryContext);
+  const {id} = useParams();
 
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: -1,
@@ -70,7 +72,7 @@ const RecordEdit: FC = () => {
     time: new Date().toISOString(),
     remarks: ''
   });
-  const { categoryId, moneyType, time, amount, remarks } = recordData;
+  const {categoryId, moneyType, time, amount, remarks} = recordData;
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
   const onRemarksChange = useCallback((remarks: string) => {
@@ -86,7 +88,7 @@ const RecordEdit: FC = () => {
     if (!record) {
       history.push("/record/detail");
     } else {
-      const { categoryId, moneyType, amount, time, remarks } = record;
+      const {categoryId, moneyType, amount, time, remarks} = record;
       setRecordData({
         categoryId,
         moneyType,
@@ -94,7 +96,7 @@ const RecordEdit: FC = () => {
         time,
         remarks: remarks || ''
       });
-      setCalcStr(''+amount)
+      setCalcStr('' + amount)
     }
   }, [id, history, records]);
 
@@ -136,13 +138,10 @@ const RecordEdit: FC = () => {
           return;
         }
       }
-      dispatchRecords({
-        type: "modifyRecord",
-        payload: {
-          id: parseInt(id),
-          ...recordData,
-        },
-      });
+      dispatchRecords(modifyRecord({
+        id: parseInt(id),
+        ...recordData,
+      }));
       message.success('编辑记录成功')
       history.goBack();
     },
@@ -168,12 +167,9 @@ const RecordEdit: FC = () => {
     })
   }, [])
   const handleDelete = () => {
-    dispatchRecords({
-      type: "deleteRecord",
-      payload: {
-        id: +id
-      }
-    })
+    dispatchRecords(deleteRecord({
+      id: +id
+    }))
     message.success('删除成功')
   }
   return (

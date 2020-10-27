@@ -1,5 +1,5 @@
 import React, {FC, useReducer} from 'react'
-import categoryReducer, {ICategoryAction, ICategoryItem, loadCategory} from "./categoryReducer";
+import categoryReducer, {ICategoryAction, loadCategory} from "./categoryReducer";
 
 export const CategoryContext = React.createContext<{
   state: ICategoryItem[],

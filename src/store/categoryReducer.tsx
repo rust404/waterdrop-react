@@ -1,5 +1,5 @@
-import {PREFIX} from "./constant";
 import {getKeyWithPrefix} from "./utils";
+import {PREFIX} from "./constants";
 
 let cid = 0;
 const MAX_CATEGORY_ID_KEY = getKeyWithPrefix('maxCategoryId', PREFIX)
@@ -24,13 +24,6 @@ const saveCategoryId = () => {
   window.localStorage.setItem(MAX_CATEGORY_ID_KEY, cid + '')
 }
 
-export interface ICategoryItem {
-  name: string;
-  icon: string;
-  id: number;
-  moneyType: MoneyType;
-}
-
 export type ICategoryAction =
   | IAddCategoryAction
   | IDeleteCategoryAction
@@ -51,13 +44,9 @@ const defaultCategoryList: Omit<ICategoryItem, 'id'>[] = [
   {name: "理财", icon: "licai", moneyType: 'income'}
 ];
 
-interface IAddCategoryAction {
+export interface IAddCategoryAction {
   type: "addCategory";
   payload: Omit<ICategoryItem, 'id'>;
-}
-
-export const getCategoryById = (categories: ICategoryItem[], id: number) => {
-  return categories.filter(category => category.id === id)[0]
 }
 
 const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
@@ -76,7 +65,7 @@ const addCategory: ICategoryReducer<IAddCategoryAction> = (state, action) => {
   return newList;
 };
 
-interface IDeleteCategoryAction {
+export interface IDeleteCategoryAction {
   type: "deleteCategory";
   payload: Pick<ICategoryItem, "id">;
 }
@@ -92,7 +81,7 @@ const deleteCategory: ICategoryReducer<IDeleteCategoryAction> = (
   return newState
 };
 
-interface IModifyCategoryAction {
+export interface IModifyCategoryAction {
   type: "modifyCategory";
   payload: Pick<ICategoryItem, "id"> & Partial<ICategoryItem>;
 }

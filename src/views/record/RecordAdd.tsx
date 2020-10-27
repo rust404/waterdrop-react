@@ -9,15 +9,16 @@ import Layout from "components/Layout";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
 import TopBar from "components/TopBar";
-import { ValueOf } from "util/index";
+import {ValueOf} from "util/index";
 import {CategoryContext} from "store/categoryStore";
 import {MoneyRecordContext} from "store/moneyRecordStore";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
+import {addRecord} from "../../store/actions/moneyRecord";
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,6 +45,7 @@ interface alertDataType {
   categoryId: string;
   moneyType?: string;
   amount: string;
+
   [index: string]: string | undefined;
 }
 
@@ -60,8 +62,8 @@ const RecordAdd: FC = () => {
   });
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
-  const { dispatch } = useContext(MoneyRecordContext);
-  const { categoryId, moneyType, time, remarks } = recordData;
+  const {dispatch} = useContext(MoneyRecordContext);
+  const {categoryId, moneyType, time, remarks} = recordData;
 
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
   const handleManageClick = (e: MouseEvent) => {
@@ -124,12 +126,7 @@ const RecordAdd: FC = () => {
           return;
         }
       }
-      dispatch({
-        type: "addRecord",
-        payload: {
-          ...recordData,
-        },
-      });
+      dispatch(addRecord(recordData))
       message.success('添加记录成功')
       history.push("/record/detail");
     },

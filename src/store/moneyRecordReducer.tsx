@@ -1,7 +1,7 @@
 import React from "react";
-import dayjs from "dayjs";
-import {PREFIX} from "./constant";
 import {getKeyWithPrefix} from "./utils";
+import {getRecordById} from "./selectors/moneyRecord";
+import {PREFIX} from "./constants";
 
 let recordId: number | undefined;
 const MAX_RECORD_ID_KEY = getKeyWithPrefix('maxRecordId', PREFIX)
@@ -10,12 +10,7 @@ const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
 
 type IRecordReducer<T extends IRecordAction> = React.Reducer<MoneyRecord[], T>;
 
-interface IAddRecordAction {
-  type: "addRecord";
-  payload: Pick<MoneyRecord, "time" | "moneyType" | "categoryId" | "amount" | "remarks">;
-}
-
-const getRecordId = () => {
+const generateRecordId = () => {
   if (recordId === undefined) {
     const id = parseInt(window.localStorage.getItem(MAX_RECORD_ID_KEY) || '')
     recordId = isNaN(id) ? 0 : id + 1
@@ -30,19 +25,24 @@ const saveRecordId = () => {
   window.localStorage.setItem(MAX_RECORD_ID_KEY, recordId + '')
 }
 
+export interface IAddRecordAction {
+  type: "addRecord";
+  payload: Pick<MoneyRecord, "time" | "moneyType" | "categoryId" | "amount" | "remarks">;
+}
+
 const addRecord: IRecordReducer<IAddRecordAction> = (state, action) => {
   const newState = [
     ...state,
     {
       ...action.payload,
-      id: getRecordId()
+      id: generateRecordId()
     }
   ];
   saveRecords(newState)
   return newState
 };
 
-interface IModifyRecordAction {
+export interface IModifyRecordAction {
   type: "modifyRecord";
   payload: Pick<MoneyRecord, "id"> & Partial<MoneyRecord>;
 }
@@ -61,7 +61,8 @@ const modifyRecord: IRecordReducer<IModifyRecordAction> = (state, action) => {
   return newState
 };
 
-interface IDeleteRecordAction {
+
+export interface IDeleteRecordAction {
   type: "deleteRecord";
   payload: Pick<MoneyRecord, "id">;
 }
@@ -77,24 +78,7 @@ const deleteRecord: IRecordReducer<IDeleteRecordAction> = (state, action) => {
   }
   return state;
 };
-export const getRecordById = (records: MoneyRecord[], id: number): MoneyRecord | null => {
-  return records.filter(record => record.id === id)[0];
-};
 
-export const getRecordsByTime = (records: MoneyRecord[], time: Date, unit: dayjs.UnitType) => {
-  return records.filter(record => {
-    return dayjs(time).isSame(record.time, unit)
-  })
-}
-export const getRecords = (records: MoneyRecord[], option: Partial<MoneyRecord>) => {
-  return records.filter(record => {
-    for (const key in option) {
-      if (!Object.prototype.hasOwnProperty.call(option, key)) continue
-      if (record[key] !== option[key]) return false
-    }
-    return true
-  })
-}
 export const loadRecords = (): MoneyRecord[] => {
   let recordsStr = window.localStorage.getItem(RECORD_KEY);
   if (!recordsStr) {

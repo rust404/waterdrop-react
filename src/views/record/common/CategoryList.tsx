@@ -1,4 +1,3 @@
-import {ICategoryItem} from "../../../store/categoryReducer";
 import React, {FC, MouseEvent} from "react";
 import styled from "styled-components";
 import {brandColor, grey2} from "../../../style/variables";

@@ -1,8 +1,8 @@
 import React, {FC, lazy, useContext, useState, Suspense} from "react";
 import Layout from "components/Layout";
-import {getCategoryById} from "store/categoryReducer";
+import {getCategoryById} from "store/selectors/category";
 import TopBar from "components/TopBar";
-import {getRecords, getRecordsByTime} from "store/moneyRecordReducer";
+import {getRecords, getRecordsByTime} from "store/selectors/moneyRecord";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import RadioGroup from "../components/Radio/RadioGroup";

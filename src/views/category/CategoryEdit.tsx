@@ -6,6 +6,7 @@ import styled from "styled-components";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
+import {modifyCategory} from "../../store/actions/category";
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,14 +30,11 @@ const CategoryEdit: FC = () => {
   const [categoryName, setCategoryName] = useState(item ? item.name : "");
   const [iconName, setIconName] = useState(item ? item.icon : "");
   const submit = () => {
-    dispatch({
-      type: "modifyCategory",
-      payload: {
-        id: parseInt(id),
-        name: categoryName,
-        icon: iconName
-      }
-    });
+    dispatch(modifyCategory({
+      id: parseInt(id),
+      name: categoryName,
+      icon: iconName
+    }));
     message.success('编辑分类成功')
     history.goBack();
   };

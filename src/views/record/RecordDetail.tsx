@@ -2,7 +2,7 @@ import React, {FC, useContext, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
-import {getCategoryById} from "store/categoryReducer";
+import {getCategoryById} from "store/selectors/category";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
