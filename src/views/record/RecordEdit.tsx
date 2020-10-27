@@ -18,8 +18,8 @@ import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
-import {MoneyRecordContext} from "../../store/moneyRecordStore";
-import {CategoryContext} from "../../store/categoryStore";
+import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
+import {CategoriesContext} from "../../store/categoriesStore";
 import {deleteRecord, modifyRecord} from "../../store/actions/moneyRecord";
 
 const Wrapper = styled.div`
@@ -58,11 +58,9 @@ export type recordDataFieldType = Partial<RecordData>;
 
 const RecordEdit: FC = () => {
   const history = useHistory();
-  const {state: records, dispatch: dispatchRecords} = useContext(
-    MoneyRecordContext
-  );
+  const {moneyRecords, dispatchMoneyRecords} = useContext(MoneyRecordsContext);
   const [calcStr, setCalcStr] = useState('0')
-  const {state: category} = useContext(CategoryContext);
+  const {categories} = useContext(CategoriesContext);
   const {id} = useParams();
 
   const [recordData, setRecordData] = useState<RecordData>({
@@ -73,7 +71,7 @@ const RecordEdit: FC = () => {
     remarks: ''
   });
   const {categoryId, moneyType, time, amount, remarks} = recordData;
-  const filteredCategory = category.filter(item => item.moneyType === moneyType)
+  const filteredCategory = categories.filter(item => item.moneyType === moneyType)
 
   const onRemarksChange = useCallback((remarks: string) => {
     setRecordData((state) => {
@@ -84,7 +82,7 @@ const RecordEdit: FC = () => {
     })
   }, [])
   useEffect(() => {
-    const record = getRecordById(records, id);
+    const record = getRecordById(moneyRecords, id);
     if (!record) {
       history.push("/record/detail");
     } else {
@@ -98,7 +96,7 @@ const RecordEdit: FC = () => {
       });
       setCalcStr('' + amount)
     }
-  }, [id, history, records]);
+  }, [id, history, moneyRecords]);
 
   const handleManageClick = (e: MouseEvent) => {
     history.push(`/category/manage?moneyType=${moneyType}`)
@@ -112,14 +110,14 @@ const RecordEdit: FC = () => {
           ...state,
           [key]: value,
         };
-        const categoryItem = getCategoryById(category, data.categoryId);
+        const categoryItem = getCategoryById(categories, data.categoryId);
         if (categoryItem && categoryItem.moneyType !== data.moneyType) {
           data.categoryId = '';
         }
         return data;
       });
     },
-    [category]
+    [categories]
   );
   const submit = useCallback(
     () => {
@@ -138,14 +136,14 @@ const RecordEdit: FC = () => {
           return;
         }
       }
-      dispatchRecords(modifyRecord({
+      dispatchMoneyRecords(modifyRecord({
         id,
         ...recordData,
       }));
       message.success('编辑记录成功')
       history.goBack();
     },
-    [history, recordData, dispatchRecords, id]
+    [history, recordData, dispatchMoneyRecords, id]
   );
   const onDateChange = useCallback((date: Date) => {
     setRecordData((state) => {
@@ -167,7 +165,7 @@ const RecordEdit: FC = () => {
     })
   }, [])
   const handleDelete = () => {
-    dispatchRecords(deleteRecord({
+    dispatchMoneyRecords(deleteRecord({
       id
     }))
     message.success('删除成功')

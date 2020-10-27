@@ -1,4 +1,4 @@
-import React, {FC, ReactElement} from "react";
+import React, {CSSProperties, FC, ReactElement} from "react";
 import styled from "styled-components";
 import classNames from "classnames";
 
@@ -15,18 +15,20 @@ const Wrapper = styled.div`
   }
 `
 
-interface RadioGroupProps extends Omit<React.HTMLProps<HTMLDivElement>, 'onChange'> {
+interface RadioGroupProps {
   value: string
   block?: boolean
   onChange: (value: string) => void
+  className?: string
+  style?: CSSProperties
 }
 
 const RadioGroup:FC<RadioGroupProps> = (props) => {
-  const {value, onChange, children, block} = props
-  const wrapperClass = classNames({
+  const {value, onChange, children, block, className, ...restProps} = props
+  const wrapperClass = classNames(className, {
     'is-block': block
   })
-  return (<Wrapper className={wrapperClass}>{
+  return (<Wrapper className={wrapperClass} {...restProps}>{
     React.Children.map(children, (child) => {
       return React.cloneElement(child as ReactElement, {
         value,

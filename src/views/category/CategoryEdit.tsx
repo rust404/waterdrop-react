@@ -1,5 +1,5 @@
 import React, {useContext, useState, FC} from "react";
-import {CategoryContext} from "store/categoryStore";
+import {CategoriesContext} from "store/categoriesStore";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -21,16 +21,16 @@ const ContentWrapper = styled.div`
   overflow: auto;
 `;
 const CategoryEdit: FC = () => {
-  const {state: category, dispatch} = useContext(CategoryContext);
+  const {categories, dispatchCategories} = useContext(CategoriesContext);
   const {id} = useParams();
   const history = useHistory();
-  const item = category.filter(value => {
+  const curCategory = categories.filter(value => {
     return id === value.id;
   })[0];
-  const [categoryName, setCategoryName] = useState(item ? item.name : "");
-  const [iconName, setIconName] = useState(item ? item.icon : "");
+  const [categoryName, setCategoryName] = useState(curCategory ? curCategory.name : "");
+  const [iconName, setIconName] = useState(curCategory ? curCategory.icon : "");
   const submit = () => {
-    dispatch(modifyCategory({
+    dispatchCategories(modifyCategory({
       id,
       name: categoryName,
       icon: iconName
@@ -52,7 +52,7 @@ const CategoryEdit: FC = () => {
       >
         编辑类别
       </TopBar>
-      {!item ? (
+      {!curCategory ? (
         "没有这个分类"
       ) : (
         <ContentWrapper>

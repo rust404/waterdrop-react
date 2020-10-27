@@ -10,8 +10,8 @@ import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
 import TopBar from "components/TopBar";
 import {ValueOf} from "util/index";
-import {CategoryContext} from "store/categoryStore";
-import {MoneyRecordContext} from "store/moneyRecordStore";
+import {CategoriesContext} from "store/categoriesStore";
+import {MoneyRecordsContext} from "store/moneyRecordsStore";
 import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -52,7 +52,7 @@ interface alertDataType {
 export type recordDataFieldType = Partial<RecordData>;
 
 const RecordAdd: FC = () => {
-  const {state: category} = useContext(CategoryContext);
+  const {categories} = useContext(CategoriesContext);
   const [recordData, setRecordData] = useState<RecordData>({
     categoryId: '',
     moneyType: 'expenditure',
@@ -62,10 +62,10 @@ const RecordAdd: FC = () => {
   });
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
-  const {dispatch} = useContext(MoneyRecordContext);
+  const {dispatchMoneyRecords} = useContext(MoneyRecordsContext);
   const {categoryId, moneyType, time, remarks} = recordData;
 
-  const filteredCategory = category.filter(item => item.moneyType === moneyType)
+  const filteredCategory = categories.filter(item => item.moneyType === moneyType)
   const handleManageClick = (e: MouseEvent) => {
     history.push(`/category/manage?moneyType=${moneyType}`)
     e.stopPropagation()
@@ -126,11 +126,11 @@ const RecordAdd: FC = () => {
           return;
         }
       }
-      dispatch(addRecord(recordData))
+      dispatchMoneyRecords(addRecord(recordData))
       message.success('添加记录成功')
       history.push("/record/detail");
     },
-    [recordData, history, dispatch]
+    [recordData, history, dispatchMoneyRecords]
   );
   return (
     <Layout>

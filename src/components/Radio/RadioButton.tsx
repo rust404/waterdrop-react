@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {CSSProperties, FC} from "react";
 import {brandColor} from "../../style/variables";
 import styled from "styled-components";
 import classNames from "classnames";
@@ -26,18 +26,20 @@ interface RadioButtonProps {
   label: string
   value?: string
   onChange?: (value: string) => void
+  className?: string
+  style?: CSSProperties
 }
 
 const RadioButton: FC<RadioButtonProps> = (props) => {
-  const {label, value, onChange, children} = props
-  const radioButtonClassName = classNames({
+  const {label, value, onChange, children, className, ...restProps} = props
+  const radioButtonClassName = classNames(className, {
     'is-active': label === value
   })
   const onClick = () => {
     onChange && onChange(label)
   }
   return (
-    <Wrapper className={radioButtonClassName} onClick={onClick}>
+    <Wrapper className={radioButtonClassName} onClick={onClick} {...restProps}>
       <input
         className="radio-button-input"
         type="radio"

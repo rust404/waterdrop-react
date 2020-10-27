@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {CSSProperties, FC, useState} from "react";
 import PickerList from "./PickerList";
 import {brandColor, grey5} from "../../style/variables";
 import styled from "styled-components";
@@ -46,10 +46,12 @@ interface DatePickerProps {
   onChange?: (date: Date) => void
   onOk?: (date: Date) => void
   onCancel?: (date: Date) => void
+  className?: string
+  style?: CSSProperties
 }
 
 const DatePicker: FC<DatePickerProps> = (props) => {
-  const {date: pDate, pickerType, onOk, onChange, onCancel} = props
+  const {date: pDate, pickerType, onOk, onChange, onCancel, ...restProps} = props
   const [year, setYear] = useState(dayjs(pDate).year())
   const [month, setMonth] = useState(dayjs(pDate).month() + 1)
   const [date, setDate] = useState(dayjs(pDate).date())
@@ -97,7 +99,7 @@ const DatePicker: FC<DatePickerProps> = (props) => {
     onCancel && onCancel(fullDate)
   }
   return (
-    <Wrapper>
+    <Wrapper {...restProps}>
       <Header>
         <button className="cancel-btn" onClick={onClickCancel}>取消</button>
         <header className="title">{dateStr}</header>

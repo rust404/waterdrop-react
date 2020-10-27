@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {CSSProperties, FC} from 'react'
 // require('icons/tags.svg')
 // require('icons/money.svg')
 
@@ -14,13 +14,14 @@ interface IProps {
   id: string,
   size?: string,
   fill?: string,
-  className?: string,
   onClick?: (e: React.MouseEvent<SVGSVGElement>) => void
+  className?: string
+  style?: CSSProperties
 }
 const Icon: FC<IProps> = (props) => {
-  const {id, size = '1em', ...rest} = props
+  const {id, size = '1em', ...restProps} = props
   return (
-    <svg {...rest} width={size} height={size}>
+    <svg {...restProps} width={size} height={size}>
       <use xlinkHref={'#' + id} />
     </svg >
   )

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC} from "react";
+import React, {ChangeEvent, CSSProperties, FC} from "react";
 import styled from "styled-components";
 import {grey2} from "../../../style/variables";
 
@@ -33,9 +33,11 @@ interface CalcStrBarProps {
   calcStr: string
   remarks?: string
   onRemarksChange: (remarks: string) => void
+  className?: string
+  style?: CSSProperties
 }
 const InfoBar:FC<CalcStrBarProps> = (props) => {
-  const {calcStr, remarks, onRemarksChange} = props
+  const {calcStr, remarks, onRemarksChange, ...restProps} = props
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     onRemarksChange(e.target.value)
   }
@@ -43,7 +45,7 @@ const InfoBar:FC<CalcStrBarProps> = (props) => {
     // 解决safari失焦时底部空白问题
     document.body.scrollTop = 0
   }
-  return (<Wrapper>
+  return (<Wrapper {...restProps}>
     <div>
       <input type="text" value={remarks} onChange={handleOnChange} onBlur={onBlur} placeholder="点击输入备注"/>
       <span>{calcStr}</span>

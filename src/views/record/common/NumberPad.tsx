@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {CSSProperties, FC, useEffect, useState} from "react";
 import dayjs from "dayjs";
 import useCalcStr from "../../../hooks/useCalcStr";
 import styled from "styled-components";
@@ -64,12 +64,13 @@ interface NumberPadProps {
   onDateChange: (date: Date) => void
   onCalcStrChange: (str: string) => void
   onAmountChange: (amount: number) => void
-  className: string
   onSubmit: Function
+  className?: string
+  style?: CSSProperties
 }
 
 const NumberPad: FC<NumberPadProps> = (props) => {
-  const {date, amount, onDateChange, onCalcStrChange, onSubmit, onAmountChange} = props
+  const {date, amount, onDateChange, onCalcStrChange, onSubmit, onAmountChange, ...restProps} = props
   const [showDatePicker, setShowDatePicker] = useState(false)
   const {expStr, add, clear, getValue, setInitNum} = useCalcStr(amount)
 
@@ -114,7 +115,7 @@ const NumberPad: FC<NumberPadProps> = (props) => {
     setShowDatePicker(false)
   }
   return (
-    <Wrapper>
+    <Wrapper {...restProps}>
       <button className="calc-button" onClick={onNumberClick('1')}>1</button>
       <button className="calc-button" onClick={onNumberClick('2')}>2</button>
       <button className="calc-button" onClick={onNumberClick('3')}>3</button>

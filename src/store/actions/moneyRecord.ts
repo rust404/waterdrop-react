@@ -1,4 +1,4 @@
-import {AddRecordAction, DeleteRecordAction, ModifyRecordAction} from "../moneyRecordReducer";
+import {AddRecordAction, DeleteRecordAction, ModifyRecordAction} from "../moneyRecordsReducer";
 
 export const addRecord:ActionCreator<AddRecordAction> = (payload) => ({type: 'addRecord', payload})
 export const deleteRecord:ActionCreator<DeleteRecordAction> = (payload) => ({type: 'deleteRecord', payload})

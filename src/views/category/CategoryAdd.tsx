@@ -3,11 +3,11 @@ import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useQuery from "hooks/useQuery";
-import {isMoneyType} from "store/categoryReducer";
+import {isMoneyType} from "store/categoriesReducer";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
-import {CategoryContext} from "../../store/categoryStore";
+import {CategoriesContext} from "../../store/categoriesStore";
 import {addCategory} from "../../store/actions/category";
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const Right = styled.span`
   font-size: 14px;
 `;
 const CategoryAdd = () => {
-  const {dispatch} = useContext(CategoryContext);
+  const {dispatchCategories} = useContext(CategoriesContext);
   const query = useQuery();
   const history = useHistory();
   const [categoryName, setCategoryName] = useState("");
@@ -37,7 +37,7 @@ const CategoryAdd = () => {
       message.warning('请填写分类名，选择分类图标')
       return;
     }
-    dispatch(addCategory({
+    dispatchCategories(addCategory({
       moneyType: moneyType as MoneyType,
       icon: iconName,
       name: categoryName

@@ -13,9 +13,9 @@ export type CategoryAction =
   | DeleteCategoryAction
   | ModifyCategoryAction;
 
-type CategoryReducer<T extends CategoryAction> = React.Reducer<CategoryItem[], T>;
+type CategoriesReducer<T extends CategoryAction> = React.Reducer<Category[], T>;
 
-const defaultCategoryList: CategoryItem[] = [
+const defaultCategoryList: Category[] = [
   {name: "餐饮", icon: "canyin", moneyType: "expenditure", id: "1612b088-3730-429d-ada1-32d726c0593c"},
   {name: "服饰", icon: "fushi", moneyType: "expenditure", id: "ee47c60e-7d7d-4f77-8ea4-aaaed7749631"},
   {name: "读书", icon: "dushu", moneyType: "expenditure", id: "949f55ef-0f57-4bc7-b5bd-93be277d06e4"},
@@ -29,22 +29,22 @@ const defaultCategoryList: CategoryItem[] = [
 
 export interface AddCategoryAction {
   type: "addCategory";
-  payload: Omit<CategoryItem, 'id'>;
+  payload: Omit<Category, 'id'>;
 }
 
 export interface DeleteCategoryAction {
   type: "deleteCategory";
-  payload: Pick<CategoryItem, "id">;
+  payload: Pick<Category, "id">;
 }
 
 export interface ModifyCategoryAction {
   type: "modifyCategory";
-  payload: Pick<CategoryItem, "id"> & Partial<CategoryItem>;
+  payload: Pick<Category, "id"> & Partial<Category>;
 }
 
-export const loadCategory = () => {
+export const loadCategories = () => {
   const categoryStr = window.localStorage.getItem(CATEGORY_KEY);
-  let category: CategoryItem[];
+  let category: Category[];
   if (!categoryStr) {
     category = defaultCategoryList
     saveCategory(category)
@@ -54,11 +54,11 @@ export const loadCategory = () => {
   return category;
 };
 
-export const saveCategory = (category: CategoryItem[]) => {
+export const saveCategory = (category: Category[]) => {
   window.localStorage.setItem(CATEGORY_KEY, JSON.stringify(category));
 }
 
-const categoryReducer: CategoryReducer<CategoryAction> = (state, action) => {
+const categoriesReducer: CategoriesReducer<CategoryAction> = (state, action) => {
   let newState = state
   switch (action.type) {
     case "addCategory":
@@ -85,4 +85,4 @@ const categoryReducer: CategoryReducer<CategoryAction> = (state, action) => {
   return newState
 };
 
-export default categoryReducer;
+export default categoriesReducer;

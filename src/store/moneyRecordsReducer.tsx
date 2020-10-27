@@ -4,7 +4,9 @@ import {PREFIX} from "./constants";
 
 const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
 
-type MoneyRecordReducer<T extends RecordAction> = React.Reducer<MoneyRecord[], T>;
+type MoneyRecordsReducer<T extends RecordAction> = React.Reducer<MoneyRecord[], T>;
+
+export type RecordAction = AddRecordAction | ModifyRecordAction | DeleteRecordAction;
 
 export interface AddRecordAction {
   type: "addRecord";
@@ -37,9 +39,8 @@ export const saveRecords = (records: MoneyRecord[]) => {
   window.localStorage.setItem(RECORD_KEY, JSON.stringify(records));
 }
 
-export type RecordAction = AddRecordAction | ModifyRecordAction | DeleteRecordAction;
 
-const moneyRecordReducer: MoneyRecordReducer<RecordAction> = (state, action) => {
+const moneyRecordsReducer: MoneyRecordsReducer<RecordAction> = (state, action) => {
   let newState = state
   switch (action.type) {
     case "addRecord":
@@ -62,4 +63,4 @@ const moneyRecordReducer: MoneyRecordReducer<RecordAction> = (state, action) => 
   return newState
 };
 
-export default moneyRecordReducer;
+export default moneyRecordsReducer;

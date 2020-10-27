@@ -12,8 +12,8 @@ import DatePicker, {DatePickerType} from "../components/DatePicker/DatePicker";
 import {brandColor, grey1, grey2, grey5} from "../style/variables";
 import {EChartOption} from "echarts";
 import Icon from "../components/Icon";
-import {MoneyRecordContext} from "../store/moneyRecordStore";
-import {CategoryContext} from "../store/categoryStore";
+import {MoneyRecordsContext} from "../store/moneyRecordsStore";
+import {CategoriesContext} from "../store/categoriesStore";
 
 const Echarts = lazy(() => import("components/Echarts"));
 
@@ -93,8 +93,8 @@ type CategoryToRecordsMap = { [categoryId: string]: MoneyRecord[] }
 type CategoryToSumMap = { [categoryId: string]: number }
 
 const Statistics: FC = () => {
-  const {state: records} = useContext(MoneyRecordContext);
-  const {state: category} = useContext(CategoryContext);
+  const {moneyRecords} = useContext(MoneyRecordsContext);
+  const {categories} = useContext(CategoriesContext);
   const [curDate, setCurDate] = useState(new Date())
   const [dateType, setDateType] = useState('year-month')
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -163,7 +163,7 @@ const Statistics: FC = () => {
     return ret
   }
   const categoryRankData = (() => {
-    let filteredRecords = records
+    let filteredRecords = moneyRecords
     filteredRecords = dateType === 'year-month' ?
       getRecordsByTime(filteredRecords, curDate, 'month') : getRecordsByTime(filteredRecords, curDate, 'year')
     filteredRecords = getRecords(filteredRecords, {
@@ -176,7 +176,7 @@ const Statistics: FC = () => {
     ret.sort((a, b) => b[1] - a[1])
     return ret.map(item => {
       return {
-        category: getCategoryById(category, item[0]),
+        category: getCategoryById(categories, item[0]),
         sum: item[1],
         percent: item[1] / total * 100
       }
@@ -184,7 +184,7 @@ const Statistics: FC = () => {
   })()
   const xSeriesData = dateType === 'year-month' ? dateArr : monthArr
   const ySeriesData = dateType === 'year-month' ?
-    getSumForDates(records, curDate) : getSumForMonths(records, curDate)
+    getSumForDates(moneyRecords, curDate) : getSumForMonths(moneyRecords, curDate)
 
   const option: EChartOption = {
     tooltip: {

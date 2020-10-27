@@ -9,8 +9,8 @@ import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
 import {brandColor, grey1, grey5,} from "../../style/variables";
-import {MoneyRecordContext} from "../../store/moneyRecordStore";
-import {CategoryContext} from "../../store/categoryStore";
+import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
+import {CategoriesContext} from "../../store/categoriesStore";
 
 const GeneralInfo = styled.div`
   padding: 20px 16px;
@@ -96,12 +96,12 @@ const RecordItem = styled.div`
 const RecordDetail: FC = () => {
   const [show, setShow] = useState(false)
   const [curDate, setCurDate] = useState(new Date())
-  const {state: category} = useContext(CategoryContext);
-  const {state: records} = useContext(MoneyRecordContext);
+  const {categories} = useContext(CategoriesContext);
+  const {moneyRecords} = useContext(MoneyRecordsContext);
   const history = useHistory();
   const year = dayjs(curDate).year()
   const month = dayjs(curDate).month() + 1
-  const filteredRecords = records.filter(record => {
+  const filteredRecords = moneyRecords.filter(record => {
     const recordYear = dayjs(record.time).year()
     const recordMonth = dayjs(record.time).month() + 1
     return recordYear === year && recordMonth === month;
@@ -173,7 +173,7 @@ const RecordDetail: FC = () => {
                 </span>
               </div>
               {item[1].map(record => {
-                const categoryItem = getCategoryById(category, record.categoryId);
+                const categoryItem = getCategoryById(categories, record.categoryId);
                 return (
                   <div
                     className="record-info"

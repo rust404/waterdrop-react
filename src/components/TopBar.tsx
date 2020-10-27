@@ -1,6 +1,5 @@
-import React, {FC} from 'react'
+import React, {CSSProperties, FC} from 'react'
 import styled from 'styled-components'
-import classnames from 'classnames'
 import Icon from "./Icon";
 import {useHistory} from "react-router-dom";
 
@@ -33,17 +32,20 @@ const Back = styled.span`
   align-items: center;
 `;
 
-interface ITopBarProps extends React.HTMLProps<HTMLElement> {
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+interface ITopBarProps {
+  left?: React.ReactNode
+  right?: React.ReactNode
   showBack?: boolean
+  className?: string
+  style?: CSSProperties
+  children?: React.ReactNode
 }
 const TopBar: FC<ITopBarProps> = (props) => {
   const history = useHistory();
-  const {left, children, right, style, showBack} = props
+  const {left, children, right, showBack, ...restProps} = props
 
   return (
-    <Wrapper style={style || {}} className={classnames(props.className)}>
+    <Wrapper {...restProps}>
       <div className="left">
         {left}
         {

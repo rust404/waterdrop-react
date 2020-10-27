@@ -1,4 +1,4 @@
-import React, {FC, MouseEvent} from "react";
+import React, {CSSProperties, FC, MouseEvent} from "react";
 import styled from "styled-components";
 import {brandColor, grey2} from "../../../style/variables";
 import classNames from "classnames";
@@ -39,18 +39,19 @@ const IconWrapper = styled.div`
 `
 interface CategoryListProps {
   selectedId?: string,
-  listData: CategoryItem[],
+  listData: Category[],
   type: 'manage' | 'add'
   onChange?: (id: string) => void
   onItemClick?: (id: string) => void
   onManageClick?: (e: MouseEvent) => void
   onAddClick?: (e: MouseEvent) => void
   className?: string
+  style?: CSSProperties
 }
 const CategoryList:FC<CategoryListProps> = (props) => {
-  const {selectedId, listData, type, onChange, onItemClick, onManageClick, onAddClick, className} = props
+  const {selectedId, listData, type, onChange, onItemClick, onManageClick, onAddClick, ...restProps} = props
   return (
-    <Wrapper className={className}>
+    <Wrapper {...restProps}>
       {listData.map(category => {
         const iconClassName = classNames({
           'is-active': selectedId === category.id

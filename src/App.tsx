@@ -5,8 +5,8 @@ import {
 import Routes from './routes'
 import GlobalStyle from "./style/globalStyle";
 import Animation from "./style/animation";
-import MoneyRecordStore from "./store/moneyRecordStore";
-import CategoryStore from "./store/categoryStore";
+import MoneyRecordsStore from "./store/moneyRecordsStore";
+import CategoriesStore from "./store/categoriesStore";
 
 function App() {
   useEffect(() => {
@@ -22,13 +22,13 @@ function App() {
     <React.Fragment>
       <GlobalStyle/>
       <Animation/>
-      <MoneyRecordStore>
-        <CategoryStore>
+      <MoneyRecordsStore>
+        <CategoriesStore>
           <Router>
             <Routes />
           </Router>
-        </CategoryStore>
-      </MoneyRecordStore>
+        </CategoriesStore>
+      </MoneyRecordsStore>
     </React.Fragment>
   );
 }

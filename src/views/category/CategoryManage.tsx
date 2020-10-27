@@ -2,7 +2,7 @@ import React, {useState, useContext, FC} from "react";
 import styled from "styled-components";
 import TopBar from "components/TopBar";
 import useQuery from "hooks/useQuery";
-import {CategoryContext} from "store/categoryStore";
+import {CategoriesContext} from "store/categoriesStore";
 import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -14,16 +14,17 @@ const Wrapper = styled.section`
   overflow: hidden;
 `;
 
-interface ICategoryManageProps extends React.HTMLProps<HTMLElement> {}
+interface ICategoryManageProps extends React.HTMLProps<HTMLElement> {
+}
 
 const CategoryManage: FC<ICategoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory();
-  const {state: category} = useContext(CategoryContext);
+  const {categories} = useContext(CategoriesContext);
   const [moneyType, setMoneyType] = useState(
     query.get("moneyType") || 'expenditure'
   );
-  const filteredCategory = category.filter(item => item.moneyType === moneyType)
+  const filteredCategory = categories.filter(item => item.moneyType === moneyType)
 
   const handleClick = (id: string) => {
     history.push(`/category/edit/${id}`);
@@ -37,8 +38,8 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
     <Wrapper className={props.className}>
       <TopBar showBack>
         <RadioGroup value={moneyType} onChange={(d) => setMoneyType(d as MoneyType)}>
-          <RadioButton label={'income'}>收入</RadioButton>
-          <RadioButton label={'expenditure'}>支出</RadioButton>
+          <RadioButton label="income">收入</RadioButton>
+          <RadioButton label="expenditure">支出</RadioButton>
         </RadioGroup>
       </TopBar>
       <CategoryList
