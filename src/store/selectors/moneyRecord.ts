@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export const getRecordById = (records: MoneyRecord[], id: number): MoneyRecord | null => {
+export const getRecordById = (records: MoneyRecord[], id: string): MoneyRecord | null => {
   return records.filter(record => record.id === id)[0];
 };
 

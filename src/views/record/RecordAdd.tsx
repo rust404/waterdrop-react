@@ -54,7 +54,7 @@ export type recordDataFieldType = Partial<RecordData>;
 const RecordAdd: FC = () => {
   const {state: category} = useContext(CategoryContext);
   const [recordData, setRecordData] = useState<RecordData>({
-    categoryId: -1,
+    categoryId: '',
     moneyType: 'expenditure',
     amount: 0,
     time: new Date().toISOString(),
@@ -118,7 +118,7 @@ const RecordAdd: FC = () => {
       // 不能为空
       for (let i of Object.keys(recordData)) {
         if (
-          (i === "categoryId" && recordData[i] === -1) ||
+          (i === "categoryId" && recordData[i] === '') ||
           (i === "amount" && recordData[i] === 0) ||
           (recordData as IndexedRecordDataType)[i] === undefined
         ) {

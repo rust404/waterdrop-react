@@ -38,11 +38,11 @@ const IconWrapper = styled.div`
   }
 `
 interface CategoryListProps {
-  selectedId?: number,
+  selectedId?: string,
   listData: CategoryItem[],
   type: 'manage' | 'add'
-  onChange?: (id: number) => void
-  onItemClick?: (id: number) => void
+  onChange?: (id: string) => void
+  onItemClick?: (id: string) => void
   onManageClick?: (e: MouseEvent) => void
   onAddClick?: (e: MouseEvent) => void
   className?: string

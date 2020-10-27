@@ -89,8 +89,8 @@ const RankList = styled.ol`
     }
   }
 `
-type CategoryToRecordsMap = { [categoryId: number]: MoneyRecord[] }
-type CategoryToSumMap = { [categoryId: number]: number }
+type CategoryToRecordsMap = { [categoryId: string]: MoneyRecord[] }
+type CategoryToSumMap = { [categoryId: string]: number }
 
 const Statistics: FC = () => {
   const {state: records} = useContext(MoneyRecordContext);
@@ -155,7 +155,7 @@ const Statistics: FC = () => {
     }
 
     const map = getCategoryToRecordMap(records)
-    const ret: { [categoryId: number]: number } = {}
+    const ret: { [categoryId: string]: number } = {}
     for (const i in map) {
       if (!Object.prototype.hasOwnProperty.call(map, i)) continue
       ret[i] = map[i].reduce((acc, record) => acc + record.amount, 0)
@@ -176,7 +176,7 @@ const Statistics: FC = () => {
     ret.sort((a, b) => b[1] - a[1])
     return ret.map(item => {
       return {
-        category: getCategoryById(category, parseInt(item[0])),
+        category: getCategoryById(category, item[0]),
         sum: item[1],
         percent: item[1] / total * 100
       }

@@ -25,13 +25,13 @@ const CategoryEdit: FC = () => {
   const {id} = useParams();
   const history = useHistory();
   const item = category.filter(value => {
-    return parseInt(id) === value.id;
+    return id === value.id;
   })[0];
   const [categoryName, setCategoryName] = useState(item ? item.name : "");
   const [iconName, setIconName] = useState(item ? item.icon : "");
   const submit = () => {
     dispatch(modifyCategory({
-      id: parseInt(id),
+      id,
       name: categoryName,
       icon: iconName
     }));

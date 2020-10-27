@@ -1,28 +1,11 @@
 import React from 'react'
-import {getKeyWithPrefix} from "./utils";
+import {generateId, getKeyWithPrefix} from "./utils";
 import {PREFIX} from "./constants";
 
-let cid = 0;
-const MAX_CATEGORY_ID_KEY = getKeyWithPrefix('maxCategoryId', PREFIX)
 const CATEGORY_KEY = getKeyWithPrefix('category', PREFIX)
 
 export function isMoneyType(type: string) {
   return type === 'income' || type === 'expenditure';
-}
-
-const generateCategoryId = () => {
-  if (cid === undefined) {
-    const id = parseInt(window.localStorage.getItem(MAX_CATEGORY_ID_KEY) || '')
-    cid = isNaN(id) ? 0 : id + 1
-  } else {
-    cid++
-  }
-  saveCategoryId()
-  return cid
-}
-
-const saveCategoryId = () => {
-  window.localStorage.setItem(MAX_CATEGORY_ID_KEY, cid + '')
 }
 
 export type CategoryAction =
@@ -32,16 +15,16 @@ export type CategoryAction =
 
 type CategoryReducer<T extends CategoryAction> = React.Reducer<CategoryItem[], T>;
 
-const defaultCategoryList: Omit<CategoryItem, 'id'>[] = [
-  {name: "餐饮", icon: "canyin", moneyType: 'expenditure'},
-  {name: "服饰", icon: "fushi", moneyType: 'expenditure'},
-  {name: "读书", icon: "dushu", moneyType: 'expenditure'},
-  {name: "交通", icon: "jiaotong", moneyType: 'expenditure'},
-  {name: "旅行", icon: "lvxing", moneyType: 'expenditure'},
-  {name: "日用", icon: "riyongpin", moneyType: 'expenditure'},
-  {name: "工资", icon: "gongzi", moneyType: 'income'},
-  {name: "兼职", icon: "jianzhi", moneyType: 'income'},
-  {name: "理财", icon: "licai", moneyType: 'income'}
+const defaultCategoryList: CategoryItem[] = [
+  {name: "餐饮", icon: "canyin", moneyType: "expenditure", id: "1612b088-3730-429d-ada1-32d726c0593c"},
+  {name: "服饰", icon: "fushi", moneyType: "expenditure", id: "ee47c60e-7d7d-4f77-8ea4-aaaed7749631"},
+  {name: "读书", icon: "dushu", moneyType: "expenditure", id: "949f55ef-0f57-4bc7-b5bd-93be277d06e4"},
+  {name: "交通", icon: "jiaotong", moneyType: "expenditure", id: "8c834353-b727-4039-8e5a-a196058f83db"},
+  {name: "旅行", icon: "lvxing", moneyType: "expenditure", id: "ae684aa2-3302-47c0-b1f8-6eeeec5580d3"},
+  {name: "日用", icon: "riyongpin", moneyType: "expenditure", id: "05b6a0f9-1e80-4d60-8c59-2ae7ecdcfe3c"},
+  {name: "工资", icon: "gongzi", moneyType: "income", id: "1de75225-cf7c-4c34-88aa-ec2591d33909"},
+  {name: "兼职", icon: "jianzhi", moneyType: "income", id: "5c04d58b-5112-4f2f-8b90-975833f41cc2"},
+  {name: "理财", icon: "licai", moneyType: "income", id: "c6d471fe-4a33-46ac-9e41-f94960abfec2"}
 ];
 
 export interface AddCategoryAction {
@@ -63,17 +46,10 @@ export const loadCategory = () => {
   const categoryStr = window.localStorage.getItem(CATEGORY_KEY);
   let category: CategoryItem[];
   if (!categoryStr) {
-    category = defaultCategoryList.map(item => {
-      return {
-        ...item,
-        moneyType: item.moneyType,
-        id: generateCategoryId()
-      };
-    });
+    category = defaultCategoryList
     saveCategory(category)
   } else {
     category = JSON.parse(categoryStr);
-    cid = Math.max(...category.map(item => item.id)) + 1;
   }
   return category;
 };
@@ -90,7 +66,7 @@ const categoryReducer: CategoryReducer<CategoryAction> = (state, action) => {
         if (state[i].name === action.payload.name) return state;
       }
       newState = [...state, {
-        id: generateCategoryId(),
+        id: generateId(),
         ...action.payload
       }];
       break

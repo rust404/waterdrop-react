@@ -25,7 +25,7 @@ const CategoryManage: FC<ICategoryManageProps> = props => {
   );
   const filteredCategory = category.filter(item => item.moneyType === moneyType)
 
-  const handleClick = (id: number) => {
+  const handleClick = (id: string) => {
     history.push(`/category/edit/${id}`);
   };
 

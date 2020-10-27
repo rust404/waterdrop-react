@@ -1,28 +1,10 @@
 import React from "react";
-import {getKeyWithPrefix} from "./utils";
+import {generateId, getKeyWithPrefix} from "./utils";
 import {PREFIX} from "./constants";
 
-let recordId: number | undefined;
-const MAX_RECORD_ID_KEY = getKeyWithPrefix('maxRecordId', PREFIX)
 const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
 
-
 type MoneyRecordReducer<T extends RecordAction> = React.Reducer<MoneyRecord[], T>;
-
-const generateRecordId = () => {
-  if (recordId === undefined) {
-    const id = parseInt(window.localStorage.getItem(MAX_RECORD_ID_KEY) || '')
-    recordId = isNaN(id) ? 0 : id + 1
-  } else {
-    recordId++
-  }
-  saveRecordId()
-  return recordId
-}
-
-const saveRecordId = () => {
-  window.localStorage.setItem(MAX_RECORD_ID_KEY, recordId + '')
-}
 
 export interface AddRecordAction {
   type: "addRecord";
@@ -65,7 +47,7 @@ const moneyRecordReducer: MoneyRecordReducer<RecordAction> = (state, action) => 
         ...state,
         {
           ...action.payload,
-          id: generateRecordId()
+          id: generateId()
         }
       ];
       break

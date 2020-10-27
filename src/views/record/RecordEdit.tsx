@@ -66,7 +66,7 @@ const RecordEdit: FC = () => {
   const {id} = useParams();
 
   const [recordData, setRecordData] = useState<RecordData>({
-    categoryId: -1,
+    categoryId: '',
     moneyType: 'expenditure',
     amount: 0,
     time: new Date().toISOString(),
@@ -84,7 +84,7 @@ const RecordEdit: FC = () => {
     })
   }, [])
   useEffect(() => {
-    const record = getRecordById(records, parseInt(id));
+    const record = getRecordById(records, id);
     if (!record) {
       history.push("/record/detail");
     } else {
@@ -114,7 +114,7 @@ const RecordEdit: FC = () => {
         };
         const categoryItem = getCategoryById(category, data.categoryId);
         if (categoryItem && categoryItem.moneyType !== data.moneyType) {
-          data.categoryId = -1;
+          data.categoryId = '';
         }
         return data;
       });
@@ -130,7 +130,7 @@ const RecordEdit: FC = () => {
       // 不能为空
       for (let i of Object.keys(recordData)) {
         if (
-          (i === "categoryId" && recordData[i] === -1) ||
+          (i === "categoryId" && recordData[i] === '') ||
           (i === "amount" && recordData[i] === 0) ||
           (recordData as IndexedRecordDataType)[i] === undefined
         ) {
@@ -139,7 +139,7 @@ const RecordEdit: FC = () => {
         }
       }
       dispatchRecords(modifyRecord({
-        id: parseInt(id),
+        id,
         ...recordData,
       }));
       message.success('编辑记录成功')
@@ -168,7 +168,7 @@ const RecordEdit: FC = () => {
   }, [])
   const handleDelete = () => {
     dispatchRecords(deleteRecord({
-      id: +id
+      id
     }))
     message.success('删除成功')
   }
