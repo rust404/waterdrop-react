@@ -1,15 +1,13 @@
 import React, {
   useState,
-  useEffect,
   useCallback,
   useContext,
   FC, MouseEvent, ChangeEvent,
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
-import {getCategoryById} from "store/selectors/category";
 import TopBar from "components/TopBar";
-import {moneyRecordValidator, ValueOf} from "util/index";
+import {moneyRecordValidator} from "util/index";
 import {getRecordById} from "store/selectors/moneyRecord";
 import {useHistory, useParams} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
@@ -22,6 +20,7 @@ import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
 import {CategoriesContext} from "../../store/categoriesStore";
 import {deleteRecord, modifyRecord} from "../../store/actions/moneyRecord";
 import {ErrorList} from "async-validator";
+import useMoneyRecord from "../../hooks/useMoneyRecord";
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,9 +40,6 @@ const Wrapper = styled.div`
 const DeleteBtn = styled.span`
   color: ${danger}
 `
-type RecordData = Pick<MoneyRecord, "categoryId" | "time" | "moneyType" | "amount" | "remarks">;
-
-export type recordDataFieldType = Partial<RecordData>;
 
 const RecordEdit: FC = () => {
   const history = useHistory();
@@ -52,62 +48,31 @@ const RecordEdit: FC = () => {
   const {categories} = useContext(CategoriesContext);
   const {id} = useParams();
 
-  const [recordData, setRecordData] = useState<RecordData>({
-    categoryId: '',
-    moneyType: 'expenditure',
-    amount: 0,
+  const initialRecordData = getRecordById(moneyRecords, id);
+  const [recordData, dispatchRecordData] = useMoneyRecord(initialRecordData || {
     time: new Date().toISOString(),
-    remarks: ''
-  });
+    amount: 0,
+    moneyType: 'expenditure',
+  })
   const {categoryId, moneyType, time, amount, remarks} = recordData;
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
 
+  if (!initialRecordData) {
+    history.replace('record/add')
+  }
+
   const onRemarksChange = useCallback((remarks: string) => {
-    setRecordData((state) => {
-      return {
-        ...state,
-        remarks
-      }
+    dispatchRecordData({
+      type: 'remarks',
+      payload: remarks
     })
-  }, [])
-  useEffect(() => {
-    const record = getRecordById(moneyRecords, id);
-    if (!record) {
-      history.push("/record/detail");
-    } else {
-      const {categoryId, moneyType, amount, time, remarks} = record;
-      setRecordData({
-        categoryId,
-        moneyType,
-        amount,
-        time,
-        remarks: remarks || ''
-      });
-      setCalcStr('' + amount)
-    }
-  }, [id, history, moneyRecords]);
+  }, [dispatchRecordData])
 
   const handleManageClick = (e: MouseEvent) => {
     history.push(`/category/manage?moneyType=${moneyType}`)
     e.stopPropagation()
   }
 
-  const onChange = useCallback(
-    (key: keyof RecordData) => (value: ValueOf<RecordData>) => {
-      setRecordData((state) => {
-        const data = {
-          ...state,
-          [key]: value,
-        };
-        const categoryItem = getCategoryById(categories, data.categoryId);
-        if (categoryItem && categoryItem.moneyType !== data.moneyType) {
-          data.categoryId = '';
-        }
-        return data;
-      });
-    },
-    [categories]
-  );
   const submit = useCallback(
     () => {
       moneyRecordValidator.validate(recordData).then(() => {
@@ -126,24 +91,20 @@ const RecordEdit: FC = () => {
     [history, recordData, dispatchMoneyRecords, id]
   );
   const onDateChange = useCallback((date: Date) => {
-    setRecordData((state) => {
-      return {
-        ...state,
-        time: date.toISOString()
-      }
+    dispatchRecordData({
+      type: 'time',
+      payload: date
     })
-  }, [])
+  }, [dispatchRecordData])
   const onCalcStrChange = useCallback((str: string) => {
     setCalcStr(str)
   }, [])
   const onAmountChange = useCallback((amount: number) => {
-    setRecordData((state) => {
-      return {
-        ...state,
-        amount
-      }
+    dispatchRecordData({
+      type: 'amount',
+      payload: amount
     })
-  }, [])
+  }, [dispatchRecordData])
   const handleDelete = () => {
     dispatchMoneyRecords(deleteRecord({
       id
@@ -151,16 +112,23 @@ const RecordEdit: FC = () => {
     message.success('删除成功')
   }
   const onMoneyTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as MoneyType
-    setRecordData((state) => ({
-      ...state,
-      moneyType: value,
-    }))
+    const value = e.target.value
+    if (value !== 'income' && value !== 'expenditure') return
+    dispatchRecordData({
+      type: 'moneyType',
+      payload: value
+    })
   }
+  const onCategoryChange = useCallback((id: string) => {
+    dispatchRecordData({
+      type: 'categoryId',
+      payload: id
+    })
+  }, [dispatchRecordData])
   return (
     <Wrapper>
       <TopBar showBack right={<DeleteBtn onClick={handleDelete}>删除</DeleteBtn>}>
-        <RadioGroup value={recordData.moneyType} onChange={onMoneyTypeChange}>
+        <RadioGroup value={recordData.moneyType as MoneyType} onChange={onMoneyTypeChange}>
           <RadioButton label="income">收入</RadioButton>
           <RadioButton label="expenditure">支出</RadioButton>
         </RadioGroup>
@@ -170,12 +138,12 @@ const RecordEdit: FC = () => {
         selectedId={categoryId}
         listData={filteredCategory}
         type="manage"
-        onChange={onChange("categoryId")}
+        onChange={onCategoryChange}
         onManageClick={handleManageClick}
       />
       <InfoBar calcStr={calcStr} remarks={remarks} onRemarksChange={onRemarksChange}/>
       <NumberPad
-        date={new Date(time)}
+        date={new Date(time as string)}
         amount={amount}
         onAmountChange={onAmountChange}
         onDateChange={onDateChange}

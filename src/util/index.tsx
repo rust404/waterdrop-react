@@ -1,4 +1,5 @@
 import Scheme, {RuleItem} from 'async-validator'
+import {isMoneyType} from "../store/categoriesReducer";
 
 export type ValueOf<T> = T[keyof T];
 
@@ -15,6 +16,7 @@ const moneyRecordDescriptor:{[index: string]: RuleItem} = {
   moneyType: {
     type: 'string',
     required: true,
+    validator: (rule, value) => isMoneyType(value),
     message: '请选择账目类型（收入/支出）'
   },
   amount: {

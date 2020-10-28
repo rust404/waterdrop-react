@@ -16,6 +16,8 @@ interface MoneyRecord {
   [index: string]: number | string | MoneyType | undefined;
 }
 
+type RecordData = Pick<MoneyRecord, "categoryId" | "time" | "moneyType" | "amount" | "remarks">;
+
 interface Category {
   name: string;
   icon: string;
