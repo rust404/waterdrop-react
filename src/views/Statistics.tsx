@@ -90,7 +90,7 @@ const Statistics: FC = () => {
   const {moneyRecords} = useContext(MoneyRecordsContext);
   const {categories} = useContext(CategoriesContext);
   const [curDate, setCurDate] = useState(new Date())
-  const [dateType, setDateType] = useState('year-month')
+  const [dateType, setDateType] = useState<DatePickerType>('month')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [moneyType, setMoneyType] = useState<MoneyType>(
     'expenditure'
@@ -158,7 +158,7 @@ const Statistics: FC = () => {
   }
   const categoryRankData = (() => {
     let filteredRecords = moneyRecords
-    filteredRecords = dateType === 'year-month' ?
+    filteredRecords = dateType === 'month' ?
       getRecordsByTime(filteredRecords, curDate, 'month') : getRecordsByTime(filteredRecords, curDate, 'year')
     filteredRecords = getRecords(filteredRecords, {
       moneyType: moneyType
@@ -176,8 +176,8 @@ const Statistics: FC = () => {
       }
     })
   })()
-  const xSeriesData = dateType === 'year-month' ? dateArr : monthArr
-  const ySeriesData = dateType === 'year-month' ?
+  const xSeriesData = dateType === 'month' ? dateArr : monthArr
+  const ySeriesData = dateType === 'month' ?
     getSumForDates(moneyRecords, curDate) : getSumForMonths(moneyRecords, curDate)
 
   const option: EChartOption = {
@@ -248,9 +248,9 @@ const Statistics: FC = () => {
   return (
     <Layout>
       <TopBar>
-        <RadioGroup value={dateType} onChange={(e) => setDateType(e.target.value)}>
+        <RadioGroup value={dateType} onChange={(e) => setDateType(e.target.value as DatePickerType)}>
           <RadioButton label="year">年</RadioButton>
-          <RadioButton label="year-month">月</RadioButton>
+          <RadioButton label="month">月</RadioButton>
         </RadioGroup>
       </TopBar>
       <ContentWrapper>
@@ -258,8 +258,8 @@ const Statistics: FC = () => {
           {dateStr}&#9660;
         </div>
         <RadioGroup block value={moneyType} onChange={(e) => setMoneyType(e.target.value as MoneyType)}>
-          <RadioButton label={'income'}>收入</RadioButton>
-          <RadioButton label={'expenditure'}>支出</RadioButton>
+          <RadioButton label="income">收入</RadioButton>
+          <RadioButton label="expenditure">支出</RadioButton>
         </RadioGroup>
         {categoryRankData.length === 0 ?
           <FallBackMessage>暂无数据</FallBackMessage> :
@@ -296,7 +296,7 @@ const Statistics: FC = () => {
       >
         <DatePicker
           date={curDate}
-          pickerType={dateType as DatePickerType}
+          pickerType={dateType}
           onOk={handleOk}
         />
       </PopUp>

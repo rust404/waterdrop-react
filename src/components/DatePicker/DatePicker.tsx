@@ -12,6 +12,8 @@ const Header = styled.div`
   font-size: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px #e0e0e0;
 
   > button {
     font-size: 16px;
@@ -38,7 +40,7 @@ const Container = styled.div`
   }
 `
 
-export type DatePickerType = 'year' | 'full-date' | 'year-month' | 'month-date'
+export type DatePickerType = 'year' | 'month' | 'date'
 
 interface DatePickerProps {
   date: Date,
@@ -66,21 +68,21 @@ const DatePicker: FC<DatePickerProps> = (props) => {
   }
   const yearList = []
   for (let i = 0; i < 20; i++) {
-    yearList.unshift(year - i + '')
+    yearList.unshift(dayjs().year() - i + '')
   }
-  const showYear = pickerType === 'full-date' || pickerType === 'year-month' || pickerType === 'year'
-  const showMonth = pickerType === 'full-date' || pickerType === 'year-month' || pickerType === 'month-date'
-  const showDate = pickerType === 'full-date' || pickerType === 'month-date'
+  const showYear = pickerType === 'date' || pickerType === 'month' || pickerType === 'year'
+  const showMonth = pickerType === 'date' || pickerType === 'month'
+  const showDate = pickerType === 'date'
 
   let dateStr = ''
-  if (pickerType === 'full-date') {
+  if (pickerType === 'date') {
     dateStr = `${year}-${month}-${date}`
   }
-  if (pickerType === 'month-date') {
-    dateStr = `${month}-${date}`
-  }
-  if (pickerType === 'year-month') {
+  if (pickerType === 'month') {
     dateStr = `${year}-${month}`
+  }
+  if (pickerType === 'year') {
+    dateStr = `${year}`
   }
 
   const daysInMonth =  dayjs().year(year).month(month - 1).daysInMonth()

@@ -143,7 +143,7 @@ const NumberPad: FC<NumberPadProps> = (props) => {
       >
         <DatePicker
           date={date}
-          pickerType="full-date"
+          pickerType="date"
           onOk={handleOk}
         />
       </PopUp>

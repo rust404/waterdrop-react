@@ -118,7 +118,7 @@ const RecordDetail: FC = () => {
   const orderedRecords = Object.entries(hashMap).sort().reverse();
   return (
     <Layout>
-      <TopBar style={{boxShadow: 'none'}}>收入支出明细</TopBar>
+      <TopBar style={{boxShadow: 'none'}}>水滴记账</TopBar>
       <GeneralInfo>
         <div className="general-record">
           <div className="money">
@@ -203,7 +203,7 @@ const RecordDetail: FC = () => {
       <PopUp show={show} onCancel={() => setShow(false)} position="bottom">
         <DatePicker
           date={curDate}
-          pickerType="year-month"
+          pickerType="month"
           onOk={(d) => {
             setCurDate(d)
             setShow(false)

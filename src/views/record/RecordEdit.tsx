@@ -57,10 +57,6 @@ const RecordEdit: FC = () => {
   const {categoryId, moneyType, time, amount, remarks} = recordData;
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
 
-  if (!initialRecordData) {
-    history.replace('record/add')
-  }
-
   const onRemarksChange = useCallback((remarks: string) => {
     dispatchRecordData({
       type: 'remarks',
@@ -106,10 +102,12 @@ const RecordEdit: FC = () => {
     })
   }, [dispatchRecordData])
   const handleDelete = () => {
+    if(!window.confirm('确认删除此记录？')) return
     dispatchMoneyRecords(deleteRecord({
       id
     }))
     message.success('删除成功')
+    history.goBack()
   }
   const onMoneyTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
