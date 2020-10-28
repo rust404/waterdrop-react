@@ -44,6 +44,8 @@ const PickerList: FC<PickerListProps> = (props) => {
     top: '0px',
     transition: 'none'
   })
+  // 禁止橡皮筋效应
+  // document.body.addEventListener('touchmove', bodyTouchMoveHandler, {passive: false})
   useEffect(() => {
     let index = -1
     for (let i = 0; i < listData.length; i++) {
@@ -59,6 +61,15 @@ const PickerList: FC<PickerListProps> = (props) => {
       }
     })
   }, [value, listData])
+  useEffect(() => {
+    const bodyTouchMoveHandler = (e: TouchEvent) => {
+      e.preventDefault()
+    }
+    document.body.addEventListener('touchmove', bodyTouchMoveHandler, {passive: false})
+    return () => {
+      document.body.removeEventListener('touchmove', bodyTouchMoveHandler)
+    }
+  }, [])
   const onTouchStart = (e: React.TouchEvent<HTMLUListElement>) => {
     setStartY(e.touches[0].clientY)
     setStartTop(parseInt(style.top))

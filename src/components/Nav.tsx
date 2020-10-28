@@ -7,6 +7,7 @@ import {brandColor} from "../style/variables";
 const NavWrapper = styled.nav`
   display: flex;
   box-shadow: 0 -2px 8px #e0e0e0;
+  flex-shrink: 0;
   > * {
     flex: 1 0 0;
     line-height: 1;

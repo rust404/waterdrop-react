@@ -118,6 +118,10 @@ const RecordEdit: FC = () => {
       type: 'moneyType',
       payload: value
     })
+    dispatchRecordData({
+      type: 'categoryId',
+      payload: ''
+    })
   }
   const onCategoryChange = useCallback((id: string) => {
     dispatchRecordData({

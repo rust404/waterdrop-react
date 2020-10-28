@@ -33,8 +33,10 @@ const ContentWrapper = styled.div`
 `;
 const FallBackMessage = styled.div`
   color: ${grey5};
-  margin-top: 20px;
-  font-size: 20px;
+  background-color: ${grey1};
+  font: 20px bold;
+  height: 200px;
+  line-height: 200px;
   text-align: center;
 `
 const RankList = styled.ol`
@@ -262,7 +264,7 @@ const Statistics: FC = () => {
         {categoryRankData.length === 0 ?
           <FallBackMessage>暂无数据</FallBackMessage> :
           <React.Fragment>
-            <Suspense fallback={<FallBackMessage>加载中</FallBackMessage>}>
+            <Suspense fallback={<FallBackMessage>图表加载中</FallBackMessage>}>
               <Echarts option={option} style={{height: "200px"}}/>
             </Suspense>
             <RankList>

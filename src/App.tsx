@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
   HashRouter as Router,
 } from "react-router-dom";
@@ -7,16 +7,15 @@ import GlobalStyle from "./style/globalStyle";
 import Animation from "./style/animation";
 import MoneyRecordsStore from "./store/moneyRecordsStore";
 import CategoriesStore from "./store/categoriesStore";
+import PopUp from "./components/PopUp";
+import qrcode from './assets/qrcode.png';
 
 function App() {
+  const [show, setShow] = useState(false)
   useEffect(() => {
-    // 禁止橡皮筋效应
-    const bodyTouchMoveHandler = (e: TouchEvent) => {
-      e.preventDefault()
+    if (window.innerWidth > 500) {
+      setShow(true)
     }
-    document.body.addEventListener('touchmove', bodyTouchMoveHandler, {passive: false})
-    // 解决微信端伪类active无效的问题
-    document.body.addEventListener('touchstart', () => {})
   }, [])
   return (
     <React.Fragment>
@@ -28,6 +27,10 @@ function App() {
             <Routes />
           </Router>
         </CategoriesStore>
+        <PopUp show={show} onCancel={() => setShow(false)}  position="center">
+          <img src={qrcode} alt="qrcode"/>
+          <p style={{textAlign: 'center'}}>为了最佳用户体验，请用手机扫码查看</p>
+        </PopUp>
       </MoneyRecordsStore>
     </React.Fragment>
   );

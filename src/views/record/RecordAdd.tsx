@@ -70,6 +70,10 @@ const RecordAdd: FC = () => {
       type: 'moneyType',
       payload: value
     })
+    dispatchRecordData({
+      type: 'categoryId',
+      payload: ''
+    })
   }, [dispatchRecordData])
   const onDateChange = useCallback((date: Date) => {
     dispatchRecordData({
