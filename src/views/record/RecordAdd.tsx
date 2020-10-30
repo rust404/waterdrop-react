@@ -18,7 +18,6 @@ import RadioButton from "../../components/Radio/RadioButton";
 import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
-import {addRecord} from "../../store/actions/moneyRecord";
 import {ErrorList} from "async-validator";
 import useMoneyRecord from "../../hooks/useMoneyRecord";
 
@@ -50,7 +49,7 @@ const RecordAdd: FC = () => {
   })
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
-  const {dispatchMoneyRecords} = useContext(MoneyRecordsContext);
+  const {addRecord} = useContext(MoneyRecordsContext);
   const {categoryId, moneyType, time, remarks} = recordData;
 
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
@@ -98,7 +97,7 @@ const RecordAdd: FC = () => {
   }, [])
   const submit = useCallback(() => {
       moneyRecordValidator.validate(recordData).then(() => {
-        dispatchMoneyRecords(addRecord(recordData as RecordData))
+        addRecord(recordData as RecordData)
         message.success('添加记录成功')
         history.push("/record/detail");
       }).catch(({errors}: { errors: ErrorList }) => {
@@ -107,7 +106,7 @@ const RecordAdd: FC = () => {
         })
       })
     },
-    [recordData, history, dispatchMoneyRecords]
+    [recordData, history, addRecord]
   );
   return (
     <Layout>

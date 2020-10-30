@@ -1,8 +1,10 @@
 type Payload<T> = T['payload']
 
-interface ActionCreator<T> {
-  (payload: Payload<T>):T
+interface ActionCreator<A> {
+  (payload: Payload<A>):A
 }
+
+type BoundActionCreator<A> = (payload: Payload<A>) => void
 
 type MoneyType = 'income' | 'expenditure'
 

@@ -18,7 +18,6 @@ import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
 import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
 import {CategoriesContext} from "../../store/categoriesStore";
-import {deleteRecord, modifyRecord} from "../../store/actions/moneyRecord";
 import {ErrorList} from "async-validator";
 import useMoneyRecord from "../../hooks/useMoneyRecord";
 
@@ -43,7 +42,7 @@ const DeleteBtn = styled.span`
 
 const RecordEdit: FC = () => {
   const history = useHistory();
-  const {moneyRecords, dispatchMoneyRecords} = useContext(MoneyRecordsContext);
+  const {moneyRecords, modifyRecord, deleteRecord} = useContext(MoneyRecordsContext);
   const [calcStr, setCalcStr] = useState('0')
   const {categories} = useContext(CategoriesContext);
   const {id} = useParams();
@@ -72,10 +71,10 @@ const RecordEdit: FC = () => {
   const submit = useCallback(
     () => {
       moneyRecordValidator.validate(recordData).then(() => {
-        dispatchMoneyRecords(modifyRecord({
+        modifyRecord({
           id,
           ...recordData,
-        }));
+        })
         message.success('编辑记录成功')
         history.goBack();
       }).catch(({errors}: { errors: ErrorList }) => {
@@ -84,7 +83,7 @@ const RecordEdit: FC = () => {
         })
       })
     },
-    [history, recordData, dispatchMoneyRecords, id]
+    [history, recordData, modifyRecord, id]
   );
   const onDateChange = useCallback((date: Date) => {
     dispatchRecordData({
@@ -103,9 +102,9 @@ const RecordEdit: FC = () => {
   }, [dispatchRecordData])
   const handleDelete = () => {
     if(!window.confirm('确认删除此记录？')) return
-    dispatchMoneyRecords(deleteRecord({
+    deleteRecord({
       id
-    }))
+    })
     message.success('删除成功')
     history.goBack()
   }

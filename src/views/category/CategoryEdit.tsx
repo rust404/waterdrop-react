@@ -6,7 +6,6 @@ import styled from "styled-components";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
-import {modifyCategory} from "../../store/actions/category";
 import {categoryValidator} from "../../util";
 import {ErrorList} from "async-validator";
 
@@ -23,12 +22,10 @@ const ContentWrapper = styled.div`
   overflow: auto;
 `;
 const CategoryEdit: FC = () => {
-  const {categories, dispatchCategories} = useContext(CategoriesContext);
+  const {categories, modifyCategory} = useContext(CategoriesContext);
   const {id} = useParams();
   const history = useHistory();
-  const curCategory = categories.filter(value => {
-    return id === value.id;
-  })[0];
+  const curCategory = categories.filter(value => id === value.id)[0];
   const [categoryName, setCategoryName] = useState(curCategory ? curCategory.name : "");
   const [iconName, setIconName] = useState(curCategory ? curCategory.icon : "");
   const submit = () => {
@@ -38,7 +35,7 @@ const CategoryEdit: FC = () => {
       name: categoryName,
     }
     categoryValidator.validate(newCategory).then(() => {
-      dispatchCategories(modifyCategory(newCategory));
+      modifyCategory(newCategory)
       message.success('编辑分类成功')
       history.goBack();
     }).catch(({errors}: {errors: ErrorList}) => {

@@ -8,7 +8,6 @@ import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
 import {CategoriesContext} from "../../store/categoriesStore";
-import {addCategory} from "../../store/actions/category";
 import {categoryValidator} from "../../util";
 import {ErrorList} from "async-validator";
 
@@ -21,7 +20,7 @@ const Right = styled.span`
   font-size: 14px;
 `;
 const CategoryAdd = () => {
-  const {dispatchCategories} = useContext(CategoriesContext);
+  const {addCategory} = useContext(CategoriesContext);
   const query = useQuery();
   const history = useHistory();
   const [categoryName, setCategoryName] = useState("");
@@ -41,11 +40,11 @@ const CategoryAdd = () => {
       name: categoryName
     }
     categoryValidator.validate(newCategory).then(() => {
-      dispatchCategories(addCategory({
+      addCategory({
         moneyType: moneyType as MoneyType,
         icon: iconName,
         name: categoryName
-      }))
+      })
       message.success('添加分类成功')
       history.goBack();
     }).catch(({errors}: {errors: ErrorList}) => {
