@@ -33,7 +33,6 @@ const ContentWrapper = styled.div`
 `;
 const FallBackMessage = styled.div`
   color: ${grey5};
-  background-color: ${grey1};
   font: 20px bold;
   height: 200px;
   line-height: 200px;

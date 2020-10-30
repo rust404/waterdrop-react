@@ -12,6 +12,14 @@ import {brandColor, grey1, grey5,} from "../../style/variables";
 import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
 import {CategoriesContext} from "../../store/categoriesStore";
 
+const FallBackMessage = styled.div`
+  color: ${grey5};
+  font: 20px bold;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+`
+
 const GeneralInfo = styled.div`
   padding: 20px 16px;
   flex-shrink: 0;
@@ -115,7 +123,63 @@ const RecordDetail: FC = () => {
       hashMap[key] = [record];
     }
   });
-  const orderedRecords = Object.entries(hashMap).sort().reverse();
+  const renderList = () => {
+    const orderedRecords = Object.entries(hashMap).sort().reverse();
+    if (orderedRecords.length === 0) {
+      return <FallBackMessage>本月暂无数据</FallBackMessage>
+    }
+    return orderedRecords.map(item => {
+      return (
+        <RecordItem key={item[0]}>
+          <div className="date-info">
+            <span>{dayjs(item[0]).format("YYYY年MM月DD日")}</span>
+            <span>
+                  收入：
+              {item[1].reduce<number>((acc, item) => {
+                if (item.moneyType === 'income') {
+                  return acc + Math.abs(item.amount);
+                } else {
+                  return acc;
+                }
+              }, 0)}
+              ；支出：
+              {item[1].reduce<number>((acc, item) => {
+                if (item.moneyType === 'expenditure') {
+                  return acc + Math.abs(item.amount);
+                } else {
+                  return acc;
+                }
+              }, 0)}
+                </span>
+          </div>
+          {item[1].map(record => {
+            const categoryItem = getCategoryById(categories, record.categoryId);
+            return (
+              <div
+                className="record-info"
+                data-id={record.id}
+                key={record.id}
+                onClick={() => {
+                  history.push(`/record/edit/${record.id}`);
+                }}
+              >
+                <div className="icon-wrapper">
+                  <Icon id={categoryItem.icon} className="icon" size="60%"/>
+                </div>
+                <div className="record-category">
+                  {categoryItem.name}
+                  <p className="remarks">{record.remarks}</p>
+                </div>
+                <div className="money">
+                  {record.moneyType === 'expenditure' && '-'}{record.amount}
+                </div>
+              </div>
+            );
+          })}
+        </RecordItem>
+      );
+    })
+  }
   return (
     <Layout>
       <TopBar style={{boxShadow: 'none'}}>水滴记账</TopBar>
@@ -148,57 +212,7 @@ const RecordDetail: FC = () => {
         </div>
       </GeneralInfo>
       <RecordsWrapper>
-        {orderedRecords.map(item => {
-          return (
-            <RecordItem key={item[0]}>
-              <div className="date-info">
-                <span>{dayjs(item[0]).format("YYYY年MM月DD日")}</span>
-                <span>
-                  收入：
-                  {item[1].reduce<number>((acc, item) => {
-                    if (item.moneyType === 'income') {
-                      return acc + Math.abs(item.amount);
-                    } else {
-                      return acc;
-                    }
-                  }, 0)}
-                  ；支出：
-                  {item[1].reduce<number>((acc, item) => {
-                    if (item.moneyType === 'expenditure') {
-                      return acc + Math.abs(item.amount);
-                    } else {
-                      return acc;
-                    }
-                  }, 0)}
-                </span>
-              </div>
-              {item[1].map(record => {
-                const categoryItem = getCategoryById(categories, record.categoryId);
-                return (
-                  <div
-                    className="record-info"
-                    data-id={record.id}
-                    key={record.id}
-                    onClick={() => {
-                      history.push(`/record/edit/${record.id}`);
-                    }}
-                  >
-                    <div className="icon-wrapper">
-                      <Icon id={categoryItem.icon} className="icon" size="60%"/>
-                    </div>
-                    <div className="record-category">
-                      {categoryItem.name}
-                      <p className="remarks">{record.remarks}</p>
-                    </div>
-                    <div className="money">
-                      {record.moneyType === 'expenditure' && '-'}{record.amount}
-                    </div>
-                  </div>
-                );
-              })}
-            </RecordItem>
-          );
-        })}
+        {renderList()}
       </RecordsWrapper>
       <PopUp show={show} onCancel={() => setShow(false)} position="bottom">
         <DatePicker
