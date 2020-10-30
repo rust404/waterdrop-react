@@ -1,5 +1,7 @@
 import React, {FC, useReducer} from 'react'
 import moneyRecordsReducer, {RecordAction, loadRecords} from "./moneyRecordsReducer";
+import {reducerWithLocalStorage} from "./utils";
+import {RECORD_KEY} from "./constants";
 
 export const MoneyRecordsContext = React.createContext<{
   moneyRecords: MoneyRecord[],
@@ -9,8 +11,14 @@ export const MoneyRecordsContext = React.createContext<{
   dispatchMoneyRecords: () => {}
 })
 
+const reducer = reducerWithLocalStorage(moneyRecordsReducer, RECORD_KEY)
+
 const MoneyRecordsStore:FC = ({children}) => {
-  const [moneyRecords, dispatchMoneyRecords] = useReducer(moneyRecordsReducer, null, loadRecords)
+  const [moneyRecords, dispatchMoneyRecords] = useReducer(
+    reducer,
+    null,
+    loadRecords
+  )
   return (
     <MoneyRecordsContext.Provider value={{moneyRecords, dispatchMoneyRecords}}>
       {children}

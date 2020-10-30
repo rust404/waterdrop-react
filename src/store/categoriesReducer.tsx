@@ -1,8 +1,7 @@
 import React from 'react'
-import {generateId, getKeyWithPrefix} from "./utils";
-import {PREFIX} from "./constants";
+import {generateId} from "./utils";
+import {CATEGORY_KEY} from "./constants";
 
-const CATEGORY_KEY = getKeyWithPrefix('category', PREFIX)
 
 export function isMoneyType(type: string) {
   return type === 'income' || type === 'expenditure';
@@ -47,16 +46,11 @@ export const loadCategories = () => {
   let category: Category[];
   if (!categoryStr) {
     category = defaultCategoryList
-    saveCategory(category)
   } else {
     category = JSON.parse(categoryStr);
   }
   return category;
 };
-
-export const saveCategory = (category: Category[]) => {
-  window.localStorage.setItem(CATEGORY_KEY, JSON.stringify(category));
-}
 
 const categoriesReducer: CategoriesReducer<CategoryAction> = (state, action) => {
   let newState = state
@@ -79,9 +73,6 @@ const categoriesReducer: CategoriesReducer<CategoryAction> = (state, action) => 
     default:
       return state
   }
-  // TODO
-  // 是否可以用中间件来处理
-  saveCategory(newState)
   return newState
 };
 

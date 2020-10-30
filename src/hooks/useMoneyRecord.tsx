@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react'
+import {useReducer, Reducer} from 'react'
 
 interface CategoryIdAction {
   type: 'categoryId',
@@ -28,7 +28,7 @@ interface RemarksAction {
 type MoneyRecordAction = CategoryIdAction | TimeAction | MoneyTypeAction | AmountAction | RemarksAction
 
 const useMoneyRecord = (initialRecord: Partial<MoneyRecord> = {}) => {
-  const reducer: React.Reducer<Partial<MoneyRecord>, MoneyRecordAction> = (state, action) => {
+  const reducer: Reducer<Partial<MoneyRecord>, MoneyRecordAction> = (state, action) => {
     switch (action.type) {
       case "categoryId":
         return {...state, categoryId: action.payload}
@@ -41,7 +41,9 @@ const useMoneyRecord = (initialRecord: Partial<MoneyRecord> = {}) => {
       case "time":
         return {
           ...state,
-          time: typeof action.payload === 'string' ? action.payload : action.payload.toISOString()
+          time: typeof action.payload === 'string' ?
+            action.payload :
+            action.payload.toISOString()
         }
     }
   }

@@ -1,8 +1,5 @@
-import React from "react";
-import {generateId, getKeyWithPrefix} from "./utils";
-import {PREFIX} from "./constants";
-
-const RECORD_KEY = getKeyWithPrefix('record', PREFIX)
+import {generateId} from "./utils";
+import {RECORD_KEY} from "./constants";
 
 type MoneyRecordsReducer<T extends RecordAction> = React.Reducer<MoneyRecord[], T>;
 
@@ -35,11 +32,6 @@ export const loadRecords = (): MoneyRecord[] => {
   return records;
 };
 
-export const saveRecords = (records: MoneyRecord[]) => {
-  window.localStorage.setItem(RECORD_KEY, JSON.stringify(records));
-}
-
-
 const moneyRecordsReducer: MoneyRecordsReducer<RecordAction> = (state, action) => {
   let newState = state
   switch (action.type) {
@@ -59,7 +51,6 @@ const moneyRecordsReducer: MoneyRecordsReducer<RecordAction> = (state, action) =
       newState = state.map(moneyRecord => moneyRecord.id === action.payload.id ? {...moneyRecord, ...action.payload} : moneyRecord)
       break
   }
-  saveRecords(newState)
   return newState
 };
 

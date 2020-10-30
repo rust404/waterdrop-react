@@ -1,4 +1,4 @@
-import React, {CSSProperties, FC, useState} from "react";
+import React, {CSSProperties, FC, useEffect, useState} from "react";
 import PickerList from "./PickerList";
 import {brandColor, grey5} from "../../style/variables";
 import styled from "styled-components";
@@ -57,6 +57,16 @@ const DatePicker: FC<DatePickerProps> = (props) => {
   const [year, setYear] = useState(dayjs(pDate).year())
   const [month, setMonth] = useState(dayjs(pDate).month() + 1)
   const [date, setDate] = useState(dayjs(pDate).date())
+
+  useEffect(() => {
+    const bodyTouchMoveHandler = (e: TouchEvent) => {
+      e.preventDefault()
+    }
+    document.body.addEventListener('touchmove', bodyTouchMoveHandler, {passive: false})
+    return () => {
+      document.body.removeEventListener('touchmove', bodyTouchMoveHandler)
+    }
+  }, [])
   const onYearChange = (val: string) => {
     setYear(parseInt(val))
   }
