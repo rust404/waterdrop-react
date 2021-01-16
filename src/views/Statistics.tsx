@@ -112,6 +112,7 @@ const Statistics: FC = () => {
   const handleDateClick = () => {
     setShowDatePicker(true)
   }
+  // 生成某一月的每天收入支出统计
   const getSumForDates = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'month')
     const ret = {
@@ -123,6 +124,7 @@ const Statistics: FC = () => {
       return acc
     }, ret)
   }
+  // 生成某一年的每月收入支出统计
   const getSumForMonths = (records: MoneyRecord[], date: Date) => {
     records = getRecordsByTime(records, date, 'year')
     const ret = {
@@ -134,6 +136,7 @@ const Statistics: FC = () => {
       return acc
     }, ret)
   }
+  // 生成每一个分类的净收入/支出
   const getSumsForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
     function getCategoryToRecordMap(records: MoneyRecord[]) {
       const map: CategoryToRecordsMap = {}
@@ -155,6 +158,7 @@ const Statistics: FC = () => {
     }
     return ret
   }
+  // 根据分类统计进行降序排序
   const categoryRankData = (() => {
     let filteredRecords = moneyRecords
     filteredRecords = dateType === 'month' ?

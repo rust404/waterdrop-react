@@ -72,7 +72,7 @@ interface NumberPadProps {
 const NumberPad: FC<NumberPadProps> = (props) => {
   const {date, amount, onDateChange, onCalcStrChange, onSubmit, onAmountChange, ...restProps} = props
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const {expStr, add, clear, getValue, setInitNum} = useCalcStr(amount)
+  const {expStr, add, clear, getValue} = useCalcStr(amount)
 
   const dateStr = dayjs(date).format('YYYY/MM/DD')
   const showEqual = /^.+(\+|-)/.test(expStr)
@@ -82,9 +82,6 @@ const NumberPad: FC<NumberPadProps> = (props) => {
     const amount = Number(expStr)
     !isNaN(amount) && onAmountChange(amount)
   }, [expStr, onCalcStrChange, onAmountChange])
-  useEffect(() => {
-    amount !== undefined && setInitNum(amount)
-  }, [amount, setInitNum])
 
   const onNumberClick = (num: string) => () => {
     add(num)

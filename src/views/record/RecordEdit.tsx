@@ -2,7 +2,7 @@ import React, {
   useState,
   useCallback,
   useContext,
-  FC, MouseEvent, ChangeEvent,
+  FC, MouseEvent, ChangeEvent, useEffect,
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
@@ -40,19 +40,39 @@ const DeleteBtn = styled.span`
   color: ${danger}
 `
 
-const RecordEdit: FC = () => {
+const WithQueryRecord = () => {
   const history = useHistory();
-  const {moneyRecords, modifyRecord, deleteRecord} = useContext(MoneyRecordsContext);
+  const {moneyRecords} = useContext(MoneyRecordsContext);
+  const {id} = useParams();
+  const delay = 3000
+
+  const recordData = getRecordById(moneyRecords, id);
+  useEffect(() => {
+    if (!recordData) {
+      setTimeout(() => {
+        history.push('/record/add')
+      }, delay)
+    }
+  }, [recordData, history])
+
+  if(!recordData) {
+    return <div>当前记录不存在，将会在3秒后跳转到首页</div>
+  } else {
+    return <RecordEdit record={recordData}/>
+  }
+}
+
+interface RecordEditProps {
+  record: MoneyRecord
+}
+
+const RecordEdit: FC<RecordEditProps> = ({record}) => {
+  const history = useHistory();
+  const {id} = useParams();
+  const {modifyRecord, deleteRecord} = useContext(MoneyRecordsContext);
   const [calcStr, setCalcStr] = useState('0')
   const {categories} = useContext(CategoriesContext);
-  const {id} = useParams();
-
-  const initialRecordData = getRecordById(moneyRecords, id);
-  const [recordData, dispatchRecordData] = useMoneyRecord(initialRecordData || {
-    time: new Date().toISOString(),
-    amount: 0,
-    moneyType: 'expenditure',
-  })
+  const [recordData, dispatchRecordData] = useMoneyRecord(record)
   const {categoryId, moneyType, time, amount, remarks} = recordData;
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
 
@@ -155,4 +175,4 @@ const RecordEdit: FC = () => {
     </Wrapper>
   );
 };
-export default React.memo(RecordEdit);
+export default WithQueryRecord;

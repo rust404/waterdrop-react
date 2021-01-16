@@ -126,7 +126,7 @@ const Routes: FC = () => {
                 exact={exact}
               />
             );
-          }).concat()}
+          })}
         </Switch>
       </CSSTransition>
     </TransitionGroup>

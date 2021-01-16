@@ -33,4 +33,4 @@ Icon.defaultProps = {
   onClick: () => {}
 }
 
-export default Icon
+export default React.memo(Icon)

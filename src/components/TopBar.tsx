@@ -50,7 +50,7 @@ const TopBar: FC<ITopBarProps> = (props) => {
         {left}
         {
           showBack && <Back
-            onClick={() => history.goBack()}
+            onClick={history.goBack}
           >
             <Icon id="left" />
             返回

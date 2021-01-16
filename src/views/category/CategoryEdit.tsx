@@ -1,4 +1,4 @@
-import React, {useContext, useState, FC} from "react";
+import React, {useContext, useState, FC, useEffect} from "react";
 import {CategoriesContext} from "store/categoriesStore";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
@@ -21,13 +21,38 @@ const ContentWrapper = styled.div`
   flex: 1;
   overflow: auto;
 `;
-const CategoryEdit: FC = () => {
+const WithQueryCategory = () => {
+  const {categories} = useContext(CategoriesContext);
+  const {id} = useParams();
+  const history = useHistory();
+  const category = categories.filter(value => id === value.id)[0];
+  const delay = 3000
+
+  useEffect(() => {
+    if (!category) {
+      setTimeout(() => {
+        history.push('/record/add')
+      }, delay)
+    }
+  }, [category, history])
+
+  if(!category) {
+    return <div>当前分类不存在，将会在3秒后跳转到首页</div>
+  } else {
+    return <CategoryEdit category={category}/>
+  }
+}
+
+interface CategoryEditProps {
+  category: Category
+}
+const CategoryEdit: FC<CategoryEditProps> = ({category}) => {
   const {categories, modifyCategory} = useContext(CategoriesContext);
   const {id} = useParams();
   const history = useHistory();
   const curCategory = categories.filter(value => id === value.id)[0];
-  const [categoryName, setCategoryName] = useState(curCategory ? curCategory.name : "");
-  const [iconName, setIconName] = useState(curCategory ? curCategory.icon : "");
+  const [categoryName, setCategoryName] = useState(category.name);
+  const [iconName, setIconName] = useState(category.icon);
   const submit = () => {
     const newCategory = {
       ...curCategory,
@@ -70,4 +95,4 @@ const CategoryEdit: FC = () => {
   );
 };
 
-export default CategoryEdit;
+export default WithQueryCategory;

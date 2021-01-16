@@ -22,8 +22,8 @@ const moneyRecordDescriptor:{[index: string]: RuleItem} = {
   amount: {
     type: 'number',
     required: true,
-    validator: (rule, value) => value !== 0,
-    message: '数值不能为0'
+    validator: (rule, value) => value >= 0,
+    message: '数值需要大于等于0'
   },
   remarks: {
     type: 'string',
