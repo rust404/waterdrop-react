@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   > div {
     display: flex;
     font-size: 20px;
-    padding: 0px ${gap};
+    padding: 0 ${gap};
     line-height: 30px;
     border: 1px solid #000;
     border-radius: 4px;

@@ -114,7 +114,7 @@ const Routes: FC = () => {
     <TransitionGroup className="transition-wrapper" childFactory={
       child => React.cloneElement(child, {classNames})
     }>
-      <CSSTransition timeout={500} key={location.pathname} classNames="b-to-t">
+      <CSSTransition timeout={500} key={location.pathname} classNames="fade">
         <Switch location={location}>
           <Redirect from="/" exact to="/record/add"/>
           {RoutesConfig.map(({path, component, exact = false}) => {

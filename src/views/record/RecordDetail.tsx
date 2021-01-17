@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState} from "react";
+import React, {FC, ReactNode, useContext, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
@@ -11,6 +11,7 @@ import PopUp from "../../components/PopUp";
 import {brandColor, grey1, grey5,} from "../../style/variables";
 import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
 import {CategoriesContext} from "../../store/categoriesStore";
+import {getSumByExpenditure, getSumByIncome} from "../../util";
 
 const FallBackMessage = styled.div`
   color: ${grey5};
@@ -27,26 +28,32 @@ const GeneralInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   text-align: center;
+
   .general-record {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .money {
       font-size: 18px;
       margin-bottom: 8px;
     }
+
     .date {
       font-size: 12px;
     }
   }
+
   .pick-date {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .month {
       font-size: 18px;
       margin-bottom: 8px;
     }
+
     .year {
       font-size: 12px;
     }
@@ -60,7 +67,7 @@ const RecordsWrapper = styled.div`
 `;
 const RecordItem = styled.div`
   .date-info {
-    padding: 0px 20px;
+    padding: 0 20px;
     font-size: 10px;
     line-height: 30px;
     color: #9b9b9b;
@@ -68,6 +75,7 @@ const RecordItem = styled.div`
     display: flex;
     justify-content: space-between;
   }
+
   .record-info {
     display: flex;
     margin: 10px 20px;
@@ -75,6 +83,7 @@ const RecordItem = styled.div`
     padding: 12px 16px;
     align-items: center;
     background-color: #fff;
+
     .icon-wrapper {
       width: 36px;
       height: 36px;
@@ -83,24 +92,30 @@ const RecordItem = styled.div`
       justify-content: center;
       align-items: center;
       background-color: ${brandColor};
+
       > .icon {
         fill: #fff;
       }
     }
+
     .record-category {
       font-size: 18px;
       margin-left: 14px;
+
       .remarks {
         color: ${grey5};
         font-size: 12px;
       }
     }
+
     .money {
       font-size: 18px;
       margin-left: auto;
     }
   }
 `;
+
+
 const RecordDetail: FC = () => {
   const [show, setShow] = useState(false)
   const [curDate, setCurDate] = useState(new Date())
@@ -123,41 +138,29 @@ const RecordDetail: FC = () => {
       hashMap[key] = [record];
     }
   });
-  const renderList = () => {
-    const orderedRecords = Object.entries(hashMap).sort().reverse();
-    if (orderedRecords.length === 0) {
-      return <FallBackMessage>本月暂无数据</FallBackMessage>
-    }
-    return orderedRecords.map(item => {
+  let renderList: ReactNode | null
+  const orderedRecords = Object.entries(hashMap).sort().reverse();
+  if (orderedRecords.length === 0) {
+    renderList = <FallBackMessage>本月暂无数据</FallBackMessage>
+  } else {
+    renderList = orderedRecords.map(item => {
+      const [time, records] = item
       return (
-        <RecordItem key={item[0]}>
+        <RecordItem key={time}>
           <div className="date-info">
-            <span>{dayjs(item[0]).format("YYYY年MM月DD日")}</span>
+            <span>{dayjs(time).format("YYYY年MM月DD日")}</span>
             <span>
-                  收入：
-              {item[1].reduce<number>((acc, item) => {
-                if (item.moneyType === 'income') {
-                  return acc + Math.abs(item.amount);
-                } else {
-                  return acc;
-                }
-              }, 0)}
+            收入：
+              {getSumByIncome(records)}
               ；支出：
-              {item[1].reduce<number>((acc, item) => {
-                if (item.moneyType === 'expenditure') {
-                  return acc + Math.abs(item.amount);
-                } else {
-                  return acc;
-                }
-              }, 0)}
+              {getSumByExpenditure(records)}
                 </span>
           </div>
-          {item[1].map(record => {
+          {records.map(record => {
             const categoryItem = getCategoryById(categories, record.categoryId);
             return (
               <div
                 className="record-info"
-                data-id={record.id}
                 key={record.id}
                 onClick={() => {
                   history.push(`/record/edit/${record.id}`);
@@ -177,8 +180,8 @@ const RecordDetail: FC = () => {
             );
           })}
         </RecordItem>
-      );
-    })
+      )
+    });
   }
   return (
     <Layout>
@@ -186,12 +189,7 @@ const RecordDetail: FC = () => {
       <GeneralInfo>
         <div className="general-record">
           <div className="money">
-            {filteredRecords.reduce<number>((acc, item) => {
-              if (item.moneyType === 'income') {
-                return acc + Math.abs(item.amount);
-              }
-              return acc;
-            }, 0)}
+            {getSumByIncome(filteredRecords)}
           </div>
           <div className="date">{month}月收入</div>
         </div>
@@ -201,18 +199,13 @@ const RecordDetail: FC = () => {
         </div>
         <div className="general-record">
           <div className="money">
-            {filteredRecords.reduce<number>((acc, item) => {
-              if (item.moneyType === 'expenditure') {
-                return acc + Math.abs(item.amount);
-              }
-              return acc;
-            }, 0)}
+            {getSumByExpenditure(filteredRecords)}
           </div>
           <div className="date">{month}月支出</div>
         </div>
       </GeneralInfo>
       <RecordsWrapper>
-        {renderList()}
+        {renderList}
       </RecordsWrapper>
       <PopUp show={show} onCancel={() => setShow(false)} position="bottom">
         <DatePicker
@@ -228,4 +221,4 @@ const RecordDetail: FC = () => {
   );
 };
 
-export default React.memo(RecordDetail);
+export default RecordDetail;

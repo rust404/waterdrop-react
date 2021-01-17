@@ -20,6 +20,7 @@ const Echarts = lazy(() => import("components/Echarts"));
 const ContentWrapper = styled.div`
   flex: 1;
   overflow: auto;
+
   .date {
     background-color: #f8f8f8;
     padding: 10px 0;
@@ -27,6 +28,7 @@ const ContentWrapper = styled.div`
     margin-bottom: 10px;
     color: ${brandColor};
   }
+
   .message {
     text-align: center;
   }
@@ -40,12 +42,14 @@ const FallBackMessage = styled.div`
 `
 const RankList = styled.ol`
   padding: 10px;
+
   > li {
     display: flex;
     align-items: center;
     margin: 10px 0;
     padding: 10px 0;
     border-bottom: 1px solid ${grey2};
+
     .icon-wrapper {
       width: 40px;
       height: 40px;
@@ -55,23 +59,29 @@ const RankList = styled.ol`
       align-items: center;
       border-radius: 20px;
       margin-right: 10px;
+
       .icon {
         fill: ${brandColor};
       }
     }
+
     .info {
       flex: 1;
+
       .text-info {
         display: flex;
         align-items: center;
+
         .percent {
           font-size: 12px;
           margin-left: 6px;
         }
+
         .amount {
           margin-left: auto;
         }
       }
+
       .percent-bar {
         margin: 4px 0;
         height: 6px;
@@ -82,8 +92,9 @@ const RankList = styled.ol`
     }
   }
 `
-type CategoryToRecordsMap = { [categoryId: string]: MoneyRecord[] }
 type CategoryToSumMap = { [categoryId: string]: number }
+
+const monthArr = Array(12).fill(0).map((_, index) => index + 1)
 
 const Statistics: FC = () => {
   const {moneyRecords} = useContext(MoneyRecordsContext);
@@ -94,14 +105,9 @@ const Statistics: FC = () => {
   const [moneyType, setMoneyType] = useState<MoneyType>(
     'expenditure'
   );
-  const monthArr = Array(12).fill(0).map((_, index) => index + 1)
   const dateArr = Array(dayjs(curDate).daysInMonth()).fill(0).map((_, index) => index + 1)
-  let dateStr: string
-  if (dateType === 'year') {
-    dateStr = dayjs(curDate).format('YYYY年')
-  } else {
-    dateStr = dayjs(curDate).format('YYYY年M月')
-  }
+  let dateStr = dayjs(curDate).format(dateType === 'year'?'YYYY年':'YYYY年M月')
+
   const handleCancel = () => {
     setShowDatePicker(false)
   }
@@ -136,49 +142,38 @@ const Statistics: FC = () => {
       return acc
     }, ret)
   }
-  // 生成每一个分类的净收入/支出
-  const getSumsForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
-    function getCategoryToRecordMap(records: MoneyRecord[]) {
-      const map: CategoryToRecordsMap = {}
-      return records.reduce((acc, record) => {
-        if (acc[record.categoryId]) {
-          acc[record.categoryId].push(record)
-        } else {
-          acc[record.categoryId] = [record]
-        }
-        return acc
-      }, map)
-    }
-
-    const map = getCategoryToRecordMap(records)
+  // 生成每一个分类的净收入
+  const getSumForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
     const ret: { [categoryId: string]: number } = {}
-    for (const i in map) {
-      if (!Object.prototype.hasOwnProperty.call(map, i)) continue
-      ret[i] = map[i].reduce((acc, record) => acc + record.amount, 0)
-    }
-    return ret
+    return records.reduce((acc, record) => {
+      if (acc[record.categoryId] !== undefined) {
+        acc[record.categoryId] += record.amount
+      } else {
+        acc[record.categoryId] = record.amount
+      }
+      return acc
+    }, ret)
   }
   // 根据分类统计进行降序排序
-  const categoryRankData = (() => {
-    let filteredRecords = moneyRecords
-    filteredRecords = dateType === 'month' ?
-      getRecordsByTime(filteredRecords, curDate, 'month') : getRecordsByTime(filteredRecords, curDate, 'year')
-    filteredRecords = getRecords(filteredRecords, {
-      moneyType: moneyType
-    })
+  let filteredRecords = moneyRecords
+  filteredRecords = getRecordsByTime(filteredRecords, curDate, dateType)
+  filteredRecords = getRecords(filteredRecords, {moneyType})
 
-    const sumsForCategories = getSumsForCategories(filteredRecords)
-    const ret = Object.entries(sumsForCategories)
-    const total = ret.reduce((acc, item) => acc + item[1], 0)
-    ret.sort((a, b) => b[1] - a[1])
-    return ret.map(item => {
-      return {
-        category: getCategoryById(categories, item[0]),
-        sum: item[1],
-        percent: item[1] / total * 100
-      }
-    })
-  })()
+  const sumForCategories = getSumForCategories(filteredRecords)
+  const ret = Object.entries(sumForCategories)
+  const total = ret.reduce((acc, [id, sum]) => acc + sum, 0)
+  ret.sort((a, b) => b[1] - a[1])
+
+  let categoryRankData = ret.map(item => {
+    const [categoryId, sum] = item
+    return {
+      category: getCategoryById(categories, categoryId),
+      sum,
+      percent: sum / total * 100
+    }
+  })
+
+  // 获取echarts的选项数据
   const xSeriesData = dateType === 'month' ? dateArr : monthArr
   const ySeriesData = dateType === 'month' ?
     getSumForDates(moneyRecords, curDate) : getSumForMonths(moneyRecords, curDate)
@@ -278,11 +273,11 @@ const Statistics: FC = () => {
                       <Icon className="icon" size="24px" id={item.category.icon}/>
                     </div>
                     <div className="info">
-                <span className="text-info">
-                  <span className="icon-name">{item.category.name}</span>
-                  <span className="percent">{item.percent.toFixed(2)}%</span>
-                  <span className="amount">{item.sum}</span>
-                </span>
+                      <span className="text-info">
+                        <span className="icon-name">{item.category.name}</span>
+                        <span className="percent">{item.percent.toFixed(2)}%</span>
+                        <span className="amount">{item.sum}</span>
+                      </span>
                       <div className="percent-bar" style={{width: item.percent + '%'}}/>
                     </div>
                   </li>

@@ -3,6 +3,37 @@ import {isMoneyType} from "../store/categoriesReducer";
 
 export type ValueOf<T> = T[keyof T];
 
+interface MoneyRecordFilter {
+  (record?: MoneyRecord):  Boolean
+}
+
+export const getRecordsSumWithFilter = (checker: MoneyRecordFilter) => (records: MoneyRecord[]) => {
+  return records.reduce<number>((acc, item) => {
+    if (checker(item)) {
+      return acc + Math.abs(item.amount);
+    } else {
+      return acc;
+    }
+  }, 0)
+}
+
+export const getRecordsSum = getRecordsSumWithFilter(() => true)
+
+export const getSumByMoneyType = (moneyType: MoneyType) => (records: MoneyRecord[]) => {
+  return getRecordsSumWithFilter((record) => {
+    return record?.moneyType === moneyType
+  })(records)
+}
+
+export const getSumByCategoryId = (categoryId: string) => (records: MoneyRecord[]) => {
+  return getRecordsSumWithFilter((record) => {
+    return record?.categoryId === categoryId
+  })(records)
+}
+
+export const getSumByExpenditure = getSumByMoneyType('expenditure')
+export const getSumByIncome = getSumByMoneyType('income')
+
 export const getStyle = (elm: HTMLElement, key: string) => {
   return getComputedStyle(elm, null).getPropertyValue(key)
 }
