@@ -1,4 +1,4 @@
-import {ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
+import {ActionCreator, ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
 
 export interface AddRecordAction {
   type: typeof ADD_RECORD;
@@ -17,6 +17,6 @@ export interface DeleteRecordAction {
 
 export type RecordAction = AddRecordAction | ModifyRecordAction | DeleteRecordAction
 
-export const addRecordActionCreator:ActionCreator<AddRecordAction> = (payload) => ({type: ADD_RECORD, payload})
-export const deleteRecordActionCreator:ActionCreator<DeleteRecordAction> = (payload) => ({type: DELETE_RECORD, payload})
-export const modifyRecordActionCreator:ActionCreator<ModifyRecordAction> = (payload) => ({type: MODIFY_RECORD, payload})
+export const addRecord:ActionCreator<AddRecordAction> = (payload) => ({type: ADD_RECORD, payload})
+export const deleteRecord:ActionCreator<DeleteRecordAction> = (payload) => ({type: DELETE_RECORD, payload})
+export const modifyRecord:ActionCreator<ModifyRecordAction> = (payload) => ({type: MODIFY_RECORD, payload})

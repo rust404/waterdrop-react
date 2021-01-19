@@ -1,8 +1,6 @@
-import React, {FC, lazy, useContext, useState, Suspense} from "react";
+import React, {FC, lazy, useState, Suspense} from "react";
 import Layout from "components/Layout";
-import {getCategoryById} from "store/selectors/category";
 import TopBar from "components/TopBar";
-import {getRecords, getRecordsByTime} from "store/selectors/moneyRecord";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import RadioGroup from "../components/Radio/RadioGroup";
@@ -12,8 +10,9 @@ import DatePicker, {DatePickerType} from "../components/DatePicker/DatePicker";
 import {brandColor, grey1, grey2, grey5} from "../style/variables";
 import {EChartOption} from "echarts";
 import Icon from "../components/Icon";
-import {MoneyRecordsContext} from "../store/moneyRecordsStore";
-import {CategoriesContext} from "../store/categoriesStore";
+import {useSelector} from "react-redux";
+import {getCategoryById, getCategoryState} from "../reduxStore/selectors/category";
+import {getRecordsByOption, getRecordsByTime, getRecordsState} from "../reduxStore/selectors/moneyRecord";
 
 const Echarts = lazy(() => import("components/Echarts"));
 
@@ -97,8 +96,8 @@ type CategoryToSumMap = { [categoryId: string]: number }
 const monthArr = Array(12).fill(0).map((_, index) => index + 1)
 
 const Statistics: FC = () => {
-  const {moneyRecords} = useContext(MoneyRecordsContext);
-  const {categories} = useContext(CategoriesContext);
+  const moneyRecords = useSelector(getRecordsState)
+  const categories = useSelector(getCategoryState)
   const [curDate, setCurDate] = useState(new Date())
   const [dateType, setDateType] = useState<DatePickerType>('month')
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -157,7 +156,7 @@ const Statistics: FC = () => {
   // 根据分类统计进行降序排序
   let filteredRecords = moneyRecords
   filteredRecords = getRecordsByTime(filteredRecords, curDate, dateType)
-  filteredRecords = getRecords(filteredRecords, {moneyType})
+  filteredRecords = getRecordsByOption(filteredRecords, {moneyType})
 
   const sumForCategories = getSumForCategories(filteredRecords)
   const ret = Object.entries(sumForCategories)

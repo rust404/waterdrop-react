@@ -1,7 +1,6 @@
 import React, {
   useState,
   useCallback,
-  useContext,
   FC,
   MouseEvent, ChangeEvent
 } from "react";
@@ -10,8 +9,6 @@ import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
 import TopBar from "components/TopBar";
 import {moneyRecordValidator} from "util/index";
-import {CategoriesContext} from "store/categoriesStore";
-import {MoneyRecordsContext} from "store/moneyRecordsStore";
 import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -20,6 +17,9 @@ import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 import {ErrorList} from "async-validator";
 import useMoneyRecord from "../../hooks/useMoneyRecord";
+import {useDispatch, useSelector} from "react-redux";
+import {getCategoryState} from "../../reduxStore/selectors/category";
+import {addRecord} from "../../reduxStore/actions/moneyRecord";
 
 const Wrapper = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 
 
 const RecordAdd: FC = () => {
-  const {categories} = useContext(CategoriesContext);
+  const categories = useSelector(getCategoryState)
   const [recordData, dispatchRecordData] = useMoneyRecord({
     categoryId: '',
     moneyType: 'expenditure',
@@ -49,7 +49,7 @@ const RecordAdd: FC = () => {
   })
   const [calcStr, setCalcStr] = useState('0')
   const history = useHistory();
-  const {addRecord} = useContext(MoneyRecordsContext);
+  const dispatch = useDispatch()
   const {categoryId, moneyType, time, remarks} = recordData;
 
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
@@ -97,7 +97,7 @@ const RecordAdd: FC = () => {
   }, [])
   const submit = useCallback(() => {
       moneyRecordValidator.validate(recordData).then(() => {
-        addRecord(recordData as RecordData)
+        dispatch(addRecord(recordData as RecordData))
         message.success('添加记录成功')
         history.push("/record/detail");
       }).catch(({errors}: { errors: ErrorList }) => {
@@ -106,7 +106,7 @@ const RecordAdd: FC = () => {
         })
       })
     },
-    [recordData, history, addRecord]
+    [recordData, history, dispatch]
   );
   return (
     <Layout>

@@ -1,5 +1,5 @@
 import Scheme, {RuleItem} from 'async-validator'
-import {isMoneyType} from "../store/categoriesReducer";
+import {isMoneyType} from "../reduxStore/utils";
 
 export type ValueOf<T> = T[keyof T];
 

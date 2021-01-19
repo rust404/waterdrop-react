@@ -1,5 +1,4 @@
-import {CATEGORY_KEY, RECORD_KEY} from "../store/constants";
-import {Category, MoneyRecord} from "./index";
+import {CATEGORY_KEY, RECORD_KEY} from "./constants/keys";
 
 const defaultCategoryList: Category[] = [
   {name: "餐饮", icon: "canyin", moneyType: "expenditure", id: "1612b088-3730-429d-ada1-32d726c0593c"},

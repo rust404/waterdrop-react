@@ -3,20 +3,17 @@ import {RootState} from "../reducers";
 
 export const getRecordsState = (state: RootState) => state.moneyRecords
 
-export const getRecordById = (state: RootState, id: string): MoneyRecord | null => {
-  const records = getRecordsState(state)
+export const getRecordById = (records: MoneyRecord[], id: string): MoneyRecord | null => {
   return records.filter(record => record.id === id)[0];
 };
 
-export const getRecordsByTime = (state: RootState, time: Date, unit: dayjs.UnitType) => {
-  const records = getRecordsState(state)
+export const getRecordsByTime = (records: MoneyRecord[], time: Date, unit: dayjs.UnitType) => {
   return records.filter(record => {
     return dayjs(time).isSame(record.time, unit)
   })
 }
 
-export const getRecordsByOption = (state: RootState, option: Partial<MoneyRecord>) => {
-  const records = getRecordsState(state)
+export const getRecordsByOption = (records: MoneyRecord[], option: Partial<MoneyRecord>) => {
   return records.filter(record => {
     for (const key in option) {
       if (!Object.prototype.hasOwnProperty.call(option, key)) continue

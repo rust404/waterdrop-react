@@ -1,5 +1,4 @@
-import {ADD_CATEGORY, DELETE_CATEGORY, MODIFY_CATEGORY} from "../constants/ActionTypes";
-import {Category} from "../index";
+import {ActionCreator, ADD_CATEGORY, DELETE_CATEGORY, MODIFY_CATEGORY} from "../constants/ActionTypes";
 
 interface AddCategoryAction {
   type: typeof ADD_CATEGORY;
@@ -16,6 +15,6 @@ interface ModifyCategoryAction {
 
 export type CategoryAction = AddCategoryAction | DeleteCategoryAction | ModifyCategoryAction
 
-export const addCategoryActionCreator:ActionCreator<AddCategoryAction> = (payload) => ({type: ADD_CATEGORY, payload})
-export const deleteCategoryActionCreator:ActionCreator<DeleteCategoryAction> = (payload) => ({type: DELETE_CATEGORY, payload})
-export const modifyCategoryActionCreator:ActionCreator<ModifyCategoryAction> = (payload) => ({type: MODIFY_CATEGORY, payload})
+export const addCategory:ActionCreator<AddCategoryAction> = (payload) => ({type: ADD_CATEGORY, payload})
+export const deleteCategory:ActionCreator<DeleteCategoryAction> = (payload) => ({type: DELETE_CATEGORY, payload})
+export const modifyCategory:ActionCreator<ModifyCategoryAction> = (payload) => ({type: MODIFY_CATEGORY, payload})

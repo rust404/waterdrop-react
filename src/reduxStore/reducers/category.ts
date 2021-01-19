@@ -1,7 +1,6 @@
-import {Category} from "../index";
 import {CategoryAction} from "../actions/category";
-import {generateId} from "../../store/utils";
 import {ADD_CATEGORY, DELETE_CATEGORY, MODIFY_CATEGORY} from "../constants/ActionTypes";
+import {generateId} from "../utils";
 
 export const categoryReducer = (state: Category[] = [], action: CategoryAction):Category[] => {
   switch (action.type) {

@@ -1,5 +1,4 @@
-import React, {useContext, useState, FC, useEffect} from "react";
-import {CategoriesContext} from "store/categoriesStore";
+import React, {useState, FC, useEffect} from "react";
 import TopBar from "components/TopBar";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -8,6 +7,9 @@ import IconList from "./IconList";
 import {message} from "../../components/Message";
 import {categoryValidator} from "../../util";
 import {ErrorList} from "async-validator";
+import {useDispatch, useSelector} from "react-redux";
+import {getCategoryState} from "../../reduxStore/selectors/category";
+import {modifyCategory} from "../../reduxStore/actions/category";
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,7 +24,7 @@ const ContentWrapper = styled.div`
   overflow: auto;
 `;
 const WithQueryCategory = () => {
-  const {categories} = useContext(CategoriesContext);
+  const categories = useSelector(getCategoryState)
   const {id} = useParams();
   const history = useHistory();
   const category = categories.filter(value => id === value.id)[0];
@@ -36,7 +38,7 @@ const WithQueryCategory = () => {
     }
   }, [category, history])
 
-  if(!category) {
+  if (!category) {
     return <div>当前分类不存在，将会在3秒后跳转到首页</div>
   } else {
     return <CategoryEdit category={category}/>
@@ -46,8 +48,10 @@ const WithQueryCategory = () => {
 interface CategoryEditProps {
   category: Category
 }
+
 const CategoryEdit: FC<CategoryEditProps> = ({category}) => {
-  const {categories, modifyCategory} = useContext(CategoriesContext);
+  const categories = useSelector(getCategoryState)
+  const dispatch = useDispatch()
   const {id} = useParams();
   const history = useHistory();
   const curCategory = categories.filter(value => id === value.id)[0];
@@ -60,10 +64,10 @@ const CategoryEdit: FC<CategoryEditProps> = ({category}) => {
       name: categoryName,
     }
     categoryValidator.validate(newCategory).then(() => {
-      modifyCategory(newCategory)
+      dispatch(modifyCategory(newCategory))
       message.success('编辑分类成功')
       history.goBack();
-    }).catch(({errors}: {errors: ErrorList}) => {
+    }).catch(({errors}: { errors: ErrorList }) => {
       errors.forEach(error => {
         message.danger(error.message)
       })

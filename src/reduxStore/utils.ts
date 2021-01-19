@@ -5,3 +5,7 @@ export const getKeyWithPrefix = (key: string, prefix: string = '') => {
 }
 
 export const generateId = (prefix: string = '') => prefix + uuid()
+
+export function isMoneyType(type: string) {
+  return type === 'income' || type === 'expenditure';
+}

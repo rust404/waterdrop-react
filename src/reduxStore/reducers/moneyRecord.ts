@@ -1,7 +1,6 @@
-import {MoneyRecord} from "../index";
 import {RecordAction} from "../actions/moneyRecord";
-import {generateId} from "../../store/utils";
 import {ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
+import {generateId} from "../utils";
 
 export const moneyRecordReducer = (state: MoneyRecord[] = [], action: RecordAction):MoneyRecord[] => {
   switch (action.type) {

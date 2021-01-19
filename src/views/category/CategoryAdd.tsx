@@ -1,15 +1,15 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import TopBar from "components/TopBar";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useQuery from "hooks/useQuery";
-import {isMoneyType} from "store/categoriesReducer";
 import CategoryInfo from "./CategoryInfo";
 import IconList from "./IconList";
 import {message} from "../../components/Message";
-import {CategoriesContext} from "../../store/categoriesStore";
 import {categoryValidator} from "../../util";
 import {ErrorList} from "async-validator";
+import {useDispatch} from "react-redux";
+import {addCategory} from "../../reduxStore/actions/category";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,13 +20,13 @@ const Right = styled.span`
   font-size: 14px;
 `;
 const CategoryAdd = () => {
-  const {addCategory} = useContext(CategoriesContext);
+  const dispatch = useDispatch()
   const query = useQuery();
   const history = useHistory();
   const [categoryName, setCategoryName] = useState("");
   const [iconName, setIconName] = useState("canyin");
   const moneyType = query.get("moneyType");
-  if (!isMoneyType(moneyType || "")) {
+  if (moneyType !== 'income' && moneyType !=='expenditure') {
     history.replace("/category/manage");
   }
   const MoneyTypeMap = {
@@ -40,11 +40,11 @@ const CategoryAdd = () => {
       name: categoryName
     }
     categoryValidator.validate(newCategory).then(() => {
-      addCategory({
+      dispatch(addCategory({
         moneyType: moneyType as MoneyType,
         icon: iconName,
         name: categoryName
-      })
+      }))
       message.success('添加分类成功')
       history.goBack();
     }).catch(({errors}: {errors: ErrorList}) => {

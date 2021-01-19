@@ -1,17 +1,17 @@
-import React, {FC, ReactNode, useContext, useState} from "react";
+import React, {FC, ReactNode, useState} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
-import {getCategoryById} from "store/selectors/category";
 import Icon from "components/Icon";
 import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
 import {brandColor, grey1, grey5,} from "../../style/variables";
-import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
-import {CategoriesContext} from "../../store/categoriesStore";
 import {getSumByExpenditure, getSumByIncome} from "../../util";
+import {useSelector} from "react-redux";
+import {getCategoryById, getCategoryState} from "../../reduxStore/selectors/category";
+import {getRecordsState} from "../../reduxStore/selectors/moneyRecord";
 
 const FallBackMessage = styled.div`
   color: ${grey5};
@@ -119,8 +119,8 @@ const RecordItem = styled.div`
 const RecordDetail: FC = () => {
   const [show, setShow] = useState(false)
   const [curDate, setCurDate] = useState(new Date())
-  const {categories} = useContext(CategoriesContext);
-  const {moneyRecords} = useContext(MoneyRecordsContext);
+  const categories = useSelector(getCategoryState)
+  const moneyRecords = useSelector(getRecordsState)
   const history = useHistory();
   const year = dayjs(curDate).year()
   const month = dayjs(curDate).month() + 1

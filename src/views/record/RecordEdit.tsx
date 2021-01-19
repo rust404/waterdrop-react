@@ -1,14 +1,12 @@
 import React, {
   useState,
   useCallback,
-  useContext,
   FC, MouseEvent, ChangeEvent, useEffect,
 } from "react";
 import styled from "styled-components";
 import NumberPad from "./common/NumberPad";
 import TopBar from "components/TopBar";
 import {moneyRecordValidator} from "util/index";
-import {getRecordById} from "store/selectors/moneyRecord";
 import {useHistory, useParams} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
@@ -16,10 +14,12 @@ import InfoBar from "./common/InfoBar";
 import CategoryList from "./common/CategoryList";
 import {message} from "../../components/Message";
 import {danger} from "../../style/variables";
-import {MoneyRecordsContext} from "../../store/moneyRecordsStore";
-import {CategoriesContext} from "../../store/categoriesStore";
 import {ErrorList} from "async-validator";
 import useMoneyRecord from "../../hooks/useMoneyRecord";
+import {useDispatch, useSelector} from "react-redux";
+import {getCategoryState} from "../../reduxStore/selectors/category";
+import {deleteRecord, modifyRecord} from "../../reduxStore/actions/moneyRecord";
+import {getRecordById, getRecordsState} from "../../reduxStore/selectors/moneyRecord";
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,7 +42,7 @@ const DeleteBtn = styled.span`
 
 const WithQueryRecord = () => {
   const history = useHistory();
-  const {moneyRecords} = useContext(MoneyRecordsContext);
+  const moneyRecords = useSelector(getRecordsState)
   const {id} = useParams();
   const delay = 3000
 
@@ -69,9 +69,9 @@ interface RecordEditProps {
 const RecordEdit: FC<RecordEditProps> = ({record}) => {
   const history = useHistory();
   const {id} = useParams();
-  const {modifyRecord, deleteRecord} = useContext(MoneyRecordsContext);
   const [calcStr, setCalcStr] = useState('0')
-  const {categories} = useContext(CategoriesContext);
+  const categories = useSelector(getCategoryState)
+  const dispatch = useDispatch()
   const [recordData, dispatchRecordData] = useMoneyRecord(record)
   const {categoryId, moneyType, time, amount, remarks} = recordData;
   const filteredCategory = categories.filter(item => item.moneyType === moneyType)
@@ -91,10 +91,10 @@ const RecordEdit: FC<RecordEditProps> = ({record}) => {
   const submit = useCallback(
     () => {
       moneyRecordValidator.validate(recordData).then(() => {
-        modifyRecord({
+        dispatch(modifyRecord({
           id,
           ...recordData,
-        })
+        }))
         message.success('编辑记录成功')
         history.goBack();
       }).catch(({errors}: { errors: ErrorList }) => {
@@ -103,7 +103,7 @@ const RecordEdit: FC<RecordEditProps> = ({record}) => {
         })
       })
     },
-    [history, recordData, modifyRecord, id]
+    [history, recordData, dispatch, id]
   );
   const onDateChange = useCallback((date: Date) => {
     dispatchRecordData({
@@ -122,9 +122,9 @@ const RecordEdit: FC<RecordEditProps> = ({record}) => {
   }, [dispatchRecordData])
   const handleDelete = () => {
     if(!window.confirm('确认删除此记录？')) return
-    deleteRecord({
+    dispatch(deleteRecord({
       id
-    })
+    }))
     message.success('删除成功')
     history.goBack()
   }

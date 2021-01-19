@@ -1,12 +1,13 @@
-import React, {useState, useContext, FC} from "react";
+import React, {useState, FC} from "react";
 import styled from "styled-components";
 import TopBar from "components/TopBar";
 import useQuery from "hooks/useQuery";
-import {CategoriesContext} from "store/categoriesStore";
 import {useHistory} from "react-router-dom";
 import RadioGroup from "../../components/Radio/RadioGroup";
 import RadioButton from "../../components/Radio/RadioButton";
 import CategoryList from "../record/common/CategoryList";
+import {useSelector} from "react-redux";
+import {getCategoryState} from "../../reduxStore/selectors/category";
 
 const Wrapper = styled.section`
   display: flex;
@@ -20,7 +21,7 @@ interface ICategoryManageProps extends React.HTMLProps<HTMLElement> {
 const CategoryManage: FC<ICategoryManageProps> = props => {
   const query = useQuery();
   const history = useHistory();
-  const {categories} = useContext(CategoriesContext);
+  const categories = useSelector(getCategoryState)
   const [moneyType, setMoneyType] = useState(
     query.get("moneyType") || 'expenditure'
   );
