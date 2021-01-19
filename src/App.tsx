@@ -9,6 +9,7 @@ import MoneyRecordsStore from "./store/moneyRecordsStore";
 import CategoriesStore from "./store/categoriesStore";
 import PopUp from "./components/PopUp";
 import qrcode from './assets/qrcode.png';
+import {useSelector} from "react-redux";
 
 function App() {
   const [show, setShow] = useState(false)
