@@ -95,6 +95,46 @@ type CategoryToSumMap = { [categoryId: string]: number }
 
 const monthArr = Array(12).fill(0).map((_, index) => index + 1)
 
+// 生成某一年的每月收入支出统计
+const getSumForMonths = (records: MoneyRecord[], date: Date) => {
+  records = getRecordsByTime(records, date, 'year')
+  const ret = {
+    income: monthArr.map(_ => 0),
+    expenditure: monthArr.map(_ => 0)
+  }
+  return records.reduce((acc, record) => {
+    acc[record.moneyType][dayjs(record.time).month()] += record.amount
+    return acc
+  }, ret)
+}
+
+// 生成每一个分类的收入/支出之和
+const getSumForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
+  const ret: { [categoryId: string]: number } = {}
+  return records.reduce((acc, record) => {
+    if (acc[record.categoryId] !== undefined) {
+      acc[record.categoryId] += record.amount
+    } else {
+      acc[record.categoryId] = record.amount
+    }
+    return acc
+  }, ret)
+}
+
+// 生成某一月的每天收入支出统计
+const getSumForDates = (records: MoneyRecord[], date: Date) => {
+  const sumForDates = Array(dayjs(date).daysInMonth()).fill(0)
+  records = getRecordsByTime(records, date, 'month')
+  const ret = {
+    income: [...sumForDates],
+    expenditure: [...sumForDates]
+  }
+  return records.reduce((acc, record) => {
+    acc[record.moneyType][dayjs(record.time).date() - 1] += record.amount
+    return acc
+  }, ret)
+}
+
 const Statistics: FC = () => {
   const moneyRecords = useSelector(getRecordsState)
   const categories = useSelector(getCategoryState)
@@ -117,43 +157,7 @@ const Statistics: FC = () => {
   const handleDateClick = () => {
     setShowDatePicker(true)
   }
-  // 生成某一月的每天收入支出统计
-  const getSumForDates = (records: MoneyRecord[], date: Date) => {
-    records = getRecordsByTime(records, date, 'month')
-    const ret = {
-      income: dateArr.map(_ => 0),
-      expenditure: dateArr.map(_ => 0)
-    }
-    return records.reduce((acc, record) => {
-      acc[record.moneyType][dayjs(record.time).date() - 1] += record.amount
-      return acc
-    }, ret)
-  }
-  // 生成某一年的每月收入支出统计
-  const getSumForMonths = (records: MoneyRecord[], date: Date) => {
-    records = getRecordsByTime(records, date, 'year')
-    const ret = {
-      income: monthArr.map(_ => 0),
-      expenditure: monthArr.map(_ => 0)
-    }
-    return records.reduce((acc, record) => {
-      acc[record.moneyType][dayjs(record.time).month()] += record.amount
-      return acc
-    }, ret)
-  }
-  // 生成每一个分类的净收入
-  const getSumForCategories = (records: MoneyRecord[]): CategoryToSumMap => {
-    const ret: { [categoryId: string]: number } = {}
-    return records.reduce((acc, record) => {
-      if (acc[record.categoryId] !== undefined) {
-        acc[record.categoryId] += record.amount
-      } else {
-        acc[record.categoryId] = record.amount
-      }
-      return acc
-    }, ret)
-  }
-  // 根据分类统计进行降序排序
+  // 获取当前时间的收入/支出
   let filteredRecords = moneyRecords
   filteredRecords = getRecordsByTime(filteredRecords, curDate, dateType)
   filteredRecords = getRecordsByOption(filteredRecords, {moneyType})
