@@ -1,4 +1,4 @@
-import React, {ChangeEvent, CSSProperties, FC} from "react";
+import React, {ChangeEvent, CSSProperties, FC, ReactNode} from "react";
 import styled from "styled-components";
 import classNames from "classnames";
 import {RadioGroupContext} from "./context";
@@ -22,6 +22,7 @@ interface RadioGroupProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   className?: string
   style?: CSSProperties
+  children?: ReactNode
 }
 
 const RadioGroup: FC<RadioGroupProps> = (props) => {
@@ -46,4 +47,4 @@ const RadioGroup: FC<RadioGroupProps> = (props) => {
   )
 }
 
-export default RadioGroup
+export default React.memo(RadioGroup)

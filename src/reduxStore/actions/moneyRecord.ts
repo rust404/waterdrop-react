@@ -1,22 +1,9 @@
-import {ActionCreator, ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
+import {ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
+import {createAction} from "@reduxjs/toolkit";
 
-export interface AddRecordAction {
-  type: typeof ADD_RECORD;
-  payload: Pick<MoneyRecord, "time" | "moneyType" | "categoryId" | "amount" | "remarks">;
-}
-
-export interface ModifyRecordAction {
-  type: typeof MODIFY_RECORD;
-  payload: Pick<MoneyRecord, "id"> & Partial<MoneyRecord>;
-}
-
-export interface DeleteRecordAction {
-  type: typeof DELETE_RECORD;
-  payload: Pick<MoneyRecord, "id">;
-}
-
-export type RecordAction = AddRecordAction | ModifyRecordAction | DeleteRecordAction
-
-export const addRecord:ActionCreator<AddRecordAction> = (payload) => ({type: ADD_RECORD, payload})
-export const deleteRecord:ActionCreator<DeleteRecordAction> = (payload) => ({type: DELETE_RECORD, payload})
-export const modifyRecord:ActionCreator<ModifyRecordAction> = (payload) => ({type: MODIFY_RECORD, payload})
+export const addRecord = createAction<Pick<
+  MoneyRecord,
+  "time" | "moneyType" | "categoryId" | "amount" | "remarks"
+  >>(ADD_RECORD)
+export const deleteRecord = createAction<Pick<MoneyRecord, "id">>(DELETE_RECORD)
+export const modifyRecord = createAction<Pick<MoneyRecord, "id"> & Partial<MoneyRecord>>(MODIFY_RECORD)

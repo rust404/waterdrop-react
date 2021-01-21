@@ -46,4 +46,4 @@ const Nav: FC = () => {
     </NavWrapper>
   );
 };
-export default Nav;
+export default React.memo(Nav);

@@ -1,22 +1,24 @@
-import {RecordAction} from "../actions/moneyRecord";
-import {ADD_RECORD, DELETE_RECORD, MODIFY_RECORD} from "../constants/ActionTypes";
+import {addRecord, deleteRecord, modifyRecord} from "../actions/moneyRecord";
 import {generateId} from "../utils";
+import {createReducer} from "@reduxjs/toolkit";
 
-export const moneyRecordReducer = (state: MoneyRecord[] = [], action: RecordAction):MoneyRecord[] => {
-  switch (action.type) {
-    case ADD_RECORD:
-      return [
-        ...state,
-        {
-          ...action.payload,
-          id: generateId()
-        }
-      ];
-    case DELETE_RECORD:
-      return state.filter(moneyRecord => moneyRecord.id !== action.payload.id)
-    case MODIFY_RECORD:
-      return state.map(moneyRecord => moneyRecord.id === action.payload.id ? {...moneyRecord, ...action.payload} : moneyRecord)
-    default:
-      return state
-  }
-}
+export const moneyRecordReducer = createReducer<MoneyRecord[]>([], builder => {
+  builder.addCase(addRecord, (state, action) => {
+    return [
+      ...state,
+      {
+        ...action.payload,
+        id: generateId()
+      }
+    ];
+  })
+  builder.addCase(modifyRecord, (state, action) => {
+    return state.map(moneyRecord =>
+      moneyRecord.id === action.payload.id ?
+        {...moneyRecord, ...action.payload}
+        : moneyRecord)
+  })
+  builder.addCase(deleteRecord, (state, action) => {
+    return state.filter(moneyRecord => moneyRecord.id !== action.payload.id)
+  })
+})

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, CSSProperties, FC, useContext} from "react";
+import React, {ChangeEvent, CSSProperties, FC, ReactNode, useContext} from "react";
 import {brandColor} from "../../style/variables";
 import styled from "styled-components";
 import classNames from "classnames";
@@ -27,6 +27,7 @@ interface RadioButtonProps {
   label: string
   className?: string
   style?: CSSProperties
+  children?: ReactNode
 }
 
 const RadioButton: FC<RadioButtonProps> = (props) => {
@@ -57,4 +58,4 @@ const RadioButton: FC<RadioButtonProps> = (props) => {
   )
 }
 
-export default RadioButton
+export default React.memo(RadioButton)

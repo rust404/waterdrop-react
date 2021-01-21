@@ -1,4 +1,4 @@
-import React, {FC, lazy, useState, Suspense} from "react";
+import React, {FC, lazy, useState, Suspense, useMemo} from "react";
 import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
@@ -11,7 +11,7 @@ import {brandColor, grey1, grey2, grey5} from "../style/variables";
 import {EChartOption} from "echarts";
 import Icon from "../components/Icon";
 import {useSelector} from "react-redux";
-import {getCategoryById, getCategoryState} from "../reduxStore/selectors/category";
+import {getCategoryState} from "../reduxStore/selectors/category";
 import {getRecordsByOption, getRecordsByTime, getRecordsState} from "../reduxStore/selectors/moneyRecord";
 
 const Echarts = lazy(() => import(/* webpackPrefetch: true */ "components/Echarts"));
@@ -144,6 +144,15 @@ const Statistics: FC = () => {
   const [moneyType, setMoneyType] = useState<MoneyType>(
     'expenditure'
   );
+  // 分类id->分类 的哈希表
+  const idToCategory = useMemo(() => {
+    const ret:{[index:string]: Category} = {}
+    return categories.reduce((acc, category) => {
+      acc[category.id] = category
+      return acc
+    }, ret)
+  }, [categories])
+
   const dateArr = Array(dayjs(curDate).daysInMonth()).fill(0).map((_, index) => index + 1)
   let dateStr = dayjs(curDate).format(dateType === 'year'?'YYYY年':'YYYY年M月')
 
@@ -162,6 +171,7 @@ const Statistics: FC = () => {
   filteredRecords = getRecordsByTime(filteredRecords, curDate, dateType)
   filteredRecords = getRecordsByOption(filteredRecords, {moneyType})
 
+  // 生成根据数值和降序的分类数据
   const sumForCategories = getSumForCategories(filteredRecords)
   const ret = Object.entries(sumForCategories)
   const total = ret.reduce((acc, [id, sum]) => acc + sum, 0)
@@ -170,7 +180,7 @@ const Statistics: FC = () => {
   let categoryRankData = ret.map(item => {
     const [categoryId, sum] = item
     return {
-      category: getCategoryById(categories, categoryId),
+      category: idToCategory[categoryId],
       sum,
       percent: sum / total * 100
     }
