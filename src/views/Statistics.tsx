@@ -14,7 +14,7 @@ import {useSelector} from "react-redux";
 import {getCategoryById, getCategoryState} from "../reduxStore/selectors/category";
 import {getRecordsByOption, getRecordsByTime, getRecordsState} from "../reduxStore/selectors/moneyRecord";
 
-const Echarts = lazy(() => import("components/Echarts"));
+const Echarts = lazy(() => import(/* webpackPrefetch: true */ "components/Echarts"));
 
 const ContentWrapper = styled.div`
   flex: 1;

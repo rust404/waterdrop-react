@@ -138,4 +138,4 @@ const RecordAdd: FC = () => {
     </Layout>
   );
 };
-export default React.memo(RecordAdd);
+export default RecordAdd;

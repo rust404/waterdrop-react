@@ -49,7 +49,16 @@ interface CategoryListProps {
   style?: CSSProperties
 }
 const CategoryList:FC<CategoryListProps> = (props) => {
-  const {selectedId, listData, type, onChange, onItemClick, onManageClick, onAddClick, ...restProps} = props
+  const {
+    selectedId,
+    listData,
+    type,
+    onChange,
+    onItemClick,
+    onManageClick,
+    onAddClick,
+    ...restProps
+  } = props
   return (
     <Wrapper {...restProps}>
       {listData.map(category => {

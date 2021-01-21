@@ -3,7 +3,6 @@ import Layout from "components/Layout";
 import TopBar from "components/TopBar";
 import styled from "styled-components";
 import Icon from "components/Icon";
-import {useHistory} from "react-router-dom";
 import dayjs from 'dayjs'
 import DatePicker from "../../components/DatePicker/DatePicker";
 import PopUp from "../../components/PopUp";
@@ -12,6 +11,7 @@ import {getSumByExpenditure, getSumByIncome} from "../../util";
 import {useSelector} from "react-redux";
 import {getCategoryById, getCategoryState} from "../../reduxStore/selectors/category";
 import {getRecordsState} from "../../reduxStore/selectors/moneyRecord";
+import {Link} from 'react-router-dom';
 
 const FallBackMessage = styled.div`
   color: ${grey5};
@@ -92,6 +92,7 @@ const RecordItem = styled.div`
       justify-content: center;
       align-items: center;
       background-color: ${brandColor};
+      flex-shrink: 0;
 
       > .icon {
         fill: #fff;
@@ -121,7 +122,6 @@ const RecordDetail: FC = () => {
   const [curDate, setCurDate] = useState(new Date())
   const categories = useSelector(getCategoryState)
   const moneyRecords = useSelector(getRecordsState)
-  const history = useHistory();
   const year = dayjs(curDate).year()
   const month = dayjs(curDate).month() + 1
   const filteredRecords = moneyRecords.filter(record => {
@@ -159,24 +159,22 @@ const RecordDetail: FC = () => {
           {records.map(record => {
             const categoryItem = getCategoryById(categories, record.categoryId);
             return (
-              <div
-                className="record-info"
-                key={record.id}
-                onClick={() => {
-                  history.push(`/record/edit/${record.id}`);
-                }}
-              >
-                <div className="icon-wrapper">
-                  <Icon id={categoryItem.icon} className="icon" size="60%"/>
+              <Link key={record.id} to={`/record/edit/${record.id}`}>
+                <div
+                  className="record-info"
+                >
+                  <div className="icon-wrapper">
+                    <Icon id={categoryItem.icon} className="icon" size="60%"/>
+                  </div>
+                  <div className="record-category">
+                    {categoryItem.name}
+                    <p className="remarks">{record.remarks}</p>
+                  </div>
+                  <div className="money">
+                    {record.moneyType === 'expenditure' && '-'}{record.amount}
+                  </div>
                 </div>
-                <div className="record-category">
-                  {categoryItem.name}
-                  <p className="remarks">{record.remarks}</p>
-                </div>
-                <div className="money">
-                  {record.moneyType === 'expenditure' && '-'}{record.amount}
-                </div>
-              </div>
+              </Link>
             );
           })}
         </RecordItem>

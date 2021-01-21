@@ -15,6 +15,10 @@ a {
 html {
   height: 100%;
 }
+a {
+  /* 取消chrome点击蓝色高亮效果 */
+  -webkit-tap-highlight-color: transparent;
+}
 body {
   font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica,
     "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB",
